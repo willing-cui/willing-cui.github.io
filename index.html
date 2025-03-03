@@ -395,7 +395,23 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 	<script src="assets/js/breakpoints.min.js"></script>
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
-	<script src="assets/js/conditional_import_busuanzi.js"></script>
+
+	<script>
+		const isLocal = (
+			window.location.hostname === 'localhost' ||
+			window.location.hostname === '127.0.0.1' ||
+			window.location.protocol === 'file:' ||         // 本地文件协议
+			window.location.port === '3000' ||              // 常见开发服务器端口
+			process.env.NODE_ENV === 'development'          // 构建工具环境变量
+		);
+
+		if (!isLocal) {
+			const script = document.createElement('script');
+			script.src = 'assets/js/busuanzi.pure.mini.js';
+			script.async = true; // 异步加载
+			document.head.appendChild(script);
+		}
+	</script>
 </body>
 
 </html>
