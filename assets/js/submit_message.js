@@ -1,6 +1,10 @@
 // TODO: Can not read the JSON returned by the Google Apps Scrript.
 
-window.addEventListener("load", function () {
+var visitorMsgTimer = undefined;
+
+function initVisitorInfoSubmit() {
+    clearTimeout(visitorMsgTimer);
+
     // Wait for the page to fully load
     const form = document.getElementById('visitorMsg'); // Get the form element
     form.addEventListener("submit", function (e) { // Listen for form submission
@@ -37,4 +41,14 @@ window.addEventListener("load", function () {
 
             });
     });
+};
+
+window.addEventListener("load", function () {
+    if (document.getElementById('visitorMsg')) {
+        initVisitorInfoSubmit();
+    } else {
+        visitorMsgTimer = setTimeout(() => {
+            initVisitorInfoSubmit();
+        }, 50);
+    }
 });

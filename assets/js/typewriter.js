@@ -1,29 +1,39 @@
-var str = 'Do something great!';
-var i = 0;
-var timer = undefined;
+var typerString = 'Do something great!';
+var typerStrInd = 0;
+var typerTimer = undefined;
 
 function typing() {
     var typer = document.getElementById('typewriter');
-    if (i <= str.length) {
-        typer.innerHTML = str.slice(0, i++) + '_';
-        timer = setTimeout('typing()', 250);    // 递归调用
-    }
-    else {
-        if (i % 2 == 0) {
-            typer.innerHTML = str;              // 结束打字, 移除 _ 光标
+    if (typerStrInd <= typerString.length) {
+        typer.innerHTML = typerString.slice(0, typerStrInd++) + '_';
+        typerTimer = setTimeout('typing()', 250);    // 递归调用
+    } else {
+        if (typerStrInd % 2 == 0) {
+            typer.innerHTML = typerString;              // 结束打字, 移除 _ 光标
         } else {
-            typer.innerHTML = str + '_';
+            typer.innerHTML = typerString + '_';
         }
-        i++;
-        timer = setTimeout('typing()', 500);    // 递归调用
+        typerStrInd++;
+        typerTimer = setTimeout('typing()', 500);    // 递归调用
     }
 }
 
 function startTyping() {
-    clearTimeout(timer);
-    i = 0; typing();
+    clearTimeout(typerTimer);
+    typerStrInd = 0; typing();
+}
+
+function delayedStart() {
+    if (document.getElementById('typewriter')) {
+        startTyping();
+    } else {
+        if (typerTimer == undefined) {
+            console.log("typerTimer is undefined");
+            typerTimer = setTimeout('delayedStart()', 500);
+        }
+    }
 }
 
 const workButton = document.getElementById("workButton");
-workButton.addEventListener("click", () => { startTyping(); });
-window.addEventListener("load", () => { startTyping(); });
+workButton.addEventListener("click", () => { delayedStart(); });
+window.addEventListener('load', () => { delayedStart(); });

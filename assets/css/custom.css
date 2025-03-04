@@ -40,3 +40,17 @@ div#swal2-html-container {
     font-weight: 300;
     padding: 0rem 3rem 0rem 3rem;
 }
+
+
+html::-webkit-scrollbar {
+    width: 0.4rem; 
+ }
+
+html::-webkit-scrollbar-track {
+  background-color: #1b1f22;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: #4e4e4e;
+  border-radius: 0.2rem;
+}
