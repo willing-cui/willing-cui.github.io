@@ -1,0 +1,42 @@
+#inline {
+    display: flex;
+    justify-content: start;
+    margin: auto;
+}
+
+h2#swal2-title {
+    font-size: 24px;
+    font-family: 'Source Sans Pro';
+    color: theme('colors.metal');
+}
+
+div#swal2-html-container {
+    font-size: 16px;
+    font-family: 'Source Sans Pro';
+    color: theme('colors.metal');
+}
+
+.swal2-popup .swal2-styled.swal2-confirm {
+    background-color: #aaa !important;
+    vertical-align: middle;
+    padding: 0rem 3rem 0rem 3rem;
+    color: #1b1f22 !important;
+    font-weight: 300;
+
+}
+
+.swal2-popup .swal2-styled:focus {
+    background-color: #ffffff !important;
+    vertical-align: middle;
+    color: #1b1f22 !important;
+    font-weight: 300;
+    padding: 0rem 3rem 0rem 3rem;
+}
+
+.swal2-popup .swal2-actions:not(.swal2-loading) .swal2-styled:hover {
+    background-color: #ffffff !important;
+    vertical-align: middle;
+    color: #1b1f22 !important;
+    font-weight: 300;
+    padding: 0rem 3rem 0rem 3rem;
+}
