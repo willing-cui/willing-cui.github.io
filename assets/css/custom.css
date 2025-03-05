@@ -43,19 +43,41 @@ div#swal2-html-container {
 
 
 html::-webkit-scrollbar {
-    width: 0.4rem; 
- }
+    width: 0.4rem;
+}
 
 html::-webkit-scrollbar-track {
-  background-color: #1b1f22;
+    background-color: #1b1f22;
 }
 
 html::-webkit-scrollbar-thumb {
-  background: #4e4e4e;
-  border-radius: 0.2rem;
+    background: #4e4e4e;
+    border-radius: 0.2rem;
 }
 
 .table-finite-compression {
     white-space: normal;
     min-width: 50rem;
+}
+
+/* Container holding the image and the text */
+.img-container {
+    position: relative;
+}
+
+/* Bottom right text */
+.img-text-block {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+
+    height: 1.8rem;
+
+    color: white;
+    padding: 0.2rem 0.2rem 0.2rem 0.2rem;
+
+    background-color: rgba(19, 21, 25, 0.5);
+	border-radius: 4px;
+	display: block;
+	opacity: 0.6;
 }
