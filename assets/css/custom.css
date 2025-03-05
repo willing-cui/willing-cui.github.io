@@ -54,3 +54,8 @@ html::-webkit-scrollbar-thumb {
   background: #4e4e4e;
   border-radius: 0.2rem;
 }
+
+.table-finite-compression {
+    white-space: normal;
+    min-width: 50rem;
+}
