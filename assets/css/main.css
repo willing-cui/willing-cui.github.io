@@ -1,5 +1,4 @@
-@import url(fontawesome-all.min.css);
-@import url(fontawesome-all.css);
+@import url("./fontawesome-all.css");
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300italic,600italic,300,600");
 
 /*
@@ -284,7 +283,7 @@ h6 {
 	line-height: 1.5;
 	margin: 0 0 1rem 0;
 	text-transform: uppercase;
-	letter-spacing: 0.2rem;
+	letter-spacing: 0.1rem;
 }
 
 h1 a,
@@ -620,7 +619,7 @@ input[type="radio"]+label:before {
 	text-rendering: auto;
 	line-height: 1;
 	text-transform: none !important;
-	font-family: 'Font Awesome 5 Free';
+	font-family: 'Font Awesome 6 Free';
 	font-weight: 900;
 }
 
@@ -729,8 +728,9 @@ input[type="radio"]+label:before {
 	text-rendering: auto;
 	line-height: 1;
 	text-transform: none !important;
-	font-family: 'Font Awesome 5 Free';
+	font-family: 'Font Awesome 6 Free';
 	font-weight: 400;
+	content: var(--fa);
 }
 
 .icon>.label {
@@ -746,7 +746,7 @@ input[type="radio"]+label:before {
 }
 
 .icon.brands:before {
-	font-family: 'Font Awesome 5 Brands';
+	font-family: 'Font Awesome 6 Brands';
 }
 
 /* Image */
@@ -767,7 +767,8 @@ input[type="radio"]+label:before {
 	display: block;
 	height: 100%;
 	left: 0;
-	/* opacity: 0.5 */;
+	/* opacity: 0.5 */
+	;
 	opacity: 0;
 	position: absolute;
 	top: 0;
@@ -1418,7 +1419,7 @@ body.is-preload #bg:before {
 }
 
 #header .logo .icon:before {
-	font-size: 2rem;
+	font-size: 2.3rem;
 }
 
 #header .content {
