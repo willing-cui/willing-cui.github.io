@@ -92,19 +92,20 @@ html::-webkit-scrollbar-thumb {
 
     text-align: left;
     height: auto;
+    width: auto;
+    max-width: 10rem;
+
+    line-height: 1rem;
 
     color: white;
     padding: 0.2rem 0.5rem 0.2rem 0.5rem;
     margin-right: 6px;
-    width: auto;
     display: inline-block;
 
     background-color: rgba(19, 21, 25, 0.5);
     border-radius: 4px;
     opacity: 0.6;
     z-index: 2000;
-
-    -webkit-appearance: initial;
 }
 
 .card::before {
