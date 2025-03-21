@@ -91,7 +91,6 @@ html::-webkit-scrollbar-thumb {
     left: 6px;
 
     text-align: left;
-    overflow-wrap: break-word;
     height: auto;
 
     color: white;
