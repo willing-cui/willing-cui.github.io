@@ -91,6 +91,7 @@ html::-webkit-scrollbar-thumb {
     left: 6px;
 
     text-align: left;
+    overflow-wrap: break-word;
     height: auto;
 
     color: white;
@@ -105,9 +106,6 @@ html::-webkit-scrollbar-thumb {
     z-index: 2000;
 
     -webkit-appearance: initial;
-    
-    overflow-wrap: break-word;
-    flex-wrap: wrap;
 }
 
 .card::before {
