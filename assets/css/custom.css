@@ -94,11 +94,7 @@ html::-webkit-scrollbar-thumb {
     height: auto;
 
     color: white;
-    /* padding: 0.2rem 0.5rem 0.2rem 0.5rem; */
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    padding-top: 0.2rem;
-    padding-bottom: 0.2rem;
+    padding: 0.2rem 0.5rem 0.2rem 0.5rem;
     margin-right: 6px;
     width: auto;
     display: block;
@@ -107,6 +103,8 @@ html::-webkit-scrollbar-thumb {
     border-radius: 4px;
     opacity: 0.6;
     z-index: 2000;
+
+    -webkit-appearance: initial;
 }
 
 .card::before {
