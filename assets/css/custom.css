@@ -94,7 +94,13 @@ html::-webkit-scrollbar-thumb {
     height: auto;
 
     color: white;
-    padding: 0.2rem 0.5rem 0.2rem 0.5rem;
+    /* padding: 0.2rem 0.5rem 0.2rem 0.5rem; */
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    margin-right: 6px;
+    width: auto;
 
     background-color: rgba(19, 21, 25, 0.5);
     border-radius: 4px;

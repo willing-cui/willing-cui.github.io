@@ -12,7 +12,7 @@ function typing() {
         typerTimer = setTimeout('typing()', 250);    // 递归调用
     } else {
         if (typerStrInd % 2 == 0) {
-            typer.innerHTML = typerString;              // 结束打字, 移除 _ 光标
+            typer.innerHTML = typerString;           // 结束打字, 移除 _ 光标
         } else {
             typer.innerHTML = typerString + '_';
         }
