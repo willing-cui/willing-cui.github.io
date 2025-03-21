@@ -101,6 +101,7 @@ html::-webkit-scrollbar-thumb {
     padding-bottom: 0.2rem;
     margin-right: 6px;
     width: auto;
+    display: block;
 
     background-color: rgba(19, 21, 25, 0.5);
     border-radius: 4px;
