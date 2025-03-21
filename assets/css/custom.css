@@ -1,3 +1,5 @@
+@import url("./main.css");
+
 #inline {
     display: flex;
     justify-content: start;
@@ -60,16 +62,33 @@ html::-webkit-scrollbar-thumb {
     min-width: 50rem;
 }
 
-/* Container holding the image and the text */
-.img-container {
-    position: relative;
+/* Bottom right text */
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
 }
 
-/* Bottom right text */
-.img-text-block {
+.card {
+    background-color: rgba(27, 31, 34, 1);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
+}
+
+.image.main.card-image {
+    z-index: 1000;
+    margin: 0;
+}
+
+.card-text-block {
     position: absolute;
-    bottom: 1rem;
-    left: 1rem;
+    bottom: 10px;
+    left: 10px;
 
     text-align: left;
     height: auto;
@@ -78,6 +97,33 @@ html::-webkit-scrollbar-thumb {
     padding: 0.2rem 0.2rem 0.2rem 0.2rem;
 
     background-color: rgba(19, 21, 25, 0.5);
-	border-radius: 4px;
-	opacity: 0.6;
+    border-radius: 4px;
+    opacity: 0.6;
+    z-index: 2000;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    transform: translate(-50%, -50%);
+
+    width: 1500px;
+    height: 1500px;
+    background: radial-gradient(var(--clr), transparent, transparent);
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border-radius: 8px;
+    background-color: rgba(27, 31, 34, 0.75);
 }

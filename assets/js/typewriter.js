@@ -1,6 +1,9 @@
 var typerString = 'Do something great!';
 var typerStrInd = 0;
 var typerTimer = undefined;
+const workButton = document.getElementById("workButton");
+workButton.addEventListener("click", () => { delayedStartTyping(); });
+window.addEventListener('load', () => { delayedStartTyping(); });
 
 function typing() {
     var typer = document.getElementById('typewriter');
@@ -19,21 +22,19 @@ function typing() {
 }
 
 function startTyping() {
-    clearTimeout(typerTimer);
-    typerStrInd = 0; typing();
+    if (typerTimer != undefined) {
+        clearTimeout(typerTimer);
+    }
+    typerStrInd = 0; 
+    typing();
 }
 
-function delayedStart() {
+function delayedStartTyping() {
     if (document.getElementById('typewriter')) {
         startTyping();
     } else {
         if (typerTimer == undefined) {
-            console.log("typerTimer is undefined");
-            typerTimer = setTimeout('delayedStart()', 500);
+            typerTimer = setTimeout('delayedStartTyping()', 500);
         }
     }
 }
-
-const workButton = document.getElementById("workButton");
-workButton.addEventListener("click", () => { delayedStart(); });
-window.addEventListener('load', () => { delayedStart(); });

@@ -49,6 +49,6 @@ window.addEventListener("load", function () {
     } else {
         visitorMsgTimer = setTimeout(() => {
             initVisitorInfoSubmit();
-        }, 50);
+        }, 100);
     }
 });
