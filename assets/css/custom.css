@@ -93,7 +93,6 @@ html::-webkit-scrollbar-thumb {
     text-align: left;
     height: auto;
     width: auto;
-    max-width: 10rem;
 
     line-height: 1rem;
 
@@ -106,6 +105,12 @@ html::-webkit-scrollbar-thumb {
     border-radius: 4px;
     opacity: 0.6;
     z-index: 2000;
+}
+
+@media screen and (max-width: 480px) {
+    .card-text-block { 
+        max-width: 10rem;
+    }
 }
 
 .card::before {
