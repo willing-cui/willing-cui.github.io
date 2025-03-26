@@ -15,7 +15,7 @@
 	<noscript>
 		<link rel="stylesheet" href="assets/css/noscript.css" />
 	</noscript>
-	<link rel="stylesheet" href="assets/css/custom.css" />
+	<link rel="stylesheet" rel="prefetch" href="assets/css/custom.css" />
 </head>
 
 <body class="is-preload">
@@ -42,8 +42,8 @@
 					<li><a href="#intro">Intro</a></li>
 					<li><a href="#work" id="workButton">Works</a></li>
 					<li><a href="#skill" id="skillButton">Skills</a></li>
+					<li><a href="#blogs_index">Blogs</a></li>
 					<li><a href="#contact">Contact</a></li>
-					<!-- <li><a href="#elements">Elements</a></li> -->
 				</ul>
 			</nav>
 		</header>
@@ -66,14 +66,19 @@
 				<div id="skillContent"></div>
 			</article>
 
+			<!-- Blogs Index -->
+			<article style="width: 80rem" id="blogs_index">
+				<div id="blogsIndex"></div>
+			</article>
+
 			<!-- Contact -->
 			<article id="contact">
 				<div id="contactContent"></div>
 			</article>
 
-			<!-- Elements -->
-			<article id="elements">
-				<div id="elementsContent"></div>
+			<!-- Blogs -->
+			<article style="width: 60rem" id="blog">
+				<div id="blogTemplate"></div>
 			</article>
 
 		</div>
@@ -91,24 +96,39 @@
 	<!-- Scripts -->
 	<script src="assets/js/jquery.min.js"></script>
 	<script src="assets/js/sweetalert2.all.min.js"></script>
-	
+
 	<script>
 		$(function () {
 			$('#introContent').load('html/intro.html');
 			$('#workContent').load('html/work.html');
 			$('#skillContent').load('html/skill.html');
 			$('#contactContent').load('html/contact.html');
-			// $('#elementsContent').load('html/elements.html');
+			$('#blogsIndex').load('html/blogs_index.html');
+			$('#blogTemplate').load('html/blog.html');
 		})
 	</script>
+
 	<script src="assets/js/dynamic_background.js"></script>
 	<script src="assets/js/submit_message.js"></script>
+	<script src="assets/js/blog_submit_message.js"></script>
 	<script src="assets/js/browser.min.js"></script>
 	<script src="assets/js/breakpoints.min.js"></script>
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
 	<script src="assets/js/typewriter.js"></script>
 	<script src="assets/js/dynamic_card.js"></script>
+	<script src="assets/js/load_markdown.js"></script>
+	<script src="assets/js/marked.js"></script>
+
+	<script>
+		MathJax = {
+			tex: {
+				inlineMath: [['$', '$'], ["\\(", "\\)"]],
+				displayMath: [['$$', '$$'], ["\\(", "\\)"]],
+			}
+		};
+	</script>
+
 
 	<script>
 		const isLocal = (
@@ -125,6 +145,25 @@
 			script.src = 'assets/js/busuanzi.pure.mini.js';
 			script.async = true; // 异步加载
 			document.head.appendChild(script);
+		}
+	</script>
+
+	<script type="text/javascript">
+		// example: file:///D:/GitHub/willing-cui.github.io/index.html?part=blogs&id=1
+		function getParams(key) {
+			var reg = new RegExp("(^|&)" + key + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) {
+				return unescape(r[2]);
+			}
+			return null;
+		};
+		console.log("part:" + getParams("part"));
+		console.log("id:" + getParams("id"));
+
+		if (getParams("part") == 'blogs') {
+			window.location.href = "#blog";
+			loadMd(null, getParams("id"));
 		}
 	</script>
 
