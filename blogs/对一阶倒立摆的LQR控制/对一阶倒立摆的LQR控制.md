@@ -36,14 +36,14 @@ y=Cx+Du
 \end{array}\right.
 $$
 式中$\dot{x}$表示系统中的一阶微分项，$y$表示系统状态。以矩阵运算的形式表示系统的状态空间方程：
-$$
+$$\begin{aligned}
 \begin{bmatrix}
 \dot{x}\\\\
 \ddot{x}\\\\
 \dot{\psi}\\\\
 \ddot{\psi}
 \end{bmatrix}=
-\begin{bmatrix}
+&\begin{bmatrix}
 0 & 1 & 0 & 0\\\\
 0 & -\frac{b(I+ml^2)}{I(m+M)+mMl^2} & \frac{m^2l^2g}{I(m+M)+mMl^2} & 0\\\\
 0 & 0 & 0 & 1 \\\\
@@ -54,7 +54,8 @@ x\\\\
 \dot{x}\\\\
 \psi\\\\
 \dot{\psi}
-\end{bmatrix} +
+\end{bmatrix} \\\\
+&+
 \begin{bmatrix}
 0\\\\
 \frac{(I+ml^2)}{I(m+M)+mMl^2}\\\\
@@ -62,7 +63,7 @@ x\\\\
 \frac{ml}{I(m+M)+mMl^2}
 \end{bmatrix}
 u
-$$
+\end{aligned}$$
 
 $$
 y= \begin{bmatrix}
