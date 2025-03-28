@@ -346,6 +346,9 @@
 			// Hide.
 			$main._hide();
 
+			const url = window.location;
+			const newUrl = url.origin + url.pathname + '#';
+			history.pushState('', '', newUrl);
 		}
 
 		// Otherwise, check for a matching article.
