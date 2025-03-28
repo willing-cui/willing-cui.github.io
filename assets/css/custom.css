@@ -197,11 +197,7 @@ html::-webkit-scrollbar-thumb {
     opacity: 1;
 }
 
-.blog-card + .blog-card {
-	margin-top: 1rem;
-}
-
-.art-ol a{
+.blog-li a{
     text-decoration: none;
     border-bottom: 0;
 }
