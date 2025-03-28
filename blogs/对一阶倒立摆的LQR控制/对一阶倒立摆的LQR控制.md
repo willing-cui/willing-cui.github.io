@@ -110,13 +110,13 @@ x\\\\
 下图是倒立摆开环系统的阶跃响应，显然系统是不收敛的。
 
 <span class="image main">
-<img class="main art-img" style="max-width: 40rem" src="./blogs/对一阶倒立摆的LQR控制/open_loop.webp" alt="开环阶跃响应" />
+<img class="main img-in-blog" style="max-width: 40rem" src="./blogs/对一阶倒立摆的LQR控制/open_loop.webp" alt="开环阶跃响应" />
 </span>
 
 引入LQR反馈后系统的阶跃响应。
 
 <span class="image main">
-<img class="main art-img" style="max-width: 40rem" src="./blogs/对一阶倒立摆的LQR控制/LQR_control.webp" alt="LQR阶跃响应" />
+<img class="main img-in-blog" style="max-width: 40rem" src="./blogs/对一阶倒立摆的LQR控制/LQR_control.webp" alt="LQR阶跃响应" />
 </span>
 
 ## MATLAB 代码

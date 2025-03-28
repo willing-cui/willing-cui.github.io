@@ -256,7 +256,7 @@ blog-ol-wrapper > * + * {
 	padding-bottom: 1rem;
 }
 
-.blog-card img {
+.img-in-blog {
     margin-left: auto;
     margin-right: auto;
 }
