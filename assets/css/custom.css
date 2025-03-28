@@ -158,19 +158,6 @@ html::-webkit-scrollbar-thumb {
     margin-top: 0rem;
 }
 
-@media screen and (max-width: 480px) {
-    ol {
-        margin: 0;
-        padding: 0;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-    }
-
-    ul, li, ol {
-        list-style-type: none;
-    }
-}
-
 .blog-card {
     --y: calc(100% - 2rem);
     display: grid;
@@ -217,6 +204,8 @@ html::-webkit-scrollbar-thumb {
 
 .blog-li {
     display: block;
+    break-inside: avoid;
+    page-break-inside: avoid;
 }
 
 .blog-li+.blog-li {
