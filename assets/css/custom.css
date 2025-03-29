@@ -156,6 +156,7 @@ html::-webkit-scrollbar-thumb {
     column-rule: 0.2rem dotted lightgrey;
     border-radius: 0.5rem;
     margin-top: 0rem;
+    break-inside: avoid;
 }
 
 .blog-card {
@@ -163,8 +164,6 @@ html::-webkit-scrollbar-thumb {
     display: grid;
     grid-template-columns: minmax(3.75em, auto) 1fr;
     gap: 0 0.5em;
-    break-inside: avoid;
-    page-break-inside: avoid;
     background: radial-gradient(circle at 30% var(--y), rgb(50 50 50), rgb(27, 31, 34));
     color: white;
     border-radius: 0.75rem;
@@ -204,8 +203,9 @@ html::-webkit-scrollbar-thumb {
 
 .blog-li {
     display: block;
-    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
+    break-inside: avoid;
 }
 
 .blog-li+.blog-li {
