@@ -145,6 +145,7 @@ html::-webkit-scrollbar-thumb {
 
 .blog-ol-wrapper>*+* {
     margin-top: var(--pad);
+    font-family: "Open Sans", sans-serif;
 }
 
 .blog-ol {
@@ -152,9 +153,10 @@ html::-webkit-scrollbar-thumb {
     padding: 1.5rem;
     border: 0.1rem solid lightgrey;
     columns: 16rem;
-    column-gap: 3rem;
+    column-gap: calc(var(--pad) * 2);
     column-rule: 0.2rem dotted lightgrey;
     border-radius: 0.5rem;
+    margin-top: 0rem;
 }
 
 .blog-card {
