@@ -152,7 +152,7 @@ html::-webkit-scrollbar-thumb {
     padding: 1.5rem;
     border: 0.1rem solid lightgrey;
     columns: 16rem;
-    column-gap: calc(var(--pad) * 2);
+    column-gap: 3rem;
     column-rule: 0.2rem dotted lightgrey;
     border-radius: 0.5rem;
 }
