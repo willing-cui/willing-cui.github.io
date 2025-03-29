@@ -155,8 +155,6 @@ html::-webkit-scrollbar-thumb {
     column-gap: calc(var(--pad) * 2);
     column-rule: 0.2rem dotted lightgrey;
     border-radius: 0.5rem;
-    margin-top: 0rem;
-    break-inside: avoid;
 }
 
 .blog-card {
@@ -204,8 +202,8 @@ html::-webkit-scrollbar-thumb {
 .blog-li {
     display: block;
     -webkit-column-break-inside: avoid;
-    page-break-inside: avoid;
-    break-inside: avoid;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
 }
 
 .blog-li+.blog-li {
