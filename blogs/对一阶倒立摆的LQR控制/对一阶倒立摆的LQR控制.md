@@ -10,6 +10,8 @@ $$(I+ml^2)\ddot{\psi}-mgl\psi = ml\ddot{x}$$
 
 可以将状态空间理解为一个包含系统输入、系统输出和状态变量的集合，它们之间的关系可以用一个一阶微分方程表达出来。
 
+<div class="formula-in-blog">
+
 $$ 状态空间（集合）=\left\\{
 \begin{aligned}
 系统输入\\\\
@@ -19,7 +21,11 @@ $$ 状态空间（集合）=\left\\{
 \right\\}=一阶微分方程
 $$
 
+</div>
+
 通过观察我们知道，目前系统模型是以二阶微分方程的形式描述的。为了消除方程中的高阶项，可以整理得到下面的式子。
+
+<div class="formula-in-blog">
 
 $$\left\\{\begin{array}{l}
 \dot{x}=\dot{x}\\\\
@@ -28,14 +34,25 @@ $$\left\\{\begin{array}{l}
 \ddot{\psi}=\frac{mlg(m+M)}{I(m+M)+mMl^2}\psi-\frac{mlb}{I(m+M)+mMl^2}\dot{x}+\frac{ml}{I(m+M)+mMl^2}u
 \end{array}\right.$$
 
+</div>
+
 已知系统状态空间方程的标准形式为：
+
+<div class="formula-in-blog">
+
 $$
 \left\\{\begin{array}{l}
 \dot{x}=Ax+Bu\\\\
 y=Cx+Du
 \end{array}\right.
 $$
+
+</div>
+
 式中$\dot{x}$表示系统中的一阶微分项，$y$表示系统状态。以矩阵运算的形式表示系统的状态空间方程：
+
+<div class="formula-in-blog">
+
 $$\begin{aligned}
 \begin{bmatrix}
 \dot{x}\\\\
@@ -65,6 +82,10 @@ x\\\\
 u
 \end{aligned}$$
 
+</div>
+
+<div class="formula-in-blog">
+
 $$
 y= \begin{bmatrix}
 1 & 0 & 0 & 0\\\\
@@ -82,15 +103,22 @@ x\\\\
 u
 $$
 
+</div>
+
 ## LQR控制器设计
 
 L（Linear）Q（Quadratic）R（Regulator），直译为线性二次型控制器。
 可以通过加入反馈，使系统最终能达到稳定状态，但如何选取最好的系统特征值（极点）在系统收敛的前提下实现最优的收敛过程，这是我们目前要考虑的问题。
 这里我们引入目标函数（价值函数），使系统在收敛的同时，满足$J$最小：
+
+<div class="formula-in-blog">
+
 $$
 J=\int ^{t_f}_{t_0}[X^TQX+U^TRU]dt\\\\
 min(J)
 $$
+
+</div>
 
 1. $Q$是一个对角矩阵，$X^TQX=ax_1^2+bx_2^2+cx_3^2+......$，当系统中的状态变量$x≠0$时，我们可以通过调节$Q$中元素的值来改变该变量的对$J$的影响。$Q$中较大的一项对应在收敛过程中优先考虑的系统变量。
 2. 同理，$U^TRU$则代表了系统输入$U$对价值函数$J$的影响。因为$J$是积分的形式，当矩阵$R$中某一项较大，则意味着我们希望该项对应的系统输入能够快速收敛到0。这么做的现实意义往往是以最小的代价（例如能耗）实现系统的稳态。
@@ -100,6 +128,8 @@ $$
 
 在MATLAB中，我们可以调用$lqr()$函数生成满足$J$最小的反馈矩阵$K$。$K$对应的就是各个系统变量反馈路径中的增益。即：
 
+<div class="formula-in-blog">
+
 $$U=[K_1, K_2, K_3, K_4]\times\begin{bmatrix}
 x\\\\
 \dot{x}\\\\
@@ -107,16 +137,22 @@ x\\\\
 \dot{\psi}
 \end{bmatrix}$$
 
+</div>
+
 下图是倒立摆开环系统的阶跃响应，显然系统是不收敛的。
 
 <span class="image main">
+
 <img class="main img-in-blog" style="max-width: 40rem" src="./blogs/对一阶倒立摆的LQR控制/open_loop.webp" alt="开环阶跃响应" />
+
 </span>
 
 引入LQR反馈后系统的阶跃响应。
 
 <span class="image main">
+
 <img class="main img-in-blog" style="max-width: 40rem" src="./blogs/对一阶倒立摆的LQR控制/LQR_control.webp" alt="LQR阶跃响应" />
+
 </span>
 
 ## MATLAB 代码
