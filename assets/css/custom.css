@@ -260,7 +260,6 @@ html::-webkit-scrollbar-thumb {
 }
 
 .formula-in-blog {
-    max-width: 100%;
     -webkit-overflow-scrolling: touch;
 	overflow-x: auto;
     margin-top: -1rem;
