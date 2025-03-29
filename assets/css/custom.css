@@ -171,6 +171,11 @@ html::-webkit-scrollbar-thumb {
     transition-duration: 0.5s;
 }
 
+.blog-card:hover {
+    transition-duration: 0.5s;
+    box-shadow: 0.25rem 0.25rem 0.5rem rgb(100 100 100 / 0.5);
+}
+
 .blog-card::after {
     content: "";
     position: absolute;
@@ -184,16 +189,9 @@ html::-webkit-scrollbar-thumb {
     transition-duration: 0.5s;
 }
 
-@media screen and (min-width: 480px) {
-    .blog-card:hover {
-        transition-duration: 0.5s;
-        box-shadow: 0.25rem 0.25rem 0.5rem rgb(100 100 100 / 0.5);
-    }
-
-    .blog-card:hover::after {
-        transition-duration: 0.5s;
-        opacity: 1;
-    }
+.blog-card:hover::after {
+    transition-duration: 0.5s;
+    opacity: 1;
 }
 
 .blog-li a {
