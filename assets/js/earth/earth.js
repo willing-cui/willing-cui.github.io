@@ -5,7 +5,7 @@ import { sunModel } from "./sun_model.js";
 import getStarfield from "./star_field.js";
 
 // Canvas 容器
-const container = document.getElementById("container");
+const container = document.getElementById("gallery_container");
 
 // 3D场景
 const scene = new THREE.Scene();

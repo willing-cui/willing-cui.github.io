@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Willing's Gallery</title>
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-		    overflow-y: hidden;
-      }
-    </style>
-    <script type="importmap">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Willing's Gallery</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      overflow-y: hidden;
+    }
+  </style>
+  <script type="importmap">
       {
           "imports": {
               "three": "../assets/js/three/three.webgpu.js",
@@ -21,8 +22,16 @@
           }
       }
   </script>
-  </head>
-  <body id="container">
-    <script type="module" src="../assets/js/earth/earth.js"></script>
-  </body>
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <noscript>
+    <link rel="stylesheet" href="../assets/css/noscript.css" />
+  </noscript>
+  <link rel="stylesheet" rel="prefetch" href="../assets/css/custom.css" />
+</head>
+
+<body id="gallery_container">
+  <a class="gallery_close" href="../index.html"><div class="gallery_close">Close</div></a>
+  <script type="module" src="../assets/js/earth/earth.js"></script>
+</body>
+
 </html>
