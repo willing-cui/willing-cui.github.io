@@ -39,8 +39,9 @@ const month = date.getMonth();
 const atmosphereDayColor = uniform(color("#4db2ff"));
 // 大气层夜晚颜色（暮色）
 const atmosphereTwilightColor = uniform(color("#000000"));
+
 const roughnessLow = uniform(0.25);
-const roughnessHigh = uniform(0.35);
+const roughnessHigh = uniform(0.5);
 
 // 贴图，加载器
 const textureLoader = new THREE.TextureLoader().setPath("../images/earth/");
@@ -189,21 +190,38 @@ const getTextureNightJpg = () => {
 
 const getTextureBumpRoughnessLandsJpg = () => {
     const bumpRoughnessLandsTexture = textureLoader.load("earth_topography_8k.png");
+
+    // Improves texture clarity when viewed at oblique angles 
+    // (e.g., when the camera looks at a surface edge-on).
+    // Anisotropy levels range from 1 (low quality) to the GPU's maximum (often 16).
+    // Higher values reduce blurring but may impact performance. 8 is a balanced default.
     bumpRoughnessLandsTexture.anisotropy = 8;
 
     return bumpRoughnessLandsTexture;
 };
 
-// 地面的影响力和贴图
+const getTextureLandMask = () => {
+    const landMask = textureLoader.load("land_mask_8k.png");
+    return landMask;
+};
+
+// Loads the base texture and calculates a ​​land influence mask​​ (landsStrength)
 const getBumpRoughnessLands = () => {
-    // 陆地粗糙度
+
+    // Load Texture, get the RGB texture.
     const bumpRoughnessLandsTexture = getTextureBumpRoughnessLandsJpg();
 
-    // uv 创建一个UV属性Node
-    // texture: 创建一个texture node，返回TextureNode
-    // smoothstep: 在两个值之间执行埃尔米特插值，返回Node
-    const landsStrength = texture(bumpRoughnessLandsTexture, uv()).b.smoothstep(0.2, 1);
-    return { landsStrength, bumpRoughnessLandsTexture };
+    // Uses uv() to get texture coordinates.
+    // , then samples the ​​Blue channel​​ (texture(...).b).
+    // Smoothstep Interpolation​​: Applies smoothstep(0.2, 1) to the Blue channel:
+    //      Maps values below 0.2 to 0, above 1 to 1, and smoothly interpolates between.
+    //      Result (landsStrength) defines where "land" effects are active (e.g., roughness/bump).
+    const landsStrength = texture(bumpRoughnessLandsTexture, uv()).r.smoothstep(0.2, 1);
+
+    const landMaskTexture = getTextureLandMask();
+    const landMask = texture(landMaskTexture, uv()).r;
+
+    return { landMask, landsStrength, bumpRoughnessLandsTexture };
 };
 
 // 白天的贴图
@@ -248,24 +266,18 @@ const getTextureNight = (sunModel) => {
     return outputNode;
 };
 
-// 粗糙度的贴图
+// Generates a ​​roughness map​
+// The reflection rate of the land the water is different
 const getTextureRoughness = (bumpRoughnessLands) => {
-    const roughness = max(
-        texture(bumpRoughnessLands.bumpRoughnessLandsTexture).g,
-        step(0.01, bumpRoughnessLands.landsStrength)
-    );
-    const roughnessNode = roughness.remap(0, 1, roughnessLow, roughnessHigh);
+    const landMask = bumpRoughnessLands.landMask;
+    // ​Adjusts roughness range (e.g., from [0, 1] to [roughnessLow, roughnessHigh]).
+    const roughnessNode = landMask.remap(0, 1, roughnessLow, roughnessHigh);
     return roughnessNode;
 };
 
-// 法线的贴图
+// Generates a ​​normal map​​ from elevation (Red channel) and land texture.
 const getTextureNormal = (bumpRoughnessLands) => {
-    const bumpElevation = max(
-        texture(bumpRoughnessLands.bumpRoughnessLandsTexture).r,
-        bumpRoughnessLands.landsStrength
-    );
-    const normalNode = bumpMap(bumpElevation);
-
+    const normalNode = bumpMap(texture(bumpRoughnessLands.bumpRoughnessLandsTexture).r.mul(64));
     return normalNode;
 };
 
