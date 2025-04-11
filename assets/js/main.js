@@ -309,8 +309,18 @@
 	$body.on('click', function (event) {
 
 		// Article visible? Hide.
-		if ($body.hasClass('is-article-visible'))
-			$main._hide(true);
+		if ($body.hasClass('is-article-visible')) {
+			if (location.hash.search('#blog') != -1 && location.hash.search('#blogs') == -1) {
+				// Do not quit article, skip.
+
+			} else {
+				$main._hide(true);
+				// Reset URL.
+				const url = window.location;
+				const newUrl = url.origin + url.pathname + '#';
+				history.pushState('', '', newUrl);
+			}
+		}
 
 	});
 
@@ -323,7 +333,6 @@
 				// Article visible? Hide.
 				if ($body.hasClass('is-article-visible'))
 					$main._hide(true);
-
 				break;
 
 			default:
@@ -346,9 +355,13 @@
 			// Hide.
 			$main._hide();
 
+			// Reset URL.
 			const url = window.location;
 			const newUrl = url.origin + url.pathname + '#';
 			history.pushState('', '', newUrl);
+
+			// Hide the catalogue.
+			hideCatalogue();
 		}
 
 		// Otherwise, check for a matching article.
@@ -361,6 +374,13 @@
 			// Show article.
 			$main._show(location.hash.substr(1));
 
+			if (location.hash == '#blog') {
+				// Show the catalogue.
+				requestIdleCallback(raiseCatalogue);
+			} else {
+				// Hide the catalogue.
+				hideCatalogue();
+			}
 		}
 
 	});
@@ -399,6 +419,28 @@
 		&& location.hash != '#')
 		$window.on('load', function () {
 			$main._show(location.hash.substr(1), true);
+
+			if (location.hash == '#blog') {
+				// Show the catalogue.
+				requestIdleCallback(raiseCatalogue);
+			} else {
+				// Hide the catalogue.
+				hideCatalogue();
+			}
 		});
 
 })(jQuery);
+
+var catalogue = document.getElementById('catalogue');
+
+function raiseCatalogue() {
+	setTimeout(() => {
+		catalogue.style.visibility = 'visible';
+		catalogue.style.opacity = 100;
+	}, 1000)
+}
+
+function hideCatalogue() {
+	catalogue.style.visibility = 'hidden';
+	catalogue.style.opacity = 0;
+}

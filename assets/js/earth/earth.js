@@ -20,6 +20,7 @@ scene.add(sun.sunLight);
 const earth = earthGroup(sun);
 scene.add(earth.group);
 
+// 星空
 const stars = getStarfield({ numStars: 5000 });
 scene.add(stars);
 
