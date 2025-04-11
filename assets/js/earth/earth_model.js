@@ -201,7 +201,7 @@ const getTextureBumpRoughnessLandsJpg = () => {
 };
 
 const getTextureLandMask = () => {
-    const landMask = textureLoader.load("land_mask_8k.png");
+    const landMask = textureLoader.load("land_mask_v2_8k.png");
     return landMask;
 };
 
