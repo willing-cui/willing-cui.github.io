@@ -168,20 +168,13 @@ html::-webkit-scrollbar-thumb {
     color: white;
     border-radius: 0.75rem;
     overflow: hidden;
-
-    -moz-box-shadow: 0.25rem 0.25rem 0.5rem rgb(0 0 0 / 0.17);
-    -webkit-box-shadow: 0.25rem 0.25rem 0.5rem rgb(0 0 0 / 0.17);
     box-shadow: 0.25rem 0.25rem 0.5rem rgb(0 0 0 / 0.17);
-
     position: relative;
     transition-duration: 0.5s;
 }
 
 .blog-card:hover {
     transition-duration: 0.5s;
-
-    -moz-box-shadow: 0.25rem 0.25rem 0.5rem rgb(100 100 100 / 0.5);
-    -webkit-box-shadow: 0.25rem 0.25rem 0.5rem rgb(100 100 100 / 0.5);
     box-shadow: 0.25rem 0.25rem 0.5rem rgb(100 100 100 / 0.5);
 }
 
