@@ -148,16 +148,46 @@ html::-webkit-scrollbar-thumb {
     font-family: "Open Sans", sans-serif;
 }
 
+
 .blog-ol {
     list-style: none;
     padding: 1.5rem;
     border: 0.1rem solid lightgrey;
-    columns: 16rem;
-    column-gap: calc(var(--pad) * 2);
-    column-rule: 0.2rem dotted lightgrey;
     border-radius: 0.5rem;
     margin-top: 0rem;
 }
+
+/* Google */
+@supports (background: paint(xxx)) {
+    .blog-ol {
+        columns: 16rem;
+        column-gap: calc(var(--pad) * 2);
+        column-rule: 0.2rem dotted lightgrey;
+    }
+
+    .blog-li+.blog-li {
+        margin-top: 1rem;
+    }
+}
+
+/* Safari */
+@supports not (background: paint(xxx)) {
+    .blog-ol {
+        display: flex;
+        flex: space-between;
+        overflow: scroll;
+    }
+
+    .blog-li {
+        margin-right: 1rem;
+    }
+
+    .blog-card {
+        max-width: 20rem;
+        min-width: min-content;
+    }
+}
+
 
 .blog-card {
     --y: calc(100% - 2rem);
@@ -206,10 +236,6 @@ html::-webkit-scrollbar-thumb {
     -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
     break-inside: avoid;
-}
-
-.blog-li+.blog-li {
-    margin-top: 1rem;
 }
 
 .blog-card img {
