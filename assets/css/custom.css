@@ -184,7 +184,7 @@ html::-webkit-scrollbar-thumb {
 
     .blog-card {
         max-width: 20rem;
-        min-width: min-content;
+        min-width: 15rem;
     }
 }
 
