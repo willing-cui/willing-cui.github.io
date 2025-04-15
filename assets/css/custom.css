@@ -178,8 +178,8 @@ html::-webkit-scrollbar-thumb {
         overflow: scroll;
     }
 
-    .blog-li {
-        margin-right: 1rem;
+    .blog-li+.blog-li {
+        margin-left: 1rem;
     }
 
     .blog-card {
