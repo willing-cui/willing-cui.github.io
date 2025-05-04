@@ -3,6 +3,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { earthGroup } from "./earth_model.js";
 import { sunModel } from "./sun_model.js";
 import getStarfield from "./star_field.js";
+import {setupTextClickHandler} from "./landmark.js"
 
 // Canvas 容器
 const container = document.getElementById("gallery_container");
@@ -39,11 +40,13 @@ controls.enableDamping = true;
 controls.minDistance = 0.1;
 controls.maxDistance = 50;
 
+setupTextClickHandler(renderer, camera, scene)
+
 // 动画函数
 function animate() {
     earth.earthAutoroatation(); // 地球自转
     earth.moonRevolution(); // 月球公转和自转
-    stars.rotation.y -= 0.0002;
+    stars.rotation.y -= 0.0001;
     renderer.render(scene, camera); //执行渲染操作
 }
 

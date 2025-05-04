@@ -300,7 +300,7 @@ html::-webkit-scrollbar-thumb {
     background-color: black;
 }
 
-.gallery_close {
+.gallery_icon {
     display: block;
     position: absolute;
     top: 0;
@@ -313,7 +313,7 @@ html::-webkit-scrollbar-thumb {
     white-space: nowrap;
 }
 
-.gallery_close:before {
+.gallery_icon:before {
     -moz-transition: background-color 0.2s ease-in-out;
     -webkit-transition: background-color 0.2s ease-in-out;
     -ms-transition: background-color 0.2s ease-in-out;
@@ -326,23 +326,29 @@ html::-webkit-scrollbar-thumb {
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 100%;
-    background-position: center;
+    /* background-position: center;
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='20px' height='20px' viewBox='0 0 20 20' zoomAndPan='disable'%3E%3Cstyle%3Eline %7B stroke: %23ffffff%3B stroke-width: 1%3B %7D%3C/style%3E%3Cline x1='2' y1='2' x2='18' y2='18' /%3E%3Cline x1='18' y1='2' x2='2' y2='18' /%3E%3C/svg%3E");
     background-size: 20px 20px;
-    background-repeat: no-repeat;
+    background-repeat: no-repeat; */
 }
 
-.gallery_close:hover:before {
-    background-color: rgba(255, 255, 255, 0.075);
+.gallery_icon {
+    background-size: 20px 20px;
+    background-repeat: no-repeat; 
+    background-position: center;
 }
 
-.gallery_close:active:before {
-    background-color: rgba(255, 255, 255, 0.175);
+.gallery_icon:hover:before {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.gallery_icon:active:before {
+    background-color: rgba(255, 255, 255, 0.3);
 }
 
 @media screen and (max-width: 736px) {
 
-    .gallery_close:before {
+    .gallery_icon:before {
         top: 0.875rem;
         left: 0.875rem;
         width: 2.25rem;

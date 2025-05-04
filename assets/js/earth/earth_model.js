@@ -16,6 +16,7 @@ import {
     bumpMap,
 } from "three/tsl";
 import { moonModel } from "./moon_model.js";
+import {createLandmark} from "./landmark.js"
 
 const earth_imgs = [
     "earth_january_8k.webp",
@@ -48,8 +49,9 @@ const textureLoader = new THREE.TextureLoader().setPath("../images/earth/");
 
 const earthGroup = (sunModel) => {
     const group = new THREE.Group();
-
     const earthGroup = new THREE.Group();
+    const landmarkGroup = new THREE.Group();
+    
     // 地球
     const earth = earthModel(sunModel);
     earthGroup.add(earth);
@@ -62,6 +64,10 @@ const earthGroup = (sunModel) => {
     const clouds = cloudsModel(earth);
     earthGroup.add(clouds);
 
+    // 地标
+    createLandmark(landmarkGroup)
+
+    earthGroup.add(landmarkGroup);
     group.add(earthGroup);
 
     // 月亮
@@ -73,7 +79,7 @@ const earthGroup = (sunModel) => {
 
     // 地球自转
     const earthAutoroatation = () => {
-        earthGroup.rotation.y += 0.001;
+        earthGroup.rotation.y += 0.0005;
     };
 
     // 月球公转
@@ -81,7 +87,7 @@ const earthGroup = (sunModel) => {
         // 月球绕地球公转
         const time = Date.now() * 0.001; // 获取当前时间（秒）
         const orbitRadius = 2; // 公转半径
-        const speed = 1; // 公转速度
+        const speed = 0.5; // 公转速度
 
         // 计算月球的新位置
         moon.position.x = Math.sin(time * speed) * orbitRadius;
@@ -115,7 +121,7 @@ const earthModel = (sunModel) => {
     const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
 
     // 设置地球的倾斜角度
-    earthMesh.rotateX(-Math.PI / 7.6);
+    // earthMesh.rotateX(-Math.PI / 7.6);
 
     return earthMesh;
 };
