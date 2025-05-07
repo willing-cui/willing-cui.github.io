@@ -3,7 +3,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { earthGroup } from "./earth_model.js";
 import { sunModel } from "./sun_model.js";
 import getStarfield from "./star_field.js";
-import {setupTextClickHandler} from "./landmark.js"
+import { setupTextClickHandler } from "./landmark.js"
 
 // Canvas 容器
 const container = document.getElementById("gallery_container");
@@ -61,3 +61,5 @@ window.onresize = function () {
     // 如果相机的一些属性发生了变化，需要执行updateProjectionMatrix ()方法更新相机的投影矩阵
     camera.updateProjectionMatrix();
 };
+
+export { earth };
