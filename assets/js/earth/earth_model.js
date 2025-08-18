@@ -86,8 +86,8 @@ const earthGroup = (sunModel) => {
     const moonRevolution = () => {
         // 月球绕地球公转
         const time = Date.now() * 0.001; // 获取当前时间（秒）
-        const orbitRadius = 2; // 公转半径
-        const speed = 0.5; // 公转速度
+        const orbitRadius = 6; // 公转半径
+        const speed = 0.3; // 公转速度
 
         // 计算月球的新位置
         moon.position.x = Math.sin(time * speed) * orbitRadius;
