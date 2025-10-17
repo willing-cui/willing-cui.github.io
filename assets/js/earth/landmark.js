@@ -1,5 +1,6 @@
 import * as THREE from "three";
 
+var landMarkClicked = false
 var dom = document.getElementById("dom")
 var areas = [
     {
@@ -14,9 +15,35 @@ var areas = [
         name: "Lijiang",
         position: [100.2271, 26.8565],
         text_position: [100.2271, 26.8565]
+    }, {
+        name: "Jinan",
+        position: [117.01, 36.38],
+        text_position: [117.01, 36.38]
     }
 ];
 
+// 存储当前选中的地标位置和相机动画状态
+var currentSelectedLandmark = null;
+var isCameraAnimating = false;
+var cameraAnimation = {
+    startPosition: new THREE.Vector3(),
+    targetPosition: new THREE.Vector3(),
+    startQuaternion: new THREE.Quaternion(),
+    targetQuaternion: new THREE.Quaternion(),
+    startFov: 25,
+    targetFov: 25,
+    progress: 0,
+    duration: 2.0, // 稍微延长动画时间让过渡更平滑
+    easing: function(t) {
+        // 使用更平滑的缓动函数
+        // 三次贝塞尔曲线：缓入缓出
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+};
+
+// 默认相机位置
+const DEFAULT_CAMERA_POSITION = new THREE.Vector3(8, 3.5, 5);
+const DEFAULT_CAMERA_FOV = 25;
 
 // 创建地标
 function createLandmark(group) {
@@ -150,7 +177,8 @@ function createTxt(position, name) {
         normalTexture,
         glowTexture,
         material,
-        isGlowing: false
+        isGlowing: false,
+        position: position.clone() // 存储地标位置
     });
 
     return sprite;
@@ -174,7 +202,7 @@ function setupTextClickHandler(renderer, camera, scene) {
 
         if (intersects.length > 0) {
             const clickedSprite = intersects[0].object;
-            toggleGlow(clickedSprite);
+            toggleGlow(clickedSprite, camera);
         }
     }
 
@@ -187,18 +215,154 @@ function setupTextClickHandler(renderer, camera, scene) {
     };
 }
 
-function toggleGlow(sprite) {
+// 计算合适的相机位置，确保地球在画面偏左侧
+function calculateCameraPosition(landmarkPosition, cameraDistance) {
+    // 确保相机距离地标足够远，不会穿过地球
+    const minDistanceFromEarth = 2.0;
+    const distance = Math.max(cameraDistance, minDistanceFromEarth);
+    
+    // 计算从地标指向相机的方向（从地标指向世界原点，然后向外延伸）
+    const direction = new THREE.Vector3().subVectors(landmarkPosition, new THREE.Vector3(0, 0, 0)).normalize();
+    
+    // 计算基础相机位置（直接在地标后方）
+    const basePosition = new THREE.Vector3().copy(landmarkPosition).addScaledVector(direction, distance);
+    
+    // 计算从地球中心到地标的方向
+    const earthToLandmark = new THREE.Vector3().copy(landmarkPosition).normalize();
+    
+    // 创建一个向右的向量（相对于相机视角）
+    const upVector = new THREE.Vector3(0, 1, 0);
+    const rightVector = new THREE.Vector3().crossVectors(earthToLandmark, upVector).normalize();
+    
+    // 计算一个偏移向量，让地球向左移动
+    const offsetDistance = 1.2;
+    const offsetVector = rightVector.multiplyScalar(offsetDistance);
+    
+    // 最终相机位置 = 基础位置 + 偏移向量
+    const finalPosition = new THREE.Vector3().copy(basePosition).add(offsetVector);
+    
+    return finalPosition;
+}
+
+// 计算相机朝向目标点时的四元数
+function calculateCameraQuaternion(cameraPosition, targetLookAt) {
+    const cameraMatrix = new THREE.Matrix4();
+    const targetPosition = targetLookAt.clone();
+    
+    // 创建朝向矩阵
+    cameraMatrix.lookAt(cameraPosition, targetPosition, new THREE.Vector3(0, 1, 0));
+    
+    // 从矩阵中提取四元数
+    const quaternion = new THREE.Quaternion();
+    quaternion.setFromRotationMatrix(cameraMatrix);
+    
+    return quaternion;
+}
+
+// 修改startCameraAnimation函数，使用四元数插值
+function startCameraAnimation(camera, targetPosition, targetLookAt, isZoomIn) {
+    cameraAnimation.startPosition.copy(camera.position);
+    cameraAnimation.startFov = camera.fov;
+    cameraAnimation.startQuaternion.copy(camera.quaternion);
+    cameraAnimation.progress = 0;
+    isCameraAnimating = true;
+    
+    if (isZoomIn) {
+        // 计算目标相机的四元数
+        cameraAnimation.targetPosition.copy(targetPosition);
+        cameraAnimation.targetQuaternion = calculateCameraQuaternion(targetPosition, targetLookAt);
+        cameraAnimation.targetFov = 20;
+    } else {
+        // 返回默认位置
+        cameraAnimation.targetPosition.copy(DEFAULT_CAMERA_POSITION);
+        cameraAnimation.targetQuaternion = calculateCameraQuaternion(DEFAULT_CAMERA_POSITION, new THREE.Vector3(0, 0, 0));
+        cameraAnimation.targetFov = DEFAULT_CAMERA_FOV;
+    }
+}
+
+// 更新相机动画（需要在animate循环中调用）
+function updateCameraAnimation(camera, deltaTime) {
+    if (!isCameraAnimating) return;
+    
+    cameraAnimation.progress += deltaTime / cameraAnimation.duration;
+    
+    if (cameraAnimation.progress >= 1) {
+        // 动画完成
+        cameraAnimation.progress = 1;
+        isCameraAnimating = false;
+    }
+    
+    // 应用更平滑的缓动函数
+    const easedProgress = cameraAnimation.easing(cameraAnimation.progress);
+    
+    // 使用球面线性插值（SLERP）来平滑插值相机位置
+    const tempPosition = new THREE.Vector3();
+    tempPosition.lerpVectors(cameraAnimation.startPosition, cameraAnimation.targetPosition, easedProgress);
+    camera.position.copy(tempPosition);
+    
+    // 使用四元数球面线性插值（SLERP）来平滑旋转相机
+    const tempQuaternion = new THREE.Quaternion();
+    tempQuaternion.slerpQuaternions(cameraAnimation.startQuaternion, cameraAnimation.targetQuaternion, easedProgress);
+    camera.quaternion.copy(tempQuaternion);
+    
+    // 插值视野
+    camera.fov = THREE.MathUtils.lerp(
+        cameraAnimation.startFov,
+        cameraAnimation.targetFov,
+        easedProgress
+    );
+    
+    camera.updateProjectionMatrix();
+}
+
+// 修改toggleGlow函数
+function toggleGlow(sprite, camera) {
     const spriteData = textSprites.get(sprite);
     if (!spriteData) return;
 
-    spriteData.isGlowing = !spriteData.isGlowing;
-    spriteData.material.map = spriteData.isGlowing ? spriteData.glowTexture : spriteData.normalTexture;
-    spriteData.material.needsUpdate = true;
+    if (isCameraAnimating) return;
 
-    if (spriteData.isGlowing) {
-        sprite.scale.multiplyScalar(1.1); // Slightly enlarge when glowing
+    // 获取精灵的实时世界位置
+    const worldPosition = new THREE.Vector3();
+    sprite.getWorldPosition(worldPosition);
+
+    if (!spriteData.isGlowing) {
+        // 点击未选中的地标（选中新地标）
+        spriteData.isGlowing = true;
+        spriteData.material.map = spriteData.glowTexture;
+        spriteData.material.needsUpdate = true;
+        sprite.scale.multiplyScalar(1.1);
+        landMarkClicked = true;
+        
+        // 计算目标相机位置
+        const cameraDistance = 3.0;
+        const targetCameraPosition = calculateCameraPosition(worldPosition, cameraDistance);
+        
+        // 开始相机动画
+        startCameraAnimation(camera, targetCameraPosition, worldPosition, true);
+        
+        // 取消其他地标的高亮
+        textSprites.forEach((data, otherSprite) => {
+            if (otherSprite !== sprite && data.isGlowing) {
+                data.isGlowing = false;
+                data.material.map = data.normalTexture;
+                data.material.needsUpdate = true;
+                otherSprite.scale.multiplyScalar(1 / 1.1);
+            }
+        });
+        
+        currentSelectedLandmark = worldPosition.clone();
     } else {
+        // 点击已选中的地标（取消选中）
+        spriteData.isGlowing = false;
+        spriteData.material.map = spriteData.normalTexture;
+        spriteData.material.needsUpdate = true;
         sprite.scale.multiplyScalar(1 / 1.1);
+        landMarkClicked = false;
+        
+        // 返回默认视角
+        startCameraAnimation(camera, DEFAULT_CAMERA_POSITION, new THREE.Vector3(0, 0, 0), false);
+        currentSelectedLandmark = null;
     }
 }
 
@@ -237,9 +401,4 @@ function createTextCanvas(text, isGlowing) {
     return canvas;
 }
 
-// Usage example:
-// const text1 = createTxt(new THREE.Vector3(0, 0, 0), "Hello");
-// scene.add(text1);
-// const clickHandler = setupTextClickHandler(renderer, camera, scene);
-
-export { createLandmark, setupTextClickHandler }
+export { createLandmark, setupTextClickHandler, landMarkClicked, updateCameraAnimation }

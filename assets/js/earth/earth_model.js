@@ -51,7 +51,7 @@ const earthGroup = (sunModel) => {
     const group = new THREE.Group();
     const earthGroup = new THREE.Group();
     const landmarkGroup = new THREE.Group();
-    
+
     // 地球
     const earth = earthModel(sunModel);
     earthGroup.add(earth);
@@ -78,7 +78,7 @@ const earthGroup = (sunModel) => {
     group.add(moon);
 
     // 地球自转
-    const earthAutoroatation = () => {
+    const earthAutoRotation = () => {
         earthGroup.rotation.y += 0.0005;
     };
 
@@ -97,7 +97,7 @@ const earthGroup = (sunModel) => {
         moon.lookAt(earth.position);
     };
 
-    return { group, earthGroup, landmarkGroup, earthAutoroatation, moonRevolution };
+    return { group, earthGroup, landmarkGroup, earthAutoRotation, moonRevolution };
 };
 
 // 地球模型

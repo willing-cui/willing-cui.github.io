@@ -2,8 +2,8 @@ var blogTitle = "";
 var blogContent = "";
 var initialLoad = true;
 
-const pathList = ['一阶倒立摆的系统模型', '对一阶倒立摆的LQR控制', 'RL_Multi-Armed_Bandit', 'WiFi_CSI'];
-const nameList = ['一阶倒立摆的系统模型', '对一阶倒立摆的LQR控制', 'Multi-Armed Bandit Problem (RL)', 'Introduction to WiFi CSI'];
+const pathList = ['一阶倒立摆的系统模型', '对一阶倒立摆的LQR控制', 'RL_Multi-Armed_Bandit', 'WiFi_CSI', 'Sinusoidal_Positional_Encoding'];
+const nameList = ['一阶倒立摆的系统模型', '对一阶倒立摆的LQR控制', 'Multi-Armed Bandit Problem (RL)', 'Introduction to WiFi CSI', 'Sinusoidal Positional Encoding'];
 
 function loadMd(name, id = null) {
     if (id) {
