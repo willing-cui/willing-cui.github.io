@@ -3,7 +3,14 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { earthGroup } from "./earth_model.js";
 import { sunModel } from "./sun_model.js";
 import getStarfield from "./star_field.js";
-import { setupTextClickHandler, landMarkClicked, updateCameraAnimation } from "./landmark.js"
+import {
+    setupTextClickHandler,
+    landMarkClicked,
+    currentSelectedLandmarkName,
+    updateCameraAnimation,
+    resetCurrentSelectedLandmark
+} from "./landmark.js"
+import { loadPhotos } from "./load_gallery.js"
 
 // Canvas 容器
 const container = document.getElementById("gallery_container");
@@ -47,16 +54,19 @@ let clock = new THREE.Clock();
 // 动画函数
 function animate() {
     const deltaTime = clock.getDelta();
-    
+
     if (landMarkClicked == false) {
         earth.earthAutoRotation(); // 地球自转
+        hidePhotoList();
+    } else {
+        raisePhotoList();
     }
     earth.moonRevolution(); // 月球公转和自转
     stars.rotation.y -= 0.0001;
-    
+
     // 更新相机动画
     updateCameraAnimation(camera, deltaTime);
-    
+
     renderer.render(scene, camera); //执行渲染操作
 }
 
@@ -71,5 +81,35 @@ window.onresize = function () {
     // 如果相机的一些属性发生了变化，需要执行updateProjectionMatrix ()方法更新相机的投影矩阵
     camera.updateProjectionMatrix();
 };
+
+// 显示或隐藏图片列表
+
+var photoList = document.getElementById('photo-list');
+var photoListRaised = false;
+var loadedLandmarkName = null;
+
+function raisePhotoList() {
+    if (photoListRaised == false) {
+        photoListRaised = true;
+        setTimeout(() => {
+            photoList.style.visibility = 'visible';
+            photoList.style.opacity = 100;
+        }, 1000)
+    }
+
+    if (currentSelectedLandmarkName != loadedLandmarkName) {
+        loadedLandmarkName = currentSelectedLandmarkName;
+        document.getElementById('landmarkName').innerHTML = currentSelectedLandmarkName;
+        loadPhotos(currentSelectedLandmarkName);
+    }
+}
+
+function hidePhotoList() {
+    if (photoListRaised == true) {
+        photoListRaised = false;
+        photoList.style.visibility = 'hidden';
+        photoList.style.opacity = 0;
+    }
+}
 
 export { earth };

@@ -24,6 +24,15 @@
   </script>
   <link rel="stylesheet" href="../assets/css/main.css" />
   <link rel="stylesheet" href="../assets/css/custom.css" />
+  <style>
+    /* Existing Body Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      overflow-y: hidden;
+    }
+  </style>
 </head>
 
 <body id="gallery_container">
@@ -31,10 +40,42 @@
     <div class="gallery_icon" style="background-image: url('../images/close-w.png');"></div>
   </a>
 
-  <div id="mapMarkerButton" class="gallery_icon" style="right: 3rem; background-image: url('../images/map-marker-w.png');"></div>
+  <div id="mapMarkerButton" class="gallery_icon"
+    style="right: 3rem; background-image: url('../images/map-marker-w.png');"></div>
+
+  <div id="photo-list">
+    <div class="photo-list-title">
+      <h1>Gallery</h1>
+      <div href="#" class="icon solid fa-circle-xmark" onclick="resetCurrentSelectedLandmark()"></div>
+    </div>
+    <h3 id="landmarkName"></h3>
+
+    <!--
+        The main container uses responsive CSS Columns for the waterfall effect.
+    -->
+    <div id="waterfall-grid" class="waterfall-grid-container">
+      <!-- Image cards will be dynamically injected here by JavaScript -->
+    </div>
+
+    <!-- Modal for Enlarged Image (Lightbox) -->
+    <!-- The onclick handler stops propagation when clicking the modal content, allowing the backdrop click (hideModal) to work -->
+    <div id="image-modal" class="image-modal-lightbox" onclick="hideModal(event)">
+      <!-- Modal Content (to prevent closing when clicking the image itself) -->
+      <div class="modal-content-wrapper" onclick="event.stopPropagation()">
+        <!-- Close Button -->
+        <div class="gallery_icon"
+          style="background-image: url('../images/close-w.png'); margin-top: 0.5rem; margin-right: 0.5rem;"
+          onclick="hideModal()"></div>
+
+        <img id="modal-image" src="" alt="Enlarged Image" class="modal-image-display" onclick="hideModal()">
+      </div>
+    </div>
+
+  </div>
 
   <script type="module" rel="preload" src="../assets/js/earth/earth.js"></script>
   <script type="module" rel="preload" src="../assets/js/earth/earth_ui.js"></script>
+  <script type="module" rel="preload" src="../assets/js/earth/landmark.js"></script>
 </body>
 
 </html>

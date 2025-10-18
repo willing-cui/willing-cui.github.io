@@ -312,7 +312,7 @@ html::-webkit-scrollbar-thumb {
     overflow: hidden;
     white-space: nowrap;
     background-size: 20px 20px;
-    background-repeat: no-repeat; 
+    background-repeat: no-repeat;
     background-position: center;
 }
 
@@ -459,4 +459,213 @@ ol {
 #catalogue::-webkit-scrollbar-thumb {
     background: #4e4e4e;
     border-radius: 2px
+}
+
+#photo-list {
+    position: fixed;
+    width: 40vw;
+    min-width: 20rem;
+    right: 1rem;
+    overflow-y: auto;
+    background-color: rgba(27, 31, 34, 0.85);
+    padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+    border-radius: 4px;
+    z-index: 100;
+    margin-top: 5rem;
+    height: 85%;
+
+    visibility: hidden;
+    opacity: 0;
+
+    -webkit-transition: all 0.5s linear;
+    -moz-transition: all 0.5s linear;
+    -ms-transition: all 0.5s linear;
+    -o-transition: all 0.5s linear;
+    transition: all 0.5s linear;
+
+    overflow: auto;
+}
+
+#photo-list::-webkit-scrollbar {
+    height: 4px;
+}
+
+#photo-list::-webkit-scrollbar-track {
+    background-color: #1b1f22;
+}
+
+#photo-list::-webkit-scrollbar-thumb {
+    background: #4e4e4e;
+    border-radius: 2px
+}
+
+.photo-list-title {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* --- Custom CSS Replacements for Tailwind --- */
+.waterfall-grid-container {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    column-gap: 1.5rem;
+    columns: 2;
+}
+
+@media (min-width: 640px) {
+    .waterfall-grid-container {
+        columns: 3;
+    }
+}
+
+@media (min-width: 1024px) {
+    .waterfall-grid-container {
+        columns: 4;
+    }
+}
+
+.image-card {
+    background-color: rgb(31, 41, 55);
+    padding: 0.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 300ms ease-in-out;
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+}
+
+.image-card:hover {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.image-card-content {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 0.5rem;
+}
+
+.image-display {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transform: scale(1);
+    transition: transform 500ms ease-in-out;
+    cursor: zoom-in;
+}
+
+.image-display:hover {
+    transform: scale(1.02);
+}
+
+.card-meta-container {
+    margin-top: 0.75rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    grid-column: 1;
+    grid-row: span 2;
+}
+
+.card-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: rgb(229, 231, 235);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.card-subtitle {
+    font-size: 0.75rem;
+    color: rgb(107, 114, 128);
+}
+
+.card-meta-container span {
+    grid-column: 2;
+    z-index: 3000;
+}
+
+.card-meta-container span:first-of-type {
+    font-size: 1rem;
+    padding-top: 1rem;
+    padding-right: 0.5rem;
+}
+
+.card-meta-container span:last-of-type {
+    font-size: 0.8rem;
+    font-style: italic;
+    padding-bottom: 1rem;
+}
+
+/* Image Modal (Lightbox) */
+.image-modal-lightbox {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(17, 24, 39, 0.95);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 300ms ease-in-out, visibility 300ms ease-in-out;
+}
+
+.image-modal-lightbox.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Modal Content */
+.modal-content-wrapper {
+    position: relative;
+    max-width: 64rem;
+    max-height: 100%;
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+/* Close Button */
+.modal-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: white;
+    font-size: 2.25rem;
+    font-weight: 300;
+    opacity: 0.7;
+    transition: opacity 150ms ease-in-out;
+    z-index: 10;
+    background: none;
+    border: none !important;
+    cursor: pointer;
+}
+
+.modal-close-btn:hover {
+    opacity: 1;
+}
+
+.modal-image-display {
+    display: block;
+    width: auto;
+    max-height: 90vh;
+    max-width: 100%;
+    border-radius: 0.5rem;
+    object-fit: contain;
+    cursor: zoom-out;
+}
+
+#image-modal:not(.is-visible) {
+    display: none;
+}
+
+.gallery_icon_right {
+    right: 3rem;
 }
