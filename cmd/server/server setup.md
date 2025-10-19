@@ -88,9 +88,8 @@
      sudo chmod -R 775 /var/www/html
      ```
 
-     
+     `775`：所有者（`www-data`）和组（`www-data`）有读写执行权限，其他用户只有读和执行权限。
 
 **配置和启动Nginx**
 
 上传完成后，可以通过命令 `sudo systemctl start nginx` 来启动Nginx服务。 注意打开80端口。
-
