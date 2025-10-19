@@ -44,7 +44,51 @@
 
 3. 在 GitHub 仓库的 `Settings > Secrets`中添加服务器凭据（`SERVER_HOST`, `SERVER_USER`, `SERVER_PASSWORD`）。
 
-关于 Github 配置的其他参考：https://zhuanlan.zhihu.com/p/433426848
+   ![image-20251019204140036](server setup.assets/image-20251019204140036.png)
+
+​	关于 Github 配置的其他参考：https://zhuanlan.zhihu.com/p/433426848
+
+4. 注意权限问题
+
+   - **确认服务器用户和组**
+
+     - **Web 服务器用户**：通常是 `www-data`（Apache/Nginx 默认用户，安装时已经创建该组）。
+
+     - **代码推送用户**：代码推送用户，即 Github 设置中的 `SERVER_USER`, 需要被授予目录的读写权限。
+
+   - **将 `ubuntu`用户加入 `www-data`组**
+
+     为了让 `ubuntu`用户能够修改文件，同时让 Web 服务器读取文件，将 `ubuntu`加入 `www-data`组：
+
+     ```bash
+     sudo usermod -aG www-data ubuntu
+     ```
+
+     `-aG`：将用户追加（`-a`）到组（`-G`）中，不影响其他组。
+
+   - **生效组权限**
+
+     退出当前 SSH 会话并重新登录，或执行以下命令立即生效：
+
+     ```bash
+     newgrp www-data
+     ```
+
+   - **设置目录所有权和权限**
+
+     **目录所有者设为 `www-data`，组设为 `www-data`**:
+
+     ```bash
+     sudo chown -R www-data:www-data /var/www/html
+     ```
+
+     允许 `ubuntu`用户通过组权限（`www-data`）写入文件：
+
+     ```bash
+     sudo chmod -R 775 /var/www/html
+     ```
+
+     
 
 **配置和启动Nginx**
 
