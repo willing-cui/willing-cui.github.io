@@ -76,10 +76,10 @@
 
    - **设置目录所有权和权限**
 
-     **目录所有者设为 `www-data`，组设为 `www-data`**:
+     **目录所有者设为 `ubuntu`，组设为 `www-data`**:
 
      ```bash
-     sudo chown -R www-data:www-data /var/www/html
+     sudo chown -R www-data:ubuntu /var/www/html
      ```
 
      允许 `ubuntu`用户通过组权限（`www-data`）写入文件：
