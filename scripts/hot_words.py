@@ -394,7 +394,7 @@ class HotWordMonitor:
         if immediate:
             self.run_job()
         
-        interval = 2 if self.is_server else 1
+        interval = 1 if self.is_server else 1/120
         schedule.every(interval).hours.do(self.run_job)
         
         schedule.every().day.at("03:00").do(self.data_manager.clean_old_files)
