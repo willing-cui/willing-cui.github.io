@@ -93,3 +93,4 @@
 **配置和启动Nginx**
 
 上传完成后，可以通过命令 `sudo systemctl start nginx` 来启动Nginx服务。 注意打开80端口。
+
