@@ -26,6 +26,7 @@ class TaskManager:
         # 可以轻松添加新任务，格式为 {'name': '任务名称', 'script': '脚本文件名', 'args': '参数'}
         self.tasks = [
             {'name': '热词爬取', 'script': 'hot_words.py', 'args': ''},
+            {'name': '饰品金价查询', 'script': 'gold_price.py', 'args': ''},
             # 在这里添加新任务，例如：
             # {'name': '数据清洗', 'script': 'data_clean.py', 'args': '--mode=daily'},
             # {'name': 'API服务', 'script': 'api_server.py', 'args': '--port=8080'},
