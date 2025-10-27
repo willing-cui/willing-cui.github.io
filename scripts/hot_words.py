@@ -38,20 +38,7 @@ class HotWordCollector:
     
     def is_server_environment(self) -> bool:
         """检测是否为服务器环境"""
-        server_indicators = [
-            'SERVER_SOFTWARE' in os.environ,
-            'DYNO' in os.environ,
-            'PWD' in os.environ and '/home/' in os.environ.get('PWD', ''),
-            'USER' in os.environ and os.environ.get('USER') in ['www-data', 'nginx', 'apache']
-        ]
-        return any(server_indicators) or not self._has_graphical_environment()
-    
-    def _has_graphical_environment(self) -> bool:
-        """检测是否有图形环境"""
-        try:
-            return os.environ.get('DISPLAY') is not None or sys.platform != 'linux'
-        except:
-            return False
+        return sys.platform == 'linux'
     
     def make_request(self, url: str, method: str = 'GET', **kwargs) -> Optional[requests.Response]:
         """封装请求方法"""
@@ -394,7 +381,7 @@ class HotWordMonitor:
         if immediate:
             self.run_job()
         
-        interval = 1 if self.is_server else 1/120
+        interval = 1 if self.is_server else 0.01
         schedule.every(interval).hours.do(self.run_job)
         
         schedule.every().day.at("03:00").do(self.data_manager.clean_old_files)
