@@ -242,6 +242,19 @@ body {
     color: #000;
 }
 
+#chart-debug-data::-webkit-scrollbar {
+    width: 4px;
+}
+
+#chart-debug-data::-webkit-scrollbar-track {
+    background-color: #1b1f22;
+}
+
+#chart-debug-data::-webkit-scrollbar-thumb {
+    background: #4e4e4e;
+    border-radius: 2px
+}
+
 .note-body::-webkit-scrollbar {
     width: 4px;
 }
