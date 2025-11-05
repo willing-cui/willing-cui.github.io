@@ -362,6 +362,7 @@
 
 			// Hide the catalogue.
 			hideCatalogue();
+			raiseMenu();
 		}
 
 		// Otherwise, check for a matching article.
@@ -373,6 +374,8 @@
 
 			// Show article.
 			$main._show(location.hash.substr(1));
+
+			hideMenu()
 
 			if (location.hash == '#blog') {
 				// Show the catalogue.
@@ -420,6 +423,8 @@
 		$window.on('load', function () {
 			$main._show(location.hash.substr(1), true);
 
+			hideMenu()
+
 			if (location.hash == '#blog') {
 				// Show the catalogue.
 				requestIdleCallback(raiseCatalogue);
@@ -443,4 +448,18 @@ function raiseCatalogue() {
 function hideCatalogue() {
 	catalogue.style.visibility = 'hidden';
 	catalogue.style.opacity = 0;
+}
+
+var menu = document.getElementById('menuContainer');
+
+function raiseMenu() {
+	setTimeout(() => {
+		menu.style.visibility = 'visible';
+		menu.style.opacity = 1;
+	}, 1000)
+}
+
+function hideMenu() {
+	menu.style.visibility = 'hidden';
+	menu.style.opacity = 0;
 }

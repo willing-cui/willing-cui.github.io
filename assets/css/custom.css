@@ -699,6 +699,15 @@ body {
     top: 2rem;
     right: 2rem;
     z-index: 1000;
+
+    visibility: visible;
+    opacity: 1;
+
+    -webkit-transition: all 0.5s linear;
+    -moz-transition: all 0.5s linear;
+    -ms-transition: all 0.5s linear;
+    -o-transition: all 0.5s linear;
+    transition: all 0.5s linear;
 }
 
 /* The "More" Button / Icon */
@@ -759,7 +768,7 @@ body {
     overflow: hidden;
 
     background-color: rgba(255, 255, 255, 0.6);
-    ;
+
     border-radius: 50%;
     /* Rounded to match icon when collapsed */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
