@@ -245,7 +245,7 @@ class DataManager:
         except Exception as e:
             print(f"保存JSON文件失败: {filename} - {e}")
     
-    def clean_old_files(self, days: int = 30) -> int:
+    def clean_old_files(self, days: int = 365) -> int:
         """清理旧数据文件"""
         deleted_files = 0
         cutoff_date = datetime.now() - timedelta(days=days)
