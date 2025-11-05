@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure CSS Expanding Menu</title>
+    <style>
+        /* Base Styles and Font */
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --text-dark: #212529;
+            --transition-speed: 0.3s;
+            --icon-height: 44px; /* Defined icon height for calculation */
+            --expanded-width: 200px; /* Width of the content area for list items */
+            --menu-item-count: 4; /* Number of list items */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+
+        /* Menu Container Positioning - Fixed to the top-right */
+        .expand-menu-container {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        /* Hidden Checkbox */
+        .menu-toggle {
+            display: none;
+        }
+
+        /* The "More" Button / Icon */
+        .menu-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: var(--icon-height); 
+            height: var(--icon-height);
+            cursor: pointer;
+            
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-size: 1.5rem;
+            font-weight: 700;
+            transition: transform var(--transition-speed), background-color var(--transition-speed), border-radius var(--transition-speed), box-shadow var(--transition-speed);
+            
+            /* Positioning is crucial: Anchor to the top right of the menu area */
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 3; /* Must be above the list */
+            
+            /* Initial shape: Fully rounded to look like a separate button when collapsed */
+            border-radius: 50%; 
+        }
+
+        .menu-toggle:checked + .menu-icon {
+            /* Change shape and color when checked to integrate with the list */
+            transform: none; 
+            background-color: var(--secondary-color);
+            
+            /* New shape: Becomes a rectangle with only top-right and bottom-right corners rounded */
+            border-radius: 0 8px 8px 0; 
+            box-shadow: none; /* Remove shadow to visually merge with the list's shadow */
+        }
+        
+        /* The Expandable List (Initial State - Collapsed) */
+        .expandable-list {
+            /* FIX: MUST be absolute to be positioned correctly relative to the absolute icon */
+            position: absolute; 
+            top: 0; 
+            right: 0; 
+            
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            
+            /* Initial size: matches the icon, hiding items */
+            width: var(--icon-height);
+            height: var(--icon-height);
+            overflow: hidden;
+            
+            background-color: white;
+            border-radius: 50%; /* Rounded to match icon when collapsed */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            
+            /* Transitions */
+            transition: width var(--transition-speed) ease-out, 
+                        height var(--transition-speed) ease-out,
+                        border-radius var(--transition-speed),
+                        box-shadow var(--transition-speed);
+            
+            z-index: 1; /* Below the icon */
+        }
+        
+        /* Pseudo-element for the button background when the menu is open (visual integration) */
+        .menu-toggle:checked ~ .expandable-list::before {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: var(--icon-height);
+            height: var(--icon-height);
+            background-color: var(--secondary-color); /* Matches the checked icon color */
+            border-radius: 0 8px 0 0; /* Top right radius */
+            z-index: 2; /* Below the icon, above the list items */
+        }
+
+        /* Expanded State (When Checkbox is Checked) */
+        .menu-toggle:checked ~ .expandable-list {
+            /* Total width: Content area + Icon width */
+            width: calc(var(--expanded-width) + var(--icon-height));
+            
+            /* Total height: 1 row for the button + 4 rows for items */
+            height: calc((var(--menu-item-count) + 1) * var(--icon-height));
+            
+            /* New shape: rectangular with rounded corners */
+            border-radius: 8px; 
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* List Item Styling - Hidden initially */
+        .expandable-list li {
+            padding: 0;
+            height: 0; /* Initially zero height */
+            line-height: var(--icon-height);
+            opacity: 0;
+            
+            transition: height var(--transition-speed), opacity var(--transition-speed);
+            
+            text-align: right; /* Align text to the right side of the list area */
+        }
+        
+        .expandable-list li a {
+            display: block;
+            padding: 0 16px; 
+            text-decoration: none;
+            color: var(--text-dark);
+            white-space: nowrap; 
+            transition: background-color 0.2s;
+        }
+
+        .expandable-list li a:hover {
+            background-color: var(--bg-light);
+        }
+        
+        /* Items are revealed in the expanded state */
+        .menu-toggle:checked ~ .expandable-list li {
+            height: var(--icon-height); /* Give items their full height */
+            opacity: 1;
+            /* Delay the opacity transition until the height transition is halfway complete */
+            transition: height var(--transition-speed) ease-out, 
+                        opacity 0.2s calc(var(--transition-speed) / 2);
+        }
+        
+        /* Responsive Consideration for smaller screens */
+        @media (max-width: 600px) {
+             .expand-menu-container {
+                top: 1rem;
+                right: 1rem;
+            }
+             :root {
+                --icon-height: 38px;
+                --expanded-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="expand-menu-container">
+        <!-- 1. The hidden checkbox manages the state -->
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+        <!-- 2. The label acts as the clickable "More" button/icon -->
+        <label for="menu-toggle" class="menu-icon" title="Menu">
+            &#9776; <!-- Hamburger icon -->
+        </label>
+
+        <!-- 3. The list that expands (sibling to the checkbox) -->
+        <ul class="expandable-list">
+            <li></li> <!-- Place holder -->
+            <li><a href="#">Account Settings</a></li>
+            <li><a href="#">View Profile</a></li>
+            <li><a href="#">Support</a></li>
+            <li><a href="#">Log Out</a></li>
+        </ul>
+    </div>
+
+    <div style="padding-top: 100px; padding-left: 20px;">
+        <h1 style="color: var(--text-dark);">Main Content Area</h1>
+        <p style="color: var(--secondary-color);">The menu now expands both to the left and down, and the button becomes the integrated header in the top-right corner.</p>
+        <p style="height: 150vh;">(A lot of content to ensure scrolling works)</p>
+    </div>
+
+</body>
+</html>

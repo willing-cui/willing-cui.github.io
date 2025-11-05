@@ -81,6 +81,36 @@
 
 		</div>
 
+		<div class="expand-menu-container" id="menuContainer">
+			<!-- 1. The label acts as the clickable "More" button/icon -->
+			<!-- Added onclick handler to toggle the menu state --> 
+			<div id="menuIcon" class="menu-icon" title="Menu" onclick="toggleMenu()">
+				<!-- &#9776;  Hamburger icon -->
+				<span id="gallery" class="icon solid fa-list"></span>
+			</div>
+
+			<!-- 2. The list that expands -->
+			<ul class="expandable-list">
+				<li></li>
+				<li><a href="./html/stickies.html">Stickies</a></li>
+			</ul>
+		</div>
+			
+		<script>
+			/**
+			 * Toggles the 'expanded' class on the main menu container.
+			 * This class triggers the CSS transitions for opening/closing the menu.
+			 */
+			function toggleMenu() {
+				const container = document.getElementById('menuContainer');
+				if (container) {
+					container.classList.toggle('expanded');
+				} else {
+					console.error("Menu container element not found.");
+				}
+			}
+		</script>
+
 		<div id="catalogue">
 			<h3>Catalogue</h3>
 			<div class="toc-links"></div>

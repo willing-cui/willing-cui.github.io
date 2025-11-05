@@ -10,6 +10,12 @@ GnuTLS recv error (-110): The TLS connection was non-properly terminated
 取消代理即可恢复正常，执行下面的命令：
 git config --global --unset http.https://github.com.proxy
 
+如果在执行git指令时出现以下报错：
+Failed to connect to github.com port 443 after 21060 ms
+使用下面的命令关闭代理：
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+
 Ubuntu 需要安装 Python 虚拟环境来安装必要的软件包
 sudo apt install python3-venv
 # 创建一个新的虚拟环境，命名为app

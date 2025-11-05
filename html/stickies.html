@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Functional Tabs - Restored Frosted Glass</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/dynamic_stickies_bg.js"></script>
+    <script src="../assets/js/util.js"></script>
+    <link rel="stylesheet" href="../assets/css/main.css" />
+    <link rel="stylesheet" rel="prefetch" href="../assets/css/custom.css" />
+    <link rel="stylesheet" rel="prefetch" href="../assets/css/stickies.css" />
+</head>
+
+<body class="is-preload">
+    <!-- BG -->
+    <div id="bg" style="z-index: -100;"></div>
+    <!-- Close Button -->
+    <a href="../index.html">
+        <div class="stickies_icon" style="background-image: url('../images/close-w.png');"></div>
+    </a>
+    <div class="main-stack-wrapper">
+        <div class="note-stack-container">
+            <div class="frosted-note" data-note="1">
+                <div class="note-tab" data-note-id="1">Trending Topics</div>
+                <h3>Trending Data (Latest)</h3>
+                <div class="note-body" id="trending-data-container">
+                    <p>Loading data...</p>
+                </div>
+            </div>
+
+            <div class="frosted-note active" data-note="2">
+                <div class="note-tab active-tab" data-note-id="2">Gold Price</div>
+                <h3>Gold Price Trend</h3>
+                <div class="note-body">
+                    <div id="chart-area">
+                    </div>
+
+                    <div id="chart-controls">
+                        <button data-window="7" class="active">7 Days</button>
+                        <button data-window="30">30 Days</button>
+                        <button data-window="365">Year</button>
+                    </div>
+
+                    <h4 style="margin-top: 1rem; color: #333;">Aggregated Data (Date / Price per gram):</h4>
+                    <div id="chart-debug-data">Loading price data...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/stickies.js"></script>
+</body>
+
+</html>
