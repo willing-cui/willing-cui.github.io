@@ -111,9 +111,9 @@ body {
 
 #chart-controls button {
     font-size: 12px;
+    padding-top: 1px;
     width: 120px;
     height: 40px;
-    padding: 0 0 0 0 !important;
     display: flex;
     align-items: center;
     justify-content: center;
