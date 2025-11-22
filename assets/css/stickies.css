@@ -55,6 +55,16 @@ body {
     z-index: 1;
 }
 
+@media screen and (max-width: 767px) {
+    .frosted-note {
+        width: 87%;
+    }
+
+    .main-stack-wrapper {
+        width: 90%;
+    }
+}
+
 /* --- FIXED: Sticky Note Tab Styling (Frosted Glass Restored) --- */
 .note-tab {
     position: absolute;
@@ -117,6 +127,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+@media screen and (max-width: 767px) {
+    #chart-controls button {
+        width: 100px;
+    }
 }
 
 #chart-controls button.active {
