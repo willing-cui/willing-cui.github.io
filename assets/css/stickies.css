@@ -131,7 +131,7 @@ body {
 
 @media screen and (max-width: 767px) {
     #chart-controls button {
-        width: 100px;
+        width: 90px;
     }
 }
 
