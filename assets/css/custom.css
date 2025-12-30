@@ -694,7 +694,7 @@ ol {
     /* Defined icon height for calculation */
     --expanded-width: 200px;
     /* Width of the content area for list items */
-    --menu-item-count: 1;
+    --menu-item-count: 2;
     /* Number of list items */
 }
 

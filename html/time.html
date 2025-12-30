@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegant Live Clock with Date Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Add flatpickr for calendar date picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" />
+    <link rel="stylesheet" rel="prefetch" href="../assets/css/custom.css" />
+    <link rel="stylesheet" rel="prefetch" href="../assets/css/time.css" />
+
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/dynamic_stickies_bg.js"></script>
+    <script src="../assets/js/util.js"></script>
+    <!-- Add flatpickr for date picker -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+
+    <style>
+        .flatpickr-current-month .numInputWrapper {
+            width: 6ch;
+            display: inline-block;
+            position: absolute;
+            top: 6px;
+            right: 18px;
+        }
+    </style>
+</head>
+
+<body class="is-preload">
+    <!-- BG -->
+    <div id="bg" style="z-index: -100;"></div>
+    <!-- Close Button -->
+    <a href="../index.html">
+        <div class="stickies_icon" style="background-image: url('../images/close-w.png');"></div>
+    </a>
+
+    <!-- Navigation Arrows -->
+    <div class="nav-arrow nav-arrow-left" id="arrowLeft">
+        <i class="fas fa-chevron-left"></i>
+    </div>
+
+    <div class="nav-arrow nav-arrow-right" id="arrowRight">
+        <i class="fas fa-chevron-right"></i>
+    </div>
+
+    <div class="container">
+        <div class="swiper-container">
+            <div class="page-indicator">
+                <div class="indicator-dot active" data-page="0"></div>
+                <div class="indicator-dot" data-page="1"></div>
+            </div>
+
+            <div class="pages-wrapper" id="pagesWrapper">
+                <!-- Page 1: Current Time -->
+                <div class="page" id="page1">
+                    <h2 class="page-title"><i class="fas fa-clock"></i> Current Time</h2>
+                    <p class="page-subtitle">Real-time display of current date and time</p>
+
+                    <div class="clock-container">
+                        <div class="time-section">
+                            <div class="time-display" id="hours">00</div>
+                            <div class="time-label">Hours</div>
+                        </div>
+
+                        <div class="time-section">
+                            <div class="time-display" id="minutes">00</div>
+                            <div class="time-label">Minutes</div>
+                        </div>
+
+                        <div class="time-section">
+                            <div class="time-display" id="seconds">00</div>
+                            <div class="time-label">Seconds</div>
+                        </div>
+
+                        <div class="time-section">
+                            <div class="time-display" id="ampm">AM</div>
+                            <div class="time-label">Meridiem</div>
+                        </div>
+                    </div>
+
+                    <div class="date-container">
+                        <div class="day-of-week">
+                            <i class="far fa-calendar-alt calendar-icon"></i>
+                            <span id="dayname">Monday</span>
+                        </div>
+                        <div class="full-date" id="fulldate">January 1, 2023</div>
+
+                        <div class="additional-info">
+                            <div class="info-box">
+                                <div class="info-title">Day of Year</div>
+                                <div class="info-value" id="dayofyear">001</div>
+                            </div>
+                            <div class="info-box">
+                                <div class="info-title">Week Number</div>
+                                <div class="info-value" id="weeknumber">01</div>
+                            </div>
+                            <div class="info-box">
+                                <div class="info-title">Timezone</div>
+                                <div class="info-value" id="timezone">UTC</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="navigation-hint">
+                        <i class="fas fa-arrow-right"></i> Swipe or click arrows to switch pages
+                    </div>
+                </div>
+
+                <!-- Page 2: Date Calculator -->
+                <div class="page" id="page2">
+                    <h2 class="page-title"><i class="far fa-calendar-check"></i> Date Difference Calculator</h2>
+                    <p class="page-subtitle">Select a past date to calculate how much time has passed</p>
+
+                    <div class="date-calculator">
+                        <div class="date-input-section">
+                            <div class="date-input-group">
+                                <label for="datePicker"><i class="fas fa-calendar-day"></i> Select a Past Date</label>
+                                <input type="text" id="datePicker" class="date-input"
+                                    placeholder="Click to select date...">
+                            </div>
+
+                            <div class="date-input-group">
+                                <label for="timePicker"><i class="fas fa-clock"></i> Select Time (Optional)</label>
+                                <input type="text" id="timePicker" class="date-input"
+                                    placeholder="Click to select time...">
+                            </div>
+                        </div>
+
+                        <div id="selectedDateDisplay" class="selected-date-display">
+                            <div id="selectedDateDetails" class="selected-date-details">
+                                <span>-</span>
+                                <span>•</span>
+                                <span>-</span>
+                                <span>•</span>
+                                <span>-</span>
+                            </div>
+                        </div>
+
+                        <div id="timeDifference" class="time-difference">
+                            <div class="difference-box">
+                                <div class="difference-value" id="yearsDiff">0</div>
+                                <div class="difference-label">Years</div>
+                            </div>
+                            <div class="difference-box">
+                                <div class="difference-value" id="monthsDiff">0</div>
+                                <div class="difference-label">Months</div>
+                            </div>
+                            <div class="difference-box">
+                                <div class="difference-value" id="daysDiff">0</div>
+                                <div class="difference-label">Days</div>
+                            </div>
+                            <div class="difference-box">
+                                <div class="difference-value" id="hoursDiff">0</div>
+                                <div class="difference-label">Hours</div>
+                            </div>
+                            <div class="difference-box">
+                                <div class="difference-value" id="minutesDiff">0</div>
+                                <div class="difference-label">Minutes</div>
+                            </div>
+                            <div class="difference-box">
+                                <div class="difference-value" id="secondsDiff">0</div>
+                                <div class="difference-label">Seconds</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="navigation-hint">
+                        <i class="fas fa-arrow-left"></i> Swipe or click arrows to switch pages
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+		<footer id="footer">
+			<p class="copyright">&copy; 2025 Hongwei CUI (Willing). All Rights Reserved. 版权所有</p>
+			<a class="copyright" href="https://beian.miit.gov.cn/" target="_blank">鲁ICP备2025192750号-1</a>
+			<img id="filing-icon" src="../images/备案图标.png"/><a class="copyright" href="https://beian.mps.gov.cn/#/query/webSearch?code=37078302000937" rel="noreferrer" target="_blank">鲁公网安备37078302000937号</a>
+		</footer>
+    </div>
+
+    <script>
+        (function ($) {
+            var $window = $(window), $body = $('body');
+            // Play initial animations on page load.
+            $window.on('load', function () {
+                window.setTimeout(function () {
+                    $body.removeClass('is-preload');
+                }, 100);
+            });
+        })(jQuery);
+
+        // Swipe functionality
+        let currentPage = 0;
+        const pagesWrapper = document.getElementById('pagesWrapper');
+        const indicatorDots = document.querySelectorAll('.indicator-dot');
+        const arrowLeft = document.getElementById('arrowLeft');
+        const arrowRight = document.getElementById('arrowRight');
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        // Function to update arrows state
+        function updateArrows() {
+            arrowLeft.classList.toggle('disabled', currentPage === 0);
+            arrowRight.classList.toggle('disabled', currentPage === 1);
+        }
+
+        // Function to go to specific page
+        function goToPage(pageIndex) {
+            if (pageIndex < 0 || pageIndex > 1) return;
+
+            currentPage = pageIndex;
+            pagesWrapper.style.transform = `translateX(-${currentPage * 50}%)`;
+
+            // Update indicator dots
+            indicatorDots.forEach((dot, index) => {
+                if (index === currentPage) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+
+            // Update arrows state
+            updateArrows();
+        }
+
+        // Add click events to indicator dots
+        indicatorDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                goToPage(index);
+            });
+        });
+
+        // Add click events to arrows
+        arrowLeft.addEventListener('click', () => {
+            if (currentPage > 0) {
+                goToPage(currentPage - 1);
+            }
+        });
+
+        arrowRight.addEventListener('click', () => {
+            if (currentPage < 1) {
+                goToPage(currentPage + 1);
+            }
+        });
+
+        // Swipe detection
+        pagesWrapper.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        pagesWrapper.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        // Mouse drag support
+        let isDragging = false;
+        let startX = 0;
+        let currentTranslate = 0;
+
+        pagesWrapper.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.pageX;
+            pagesWrapper.style.transition = 'none';
+        });
+
+        pagesWrapper.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const currentX = e.pageX;
+            const diff = currentX - startX;
+
+            // Limit dragging to page boundaries
+            const maxTranslate = 0;
+            const minTranslate = -50;
+            let newTranslate = -currentPage * 50 + (diff / pagesWrapper.offsetWidth) * 100;
+
+            if (newTranslate > maxTranslate) newTranslate = maxTranslate;
+            if (newTranslate < minTranslate) newTranslate = minTranslate;
+
+            pagesWrapper.style.transform = `translateX(${newTranslate}%)`;
+        });
+
+        pagesWrapper.addEventListener('mouseup', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            pagesWrapper.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+
+            const endX = e.pageX;
+            const diff = endX - startX;
+            const threshold = 50; // Minimum swipe distance
+
+            if (Math.abs(diff) > threshold) {
+                if (diff > 0 && currentPage > 0) {
+                    // Swipe right
+                    goToPage(currentPage - 1);
+                } else if (diff < 0 && currentPage < 1) {
+                    // Swipe left
+                    goToPage(currentPage + 1);
+                } else {
+                    // Return to current page
+                    goToPage(currentPage);
+                }
+            } else {
+                // Return to current page
+                goToPage(currentPage);
+            }
+        });
+
+        pagesWrapper.addEventListener('mouseleave', () => {
+            if (isDragging) {
+                isDragging = false;
+                pagesWrapper.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                goToPage(currentPage);
+            }
+        });
+
+        function handleSwipe() {
+            const minSwipeDistance = 50;
+            const swipeDistance = touchEndX - touchStartX;
+
+            if (Math.abs(swipeDistance) < minSwipeDistance) return;
+
+            if (swipeDistance > 0 && currentPage > 0) {
+                // Swipe right
+                goToPage(currentPage - 1);
+            } else if (swipeDistance < 0 && currentPage < 1) {
+                // Swipe left
+                goToPage(currentPage + 1);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && currentPage > 0) {
+                goToPage(currentPage - 1);
+            } else if (e.key === 'ArrowRight' && currentPage < 1) {
+                goToPage(currentPage + 1);
+            }
+        });
+
+        // Initialize arrows state
+        updateArrows();
+
+        // Initialize date picker
+        let selectedDateTime = null;
+        let timeDifferenceInterval = null;
+
+        // Date picker configuration
+        const datePicker = flatpickr("#datePicker", {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+            maxDate: "today",
+            onChange: function (selectedDates, dateStr, instance) {
+                if (selectedDates.length > 0) {
+                    updateSelectedDateTime();
+                }
+            }
+        });
+
+        // Time picker configuration
+        const timePicker = flatpickr("#timePicker", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            onChange: function (selectedDates, dateStr, instance) {
+                if (selectedDates.length > 0) {
+                    updateSelectedDateTime();
+                }
+            }
+        });
+
+        // Function to update selected date and time
+        function updateSelectedDateTime() {
+            const date = datePicker.selectedDates[0];
+            const time = timePicker.selectedDates[0];
+
+            if (date) {
+                selectedDateTime = new Date(date);
+
+                // If time is selected, combine with date
+                if (time) {
+                    selectedDateTime.setHours(time.getHours(), time.getMinutes(), time.getSeconds());
+                } else {
+                    // Default to start of day if no time selected
+                    selectedDateTime.setHours(0, 0, 0, 0);
+                }
+
+                // Show selected date display
+                document.getElementById('selectedDateDisplay').style.display = 'block';
+
+                // Calculate immediately
+                calculateTimeDifference();
+            }
+        }
+
+        // Format date and time for display
+        function formatDateTime(date) {
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        // Calculate time difference
+        function calculateTimeDifference() {
+            if (!selectedDateTime) return;
+
+            const now = new Date();
+            const diffInMs = now - selectedDateTime;
+
+            if (diffInMs < 0) {
+                alert("Please select a date in the past!");
+                return;
+            }
+
+            // Calculate time differences
+            const diffInSeconds = Math.floor(diffInMs / 1000);
+            const diffInMinutes = Math.floor(diffInSeconds / 60);
+            const diffInHours = Math.floor(diffInMinutes / 60);
+            const diffInDays = Math.floor(diffInHours / 24);
+
+            // Calculate years and months
+            let years = now.getFullYear() - selectedDateTime.getFullYear();
+            let months = now.getMonth() - selectedDateTime.getMonth();
+
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            // Adjust months if day of month is earlier
+            if (now.getDate() < selectedDateTime.getDate()) {
+                months--;
+                if (months < 0) {
+                    years--;
+                    months += 12;
+                }
+            }
+
+            // Calculate remaining days
+            const tempDate = new Date(selectedDateTime);
+            tempDate.setFullYear(now.getFullYear(), now.getMonth(), selectedDateTime.getDate());
+
+            let remainingDays = Math.floor((now - tempDate) / (1000 * 60 * 60 * 24));
+            if (remainingDays < 0) {
+                remainingDays += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+            }
+
+            // Update display
+            document.getElementById('yearsDiff').textContent = years;
+            document.getElementById('monthsDiff').textContent = months;
+            document.getElementById('daysDiff').textContent = remainingDays;
+            document.getElementById('hoursDiff').textContent = diffInHours % 24;
+            document.getElementById('minutesDiff').textContent = diffInMinutes % 60;
+            document.getElementById('secondsDiff').textContent = diffInSeconds % 60;
+
+            // Show the time difference section
+            document.getElementById('timeDifference').style.display = 'grid';
+
+            // Update selected date details
+            updateSelectedDateDetails();
+        }
+
+        // Update selected date details
+        function updateSelectedDateDetails() {
+            if (!selectedDateTime) return;
+
+            const now = new Date();
+            const diffInDays = Math.floor((now - selectedDateTime) / (1000 * 60 * 60 * 24));
+            const diffInWeeks = Math.floor(diffInDays / 7);
+            const diffInMonths = Math.floor(diffInDays / 30.44);
+
+            const details = document.getElementById('selectedDateDetails');
+            details.innerHTML = `
+                <span>${diffInDays} days ago</span>
+                <span>•</span>
+                <span>${diffInWeeks} weeks ago</span>
+                <span>•</span>
+                <span>${diffInMonths} months ago</span>
+            `;
+        }
+
+        // Update the clock and date
+        function updateClock() {
+            const now = new Date();
+
+            // Get time components
+            let hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+
+            // Determine AM/PM
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+
+            // Convert to 12-hour format
+            hours = hours % 12 || 12;
+            const formattedHours = hours.toString().padStart(2, '0');
+
+            // Update time displays
+            document.getElementById('hours').textContent = formattedHours;
+            document.getElementById('minutes').textContent = minutes;
+            document.getElementById('seconds').textContent = seconds;
+            document.getElementById('ampm').textContent = ampm;
+
+            // Add pulse animation to seconds
+            const secondsElement = document.getElementById('seconds');
+            secondsElement.classList.remove('pulse');
+            void secondsElement.offsetWidth; // Trigger reflow
+            secondsElement.classList.add('pulse');
+
+            // Date information
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            const dayName = dayNames[now.getDay()];
+            const month = monthNames[now.getMonth()];
+            const date = now.getDate();
+            const year = now.getFullYear();
+
+            // Update date displays
+            document.getElementById('dayname').textContent = dayName;
+            document.getElementById('fulldate').textContent = `${month} ${date}, ${year}`;
+
+            // Calculate day of year
+            const start = new Date(now.getFullYear(), 0, 0);
+            const diff = now - start;
+            const oneDay = 1000 * 60 * 60 * 24;
+            const dayOfYear = Math.floor(diff / oneDay);
+            document.getElementById('dayofyear').textContent = dayOfYear.toString().padStart(3, '0');
+
+            // Calculate week number
+            const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
+            const pastDaysOfYear = (now - firstDayOfYear) / 86400000;
+            const weekNumber = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+            document.getElementById('weeknumber').textContent = weekNumber.toString().padStart(2, '0');
+
+            // Get timezone
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            document.getElementById('timezone').textContent = timezone.split('/')[0];
+
+            // Update time difference if a date is selected
+            if (selectedDateTime) {
+                calculateTimeDifference();
+            }
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function () {
+            updateClock();
+
+            // Update the clock every second
+            setInterval(updateClock, 1000);
+
+            // Add a visual effect to the time separators
+            setInterval(() => {
+                const hoursElement = document.getElementById('hours');
+                const minutesElement = document.getElementById('minutes');
+
+                // Add and remove a class to create a subtle highlight effect
+                hoursElement.style.textShadow = '0 0 20px rgba(255, 126, 95, 0.7)';
+                minutesElement.style.textShadow = '0 0 20px rgba(254, 180, 123, 0.7)';
+
+                setTimeout(() => {
+                    hoursElement.style.textShadow = '0 0 20px rgba(255, 255, 255, 0.3)';
+                    minutesElement.style.textShadow = '0 0 20px rgba(255, 255, 255, 0.3)';
+                }, 300);
+            }, 5000);
+        });
+    </script>
+</body>
+
+</html>

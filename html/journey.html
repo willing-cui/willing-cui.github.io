@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Endless Journey</title>
+    <style>
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 100%); /* 天空渐变背景色 */
+        }
+        #ui {
+            position: absolute; 
+            top: 20px; 
+            left: 20px;
+            color: white; 
+            font-family: sans-serif;
+            text-shadow: 1px 1px 2px black; 
+            pointer-events: none;
+        }
+        h1 { 
+            margin: 0; 
+            font-weight: 300; 
+            letter-spacing: 2px; 
+        }
+        p { 
+            margin-top: 5px; 
+            font-size: 0.9em; 
+            opacity: 0.9; 
+        }
+    </style>
+</head>
+<body>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // --- 1. SCENE SETUP ---
+        const scene = new THREE.Scene();
+        
+        // 设置更真实的天空背景色
+        const skyColorTop = 0x87CEEB;    // 天蓝色顶部
+        const skyColorBottom = 0xE0F6FF;  // 淡蓝色底部
+        
+        // 创建天空背景渐变
+        const skyGradient = (() => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1;
+            canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+            
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#87CEEB');    // 顶部
+            gradient.addColorStop(1, '#E0F6FF');    // 底部
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1, canvas.height);
+            
+            return new THREE.CanvasTexture(canvas);
+        })();
+        
+        scene.background = skyGradient;
+        
+        // 设置雾效，与天空颜色协调
+        const fogColor = 0xa0d0ff; // 更蓝的雾色
+        scene.fog = new THREE.Fog(fogColor, 10, 200);
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 300);
+        camera.position.set(0, 4, 12);
+        camera.lookAt(0, 0, -20);
+
+        const renderer = new THREE.WebGLRenderer({ 
+            antialias: true,
+            alpha: true // 允许透明背景
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.setClearColor(0x000000, 0); // 完全透明清除色
+        document.body.appendChild(renderer.domElement);
+
+        // --- 2. LIGHTING ---
+        // 改进半球光以匹配天空
+        const hemiLight = new THREE.HemisphereLight(0x87CEEB, 0x444444, 0.8); // 天空色作为环境光
+        scene.add(hemiLight);
+
+        // 太阳光调整为更温暖的颜色
+        const dirLight = new THREE.DirectionalLight(0xffdfba, 1.5);
+        dirLight.position.set(50, 100, 20);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        dirLight.shadow.camera.near = 0.5;
+        dirLight.shadow.camera.far = 500;
+        dirLight.shadow.camera.left = -50;
+        dirLight.shadow.camera.right = 50;
+        dirLight.shadow.camera.top = 50;
+        dirLight.shadow.camera.bottom = -50;
+        scene.add(dirLight);
+
+        // 添加环境光增强天空效果
+        const ambientLight = new THREE.AmbientLight(0x87CEEB, 0.3);
+        scene.add(ambientLight);
+
+        // --- 3. TEXTURE LOADER ---
+        const textureLoader = new THREE.TextureLoader();
+        const textureUrlBase = "../images/textures/";
+
+        // 加载多种地形纹理
+        const grassTexture = textureLoader.load(textureUrlBase + 'grasslight-big.jpg');
+        grassTexture.wrapS = THREE.RepeatWrapping;
+        grassTexture.wrapT = THREE.RepeatWrapping;
+        grassTexture.repeat.set(20, 20);
+
+        const sandTexture = textureLoader.load(textureUrlBase + 'sand.png');
+        sandTexture.wrapS = THREE.RepeatWrapping;
+        sandTexture.wrapT = THREE.RepeatWrapping;
+        
+        const rockTexture = textureLoader.load(textureUrlBase + 'stone.jpg');
+        rockTexture.wrapS = THREE.RepeatWrapping;
+        rockTexture.wrapT = THREE.RepeatWrapping;
+
+        // 建筑和树木纹理
+        const brickTexture = textureLoader.load(textureUrlBase + 'painted_concrete.jpg');
+        brickTexture.wrapS = THREE.RepeatWrapping;
+        brickTexture.wrapT = THREE.RepeatWrapping;
+        
+        const woodTexture = textureLoader.load(textureUrlBase + 'wood.jpg');
+
+        // --- 4. 创建道路纹理 ---
+        function createRoadTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const context = canvas.getContext('2d');
+
+            // 沥青基础
+            context.fillStyle = '#333333';
+            context.fillRect(0, 0, 512, 512);
+
+            // 添加噪点
+            for (let i = 0; i < 50000; i++) {
+                context.fillStyle = Math.random() > 0.5 ? '#444444' : '#222222';
+                context.fillRect(Math.random() * 512, Math.random() * 512, 2, 2);
+            }
+
+            // 白色条纹
+            context.fillStyle = '#FFFFFF';
+            context.fillRect(245, 0, 22, 512); // 中心线
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(1, 4);
+            return texture;
+        }
+
+        const roadTexture = createRoadTexture();
+
+        // --- 5. 地形生成 ---
+        
+        // 创建起伏的地形
+        function createTerrain() {
+            const terrainWidth = 200;
+            const terrainDepth = 300;
+            const terrainSegments = 50;
+            
+            const terrainGeo = new THREE.PlaneGeometry(terrainWidth, terrainDepth, terrainSegments, terrainSegments);
+            
+            // 添加地形高度变化
+            const vertices = terrainGeo.attributes.position.array;
+            for (let i = 0; i < vertices.length; i += 3) {
+                const x = vertices[i];
+                const z = vertices[i + 2];
+                
+                // 使用噪声函数创建自然地形
+                const height = Math.cos((x - terrainWidth/2) * 0.03) * Math.sin(z * 0.03) * 2 + 
+                              Math.cos((x - terrainWidth/2) * 0.05) * Math.sin(z * 0.05) * 1;
+                
+                vertices[i + 2] = height;
+            }
+            
+            terrainGeo.computeVertexNormals();
+            
+            // 根据高度混合纹理
+            const terrainMat = new THREE.MeshStandardMaterial({ 
+                map: grassTexture,
+                roughness: 1,
+                metalness: 0
+            });
+            
+            const terrain = new THREE.Mesh(terrainGeo, terrainMat);
+            terrain.rotation.x = -Math.PI / 2;
+            terrain.position.y = 0;
+            terrain.receiveShadow = true;
+            
+            return terrain;
+        }
+
+        const terrain = createTerrain();
+        scene.add(terrain);
+
+        // 道路
+        const roadGeo = new THREE.PlaneGeometry(12, 300);
+        const roadMat = new THREE.MeshStandardMaterial({ 
+            map: roadTexture, 
+            roughness: 0.8 
+        });
+        const road = new THREE.Mesh(roadGeo, roadMat);
+        road.rotation.x = -Math.PI / 2;
+        road.position.y = 0.05;
+        road.receiveShadow = true;
+        scene.add(road);
+
+        // --- 6. 远景山脉 ---
+        function createDistantMountains() {
+            const mountainGroup = new THREE.Group();
+            
+            // 创建几层山脉增加深度感
+            for (let i = 0; i < 3; i++) {
+                const mountainGeo = new THREE.PlaneGeometry(400, 100, 20, 20);
+                const vertices = mountainGeo.attributes.position.array;
+                
+                // 为山脉添加高度变化
+                for (let j = 0; j < vertices.length; j += 3) {
+                    const x = vertices[j];
+                    const z = vertices[j + 2];
+                    
+                    // 使用更复杂的噪声函数
+                    const height = Math.sin(x * 0.01 + i * 10) * Math.cos(z * 0.01) * (10 - i * 3) +
+                                  Math.sin(x * 0.03) * Math.cos(z * 0.03) * (5 - i * 2);
+                    
+                    vertices[j + 2] = height;
+                }
+                
+                mountainGeo.computeVertexNormals();
+                
+                const mountainMat = new THREE.MeshStandardMaterial({ 
+                    color: new THREE.Color().setHSL(0.6, 0.3, 0.3 - i * 0.1),
+                    roughness: 0.9,
+                    metalness: 0.1
+                });
+                
+                const mountain = new THREE.Mesh(mountainGeo, mountainMat);
+                mountain.rotation.x = -Math.PI / 2;
+                mountain.position.set(0, -5 - i * 5, -150 - i * 50);
+                mountainGroup.add(mountain);
+            }
+            
+            return mountainGroup;
+        }
+
+        const mountains = createDistantMountains();
+        scene.add(mountains);
+
+        // --- 7. 改进的云朵效果 ---
+        function createSky() {
+            const skyGroup = new THREE.Group();
+            
+            // 创建多层云朵增加真实感
+            for (let i = 0; i < 15; i++) {
+                const cloudSize = 5 + Math.random() * 12;
+                const cloudGeo = new THREE.SphereGeometry(cloudSize, 8, 8);
+                
+                const cloudMat = new THREE.MeshBasicMaterial({ 
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 0.8 + Math.random() * 0.2,
+                    side: THREE.DoubleSide
+                });
+                
+                const cloud = new THREE.Mesh(cloudGeo, cloudMat);
+                
+                // 设置云朵位置，近的云低，远的云高
+                const height = 15 + Math.random() * 40;
+                const distance = 50 + Math.random() * 150;
+                
+                cloud.position.set(
+                    Math.random() * 300 - 150,
+                    height,
+                    -distance
+                );
+                
+                // 添加云朵缩放增加变化
+                const scale = 0.5 + Math.random() * 1.5;
+                cloud.scale.set(scale, scale * 0.5, scale);
+                
+                // 随机旋转云朵
+                cloud.rotation.y = Math.random() * Math.PI * 2;
+                
+                skyGroup.add(cloud);
+            }
+            
+            return skyGroup;
+        }
+
+        const sky = createSky();
+        scene.add(sky);
+
+        // --- 8. 多样化的物体生成 ---
+        const objects = [];
+        const speed = 0.3;
+
+        // 建筑类型
+        const buildingTypes = [
+            { width: 4, depth: 4, minHeight: 8, maxHeight: 20 }, // 普通建筑
+            { width: 6, depth: 6, minHeight: 15, maxHeight: 30 }, // 高楼
+            { width: 3, depth: 8, minHeight: 5, maxHeight: 12 }  // 长形建筑
+        ];
+
+        // 树木类型
+        const treeTypes = [
+            { trunkRadius: 0.5, trunkHeight: 3, leavesRadius: 2, leavesColor: 0x2d5a27 }, // 普通树
+            { trunkRadius: 0.3, trunkHeight: 2, leavesRadius: 1.5, leavesColor: 0x3d6a37 }, // 小树
+            { trunkRadius: 0.7, trunkHeight: 4, leavesRadius: 2.5, leavesColor: 0x1d4a17 }  // 大树
+        ];
+
+        function createBuilding(zPos) {
+            const type = buildingTypes[Math.floor(Math.random() * buildingTypes.length)];
+            const height = type.minHeight + Math.random() * (type.maxHeight - type.minHeight);
+            const geo = new THREE.BoxGeometry(type.width, height, type.depth);
+            
+            const mat = new THREE.MeshStandardMaterial({ 
+                map: brickTexture, 
+                roughness: 0.9 
+            });
+            
+            const mesh = new THREE.Mesh(geo, mat);
+            
+            const side = Math.random() > 0.5 ? 1 : -1;
+            const xPos = side * (15 + Math.random() * 15);
+            
+            mesh.position.set(xPos, height / 2, zPos);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            
+            scene.add(mesh);
+            objects.push(mesh);
+            
+            return mesh;
+        }
+
+        function createTree(zPos) {
+            const type = treeTypes[Math.floor(Math.random() * treeTypes.length)];
+            const group = new THREE.Group();
+
+            // 树干
+            const trunkGeo = new THREE.CylinderGeometry(type.trunkRadius * 0.9, type.trunkRadius, type.trunkHeight, 8);
+            const trunkMat = new THREE.MeshStandardMaterial({ map: woodTexture });
+            const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+            trunk.position.y = type.trunkHeight / 2;
+            trunk.castShadow = true;
+            group.add(trunk);
+
+            // 树叶
+            const leavesGeo = new THREE.DodecahedronGeometry(type.leavesRadius);
+            const leavesMat = new THREE.MeshStandardMaterial({ 
+                color: type.leavesColor, 
+                roughness: 0.8 
+            });
+            const leaves = new THREE.Mesh(leavesGeo, leavesMat);
+            leaves.position.y = type.trunkHeight + type.leavesRadius / 2;
+            leaves.castShadow = true;
+            group.add(leaves);
+
+            const side = Math.random() > 0.5 ? 1 : -1;
+            const xPos = side * (8 + Math.random() * 20);
+
+            group.position.set(xPos, 0, zPos);
+            
+            const s = 0.8 + Math.random() * 0.5;
+            group.scale.set(s, s, s);
+
+            scene.add(group);
+            objects.push(group);
+            
+            return group;
+        }
+
+        // 添加其他物体类型
+        function createRock(zPos) {
+            const geo = new THREE.DodecahedronGeometry(1 + Math.random() * 2);
+            const mat = new THREE.MeshStandardMaterial({ 
+                map: rockTexture,
+                roughness: 0.9
+            });
+            
+            const rock = new THREE.Mesh(geo, mat);
+            
+            const side = Math.random() > 0.5 ? 1 : -1;
+            const xPos = side * (10 + Math.random() * 10);
+            
+            rock.position.set(xPos, 0, zPos);
+            rock.castShadow = true;
+            
+            scene.add(rock);
+            objects.push(rock);
+            
+            return rock;
+        }
+
+        // 初始生成物体
+        for(let i = 0; i < 50; i++) {
+            const z = -20 - (i * 5);
+            const rand = Math.random();
+            
+            if(rand < 0.4) createTree(z);
+            else if(rand < 0.7) createBuilding(z);
+            else createRock(z);
+        }
+
+        // --- 9. 动画循环 ---
+        const animate = function () {
+            requestAnimationFrame(animate);
+
+            // 移动纹理
+            roadTexture.offset.y += speed * 0.01;
+            grassTexture.offset.y += speed * 0.05;
+
+            // 移动物体
+            objects.forEach(obj => {
+                obj.position.z += speed * 0.75;
+
+                // 回收物体
+                if(obj.position.z > camera.position.z + 10) {
+                    obj.position.z = -150;
+                    
+                    const side = Math.random() > 0.5 ? 1 : -1;
+                    obj.position.x = side * (8 + Math.random() * 20);
+                    
+                    // 随机改变物体类型
+                    if(Math.random() < 0.3) {
+                        scene.remove(obj);
+                        const index = objects.indexOf(obj);
+                        if(index > -1) objects.splice(index, 1);
+                        
+                        const z = obj.position.z;
+                        const rand = Math.random();
+                        
+                        if(rand < 0.4) createTree(z);
+                        else if(rand < 0.7) createBuilding(z);
+                        else createRock(z);
+                    }
+                }
+            });
+
+            // 移动山脉和云朵
+            mountains.children.forEach((mountain, index) => {
+                mountain.position.z += speed * (0.1 + index * 0.05); // 远景移动较慢
+                if(mountain.position.z > camera.position.z + 50) {
+                    mountain.position.z = -200 - index * 50;
+                }
+            });
+
+            sky.children.forEach(cloud => {
+                cloud.position.z += speed * 0.02; // 云移动更慢
+                if(cloud.position.z > camera.position.z + 50) {
+                    cloud.position.z = -150 - Math.random() * 50;
+                    cloud.position.x = Math.random() * 300 - 150;
+                    cloud.position.y = 15 + Math.random() * 40;
+                    
+                    // 重置云朵大小
+                    const scale = 0.5 + Math.random() * 1.5;
+                    cloud.scale.set(scale, scale * 0.5, scale);
+                }
+            });
+
+            // 相机动画
+            const time = Date.now() * 0.0005;
+            camera.position.x = Math.sin(time) * 0.5;
+            camera.position.y = 4 + Math.cos(time * 0.8) * 0.2;
+            camera.lookAt(0, 0, -50);
+
+            // 更新天空背景滚动
+            if (skyGradient) {
+                skyGradient.offset.y += speed * 0.001;
+            }
+
+            renderer.render(scene, camera);
+        };
+
+        // 窗口大小调整
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            
+            // 重新创建天空渐变以适应新尺寸
+            const canvas = document.createElement('canvas');
+            canvas.width = 1;
+            canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+            
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#87CEEB');
+            gradient.addColorStop(1, '#E0F6FF');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1, canvas.height);
+            
+            scene.background = new THREE.CanvasTexture(canvas);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
