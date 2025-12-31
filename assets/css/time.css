@@ -499,15 +499,16 @@ body {
 }
 
 .hide-scrollbar {
-  /* For Firefox */
-  scrollbar-width: none;
-  /* For Internet Explorer and Edge (legacy) */
-  -ms-overflow-style: none;
+    /* For Firefox */
+    scrollbar-width: none;
+    /* For Internet Explorer and Edge (legacy) */
+    -ms-overflow-style: none;
 }
 
 /* For Chrome, Safari, and Opera */
 .hide-scrollbar::-webkit-scrollbar {
-  display: none; /* Hides the scrollbar but keeps scrolling functionality */
+    display: none;
+    /* Hides the scrollbar but keeps scrolling functionality */
 }
 
 @media (max-width: 480px) {
@@ -520,7 +521,11 @@ body {
     }
 
     .time-display {
-        font-size: 2.2rem;
+        font-size: 1.8rem;
+    }
+
+    .time-label {
+        font-size: 1.5rem;
     }
 
     .full-date {
@@ -528,7 +533,7 @@ body {
     }
 
     .time-section {
-        min-width: 130px;
+        min-width: 100px;
         padding: 15px 10px;
     }
 
@@ -544,7 +549,7 @@ body {
 
     .date-container {
         max-height: 200px;
-        padding: 10px;
+        padding: 20px;
         overflow-y: auto;
     }
 
