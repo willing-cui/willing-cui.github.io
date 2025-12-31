@@ -493,6 +493,17 @@ body {
         padding: 15px 10px;
     }
 
+    .time-section {
+        min-width: 100px;
+        padding: 20px 15px;
+    }
+
+    .difference-box {
+        min-width: 100px;
+        padding: 20px 15px;
+    }
+
+
     .date-container {
         padding: 20px;
     }
