@@ -13,7 +13,7 @@ body {
 
 .container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 80%;
     text-align: center;
     padding: 20px;
     position: relative;
@@ -164,7 +164,7 @@ body {
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(10px);
     border-radius: 20px;
-    padding: 20px;
+    padding: 15px;
     min-width: 200px;
     text-align: center;
     transition: all 0.3s ease;
@@ -180,7 +180,8 @@ body {
 .time-display {
     font-size: 3.5rem;
     font-weight: 700;
-    margin-bottom: 5px;
+    margin-top: -5px;
+    margin-bottom: -10px;
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
@@ -233,7 +234,7 @@ body {
     background: rgba(255, 255, 255, 0.08);
     border-radius: 15px;
     padding: 15px 20px;
-    min-width: 150px;
+    min-width: 180px;
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -246,6 +247,8 @@ body {
 }
 
 .info-value {
+    margin-top: -5px;
+    margin-bottom: -5px;
     font-size: 1.5rem;
     font-weight: 600;
 }
@@ -327,7 +330,7 @@ body {
 .date-input-group label {
     display: block;
     margin-bottom: 10px;
-    font-size: 1.0em;
+    font-size: 0.9em;
     color: #fff;
     font-weight: 600;
 }
@@ -360,7 +363,7 @@ body {
 .selected-date-display {
     text-align: center;
     margin-top: 20px;
-    padding: 20px;
+    padding: 10px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
     border-left: 4px solid #ff7e5f;
@@ -427,12 +430,12 @@ body {
     }
 
     .time-section {
-        min-width: 160px;
+        min-width: 120px;
         padding: 20px 15px;
     }
 
     .difference-box {
-        min-width: 160px;
+        min-width: 120px;
         padding: 20px 15px;
     }
 
@@ -468,6 +471,24 @@ body {
 
     .nav-arrow i {
         font-size: 20px;
+    }
+
+    .selected-date-display {
+        display: none;
+    }
+
+    .info-title {
+        font-size: 0.8rem;
+    }
+
+    .info-value {
+        font-size: 1.0rem;
+        font-weight: 600;
+    }
+
+    .info-box {
+        min-width: 120px;
+        padding: 10px;
     }
 }
 
