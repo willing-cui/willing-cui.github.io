@@ -118,16 +118,6 @@ body {
     margin-bottom: 30px;
 }
 
-.header h1 {
-    font-size: 2.8rem;
-    margin-bottom: 10px;
-    background: linear-gradient(to right, #ff7e5f, #feb47b);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
 .header p {
     font-size: 1.2rem;
     color: #a0c8ff;
@@ -413,10 +403,6 @@ body {
         padding: 10px;
     }
 
-    .header h1 {
-        font-size: 2.2rem;
-    }
-
     .page-title {
         font-size: 1.8rem;
     }
@@ -512,12 +498,9 @@ body {
 }
 
 @media (max-width: 480px) {
-    .header h1 {
-        font-size: 1.8rem;
-    }
 
     .page-title {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
     }
 
     .time-display {
@@ -529,7 +512,7 @@ body {
     }
 
     .full-date {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
     }
 
     .time-section {
@@ -539,17 +522,18 @@ body {
 
     .difference-box {
         min-width: 100px;
-        padding: 20px 15px;
+        padding: 15px 10px;
     }
 
     .date-calculator {
         max-height: 400px;
+        padding: 10px;
         overflow-y: auto;
     }
 
     .date-container {
         max-height: 200px;
-        padding: 20px;
+        padding: 10px;
         overflow-y: auto;
     }
 
