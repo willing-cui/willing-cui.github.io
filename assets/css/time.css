@@ -474,6 +474,7 @@ body {
     }
 
     .date-calculator {
+        margin: 0px auto 40px;
         max-height: 600px;
         overflow-y: auto;
     }
