@@ -818,6 +818,7 @@ input[type="radio"]+label:before {
 	display: block;
 	margin: 2.5rem 0;
 	width: 100%;
+	text-align: center;
 }
 
 .image.main img {

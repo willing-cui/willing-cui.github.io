@@ -11,7 +11,7 @@ In any case, this article serves as a review of some fundamental RL concepts for
 The Multi-armed Bandit problem is a basic and classical problem in RL. It is described as a **stateless setting** of RL. The stateless means, the problem does not involve state transitioning from one to another, unlike more complex RL problems.
 
 <span class="image main">
-<img class="main img-in-blog" style="max-width: 100%" src="./blogs/RL_Multi-Armed_Bandit/Las_Vegas_slot_machines.jpg" alt="Rewards" />
+<img class="main img-in-blog" style="max-width: 50%" src="./blogs/RL_Multi-Armed_Bandit/Las_Vegas_slot_machines.jpg" alt="Rewards" />
 <i>By <a href="https://en.wikipedia.org/wiki/User:Yamaguchi%E5%85%88%E7%94%9F" class="extiw" title="en:User:Yamaguchi先生">Yamaguchi先生</a>, <a href="http://creativecommons.org/licenses/by-sa/3.0/" title="Creative Commons Attribution-Share Alike 3.0">CC BY-SA 3.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=57295504">Link</a></i>
 </span>
 
