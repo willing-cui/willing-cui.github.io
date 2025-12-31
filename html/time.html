@@ -518,9 +518,6 @@
                 timeDifferenceElement.classList.remove('future-time');
             }
 
-            // Show the time difference section
-            timeDifferenceElement.style.display = 'grid';
-
             // Update selected date details
             updateSelectedDateDetails(isFuture, Math.floor(absDiffInMs / (1000 * 60 * 60 * 24)));
         }

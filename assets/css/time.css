@@ -250,21 +250,6 @@ body {
     font-weight: 600;
 }
 
-.footer {
-    margin-top: 30px;
-    color: #a0c8ff;
-    font-size: 0.9rem;
-}
-
-.footer a {
-    color: #ff7e5f;
-    text-decoration: none;
-}
-
-.footer a:hover {
-    text-decoration: underline;
-}
-
 .pulse {
     animation: pulse 1s infinite alternate;
 }
