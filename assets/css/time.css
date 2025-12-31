@@ -532,19 +532,20 @@ body {
         padding: 15px 10px;
     }
 
-    .time-section {
-        min-width: 100px;
-        padding: 20px 15px;
-    }
-
     .difference-box {
         min-width: 100px;
         padding: 20px 15px;
     }
 
+    .date-calculator {
+        max-height: 400px;
+        overflow-y: auto;
+    }
 
     .date-container {
-        padding: 20px;
+        max-height: 200px;
+        padding: 10px;
+        overflow-y: auto;
     }
 
     .nav-arrow {
