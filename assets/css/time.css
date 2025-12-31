@@ -473,10 +473,6 @@ body {
         font-size: 20px;
     }
 
-    .selected-date-display {
-        display: none;
-    }
-
     .info-title {
         font-size: 0.8rem;
     }
@@ -490,6 +486,28 @@ body {
         min-width: 120px;
         padding: 10px;
     }
+
+    .date-calculator {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .date-container {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+}
+
+.hide-scrollbar {
+  /* For Firefox */
+  scrollbar-width: none;
+  /* For Internet Explorer and Edge (legacy) */
+  -ms-overflow-style: none;
+}
+
+/* For Chrome, Safari, and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Hides the scrollbar but keeps scrolling functionality */
 }
 
 @media (max-width: 480px) {

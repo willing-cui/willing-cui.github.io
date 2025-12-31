@@ -82,7 +82,7 @@
                         </div>
                     </div>
 
-                    <div class="date-container">
+                    <div class="date-container hide-scrollbar">
                         <div class="day-of-week">
                             <i class="far fa-calendar-alt calendar-icon"></i>
                             <span id="dayname">Monday</span>
@@ -113,9 +113,10 @@
                 <!-- Page 2: Date Calculator -->
                 <div class="page" id="page2">
                     <h2 class="page-title"><i class="far fa-calendar-check"></i> Date Difference Calculator</h2>
-                    <p class="page-subtitle">Select a date to calculate time difference. Past dates show elapsed time, future dates show countdown.</p>
+                    <p class="page-subtitle">Select a date to calculate time difference. Past dates show elapsed time,
+                        future dates show countdown.</p>
 
-                    <div class="date-calculator">
+                    <div class="date-calculator hide-scrollbar">
                         <div class="date-input-section">
                             <div class="date-input-group">
                                 <label for="datePicker"><i class="fas fa-calendar-day"></i> Select a Past Date</label>
@@ -176,11 +177,13 @@
         </div>
 
         <!-- Footer -->
-		<footer id="footer">
-			<p class="copyright">&copy; 2025 Hongwei CUI (Willing). All Rights Reserved. 版权所有</p>
-			<a class="copyright" href="https://beian.miit.gov.cn/" target="_blank">鲁ICP备2025192750号-1</a>
-			<img id="filing-icon" src="../images/备案图标.png"/><a class="copyright" href="https://beian.mps.gov.cn/#/query/webSearch?code=37078302000937" rel="noreferrer" target="_blank">鲁公网安备37078302000937号</a>
-		</footer>
+        <footer id="footer">
+            <p class="copyright">&copy; 2025 Hongwei CUI (Willing). All Rights Reserved. 版权所有</p>
+            <a class="copyright" href="https://beian.miit.gov.cn/" target="_blank">鲁ICP备2025192750号-1</a>
+            <img id="filing-icon" src="../images/备案图标.png" /><a class="copyright"
+                href="https://beian.mps.gov.cn/#/query/webSearch?code=37078302000937" rel="noreferrer"
+                target="_blank">鲁公网安备37078302000937号</a>
+        </footer>
     </div>
 
     <script>
@@ -423,7 +426,7 @@
 
             const isFuture = diffInMs > 0;
             const absDiffInMs = Math.abs(diffInMs);
-            
+
             // Calculate time differences
             const diffInSeconds = Math.floor(absDiffInMs / 1000);
             const diffInMinutes = Math.floor(diffInSeconds / 60);
@@ -432,7 +435,7 @@
 
             // Calculate years and months
             let years, months;
-            
+
             if (isFuture) {
                 // 未来时间：从当前时间到目标时间
                 years = selectedDateTime.getFullYear() - now.getFullYear();
@@ -442,7 +445,7 @@
                 years = now.getFullYear() - selectedDateTime.getFullYear();
                 months = now.getMonth() - selectedDateTime.getMonth();
             }
-            
+
             if (months < 0) {
                 years--;
                 months += 12;
@@ -450,12 +453,12 @@
 
             // Calculate remaining days
             let remainingDays = diffInDays;
-            
+
             if (isFuture) {
                 // 未来时间：从当前时间到目标时间
                 const tempDate = new Date(now);
                 tempDate.setFullYear(selectedDateTime.getFullYear(), selectedDateTime.getMonth(), now.getDate());
-                
+
                 if (tempDate > selectedDateTime) {
                     months--;
                     if (months < 0) {
@@ -463,7 +466,7 @@
                         months += 12;
                     }
                 }
-                
+
                 // 计算剩余天数
                 remainingDays = Math.floor((selectedDateTime - tempDate) / (1000 * 60 * 60 * 24));
                 if (remainingDays < 0) {
@@ -474,7 +477,7 @@
                 // 过去时间：从目标时间到当前时间
                 const tempDate = new Date(selectedDateTime);
                 tempDate.setFullYear(now.getFullYear(), now.getMonth(), selectedDateTime.getDate());
-                
+
                 if (tempDate > now) {
                     months--;
                     if (months < 0) {
@@ -482,13 +485,13 @@
                         months += 12;
                     }
                 }
-                
+
                 remainingDays = Math.floor((now - tempDate) / (1000 * 60 * 60 * 24));
                 if (remainingDays < 0) {
                     remainingDays += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
                 }
             }
-            
+
             // 确保值不为负数
             years = Math.max(years, 0);
             months = Math.max(months, 0);
@@ -507,7 +510,7 @@
             secondsDiffElement.classList.remove('pulse');
             void secondsDiffElement.offsetWidth; // Trigger reflow
             secondsDiffElement.classList.add('pulse');
-            
+
             // 修改：添加时间方向指示
             const timeDifferenceElement = document.getElementById('timeDifference');
             if (isFuture) {
@@ -530,7 +533,7 @@
             const diffInMonths = Math.floor(diffInDays / 30.44);
 
             const details = document.getElementById('selectedDateDetails');
-            
+
             if (isFuture) {
                 details.innerHTML = `
                     <span>In ${diffInDays} days</span>
