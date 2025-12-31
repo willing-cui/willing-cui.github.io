@@ -113,7 +113,7 @@
                 <!-- Page 2: Date Calculator -->
                 <div class="page" id="page2">
                     <h2 class="page-title"><i class="far fa-calendar-check"></i> Date Difference Calculator</h2>
-                    <p class="page-subtitle">Select a past date to calculate how much time has passed</p>
+                    <p class="page-subtitle">Select a date to calculate time difference. Past dates show elapsed time, future dates show countdown.</p>
 
                     <div class="date-calculator">
                         <div class="date-input-section">
@@ -142,28 +142,28 @@
 
                         <div id="timeDifference" class="time-difference">
                             <div class="difference-box">
-                                <div class="difference-value" id="yearsDiff">0</div>
-                                <div class="difference-label">Years</div>
+                                <div class="time-display" id="yearsDiff">0</div>
+                                <div class="time-label">Years</div>
                             </div>
                             <div class="difference-box">
-                                <div class="difference-value" id="monthsDiff">0</div>
-                                <div class="difference-label">Months</div>
+                                <div class="time-display" id="monthsDiff">0</div>
+                                <div class="time-label">Months</div>
                             </div>
                             <div class="difference-box">
-                                <div class="difference-value" id="daysDiff">0</div>
-                                <div class="difference-label">Days</div>
+                                <div class="time-display" id="daysDiff">0</div>
+                                <div class="time-label">Days</div>
                             </div>
                             <div class="difference-box">
-                                <div class="difference-value" id="hoursDiff">0</div>
-                                <div class="difference-label">Hours</div>
+                                <div class="time-display" id="hoursDiff">0</div>
+                                <div class="time-label">Hours</div>
                             </div>
                             <div class="difference-box">
-                                <div class="difference-value" id="minutesDiff">0</div>
-                                <div class="difference-label">Minutes</div>
+                                <div class="time-display" id="minutesDiff">0</div>
+                                <div class="time-label">Minutes</div>
                             </div>
                             <div class="difference-box">
-                                <div class="difference-value" id="secondsDiff">0</div>
-                                <div class="difference-label">Seconds</div>
+                                <div class="time-display" id="secondsDiff">0</div>
+                                <div class="time-label">Seconds</div>
                             </div>
                         </div>
                     </div>
@@ -356,7 +356,6 @@
         const datePicker = flatpickr("#datePicker", {
             enableTime: false,
             dateFormat: "Y-m-d",
-            maxDate: "today",
             onChange: function (selectedDates, dateStr, instance) {
                 if (selectedDates.length > 0) {
                     updateSelectedDateTime();
@@ -420,45 +419,80 @@
             if (!selectedDateTime) return;
 
             const now = new Date();
-            const diffInMs = now - selectedDateTime;
+            const diffInMs = selectedDateTime - now;
 
-            if (diffInMs < 0) {
-                alert("Please select a date in the past!");
-                return;
-            }
-
+            const isFuture = diffInMs > 0;
+            const absDiffInMs = Math.abs(diffInMs);
+            
             // Calculate time differences
-            const diffInSeconds = Math.floor(diffInMs / 1000);
+            const diffInSeconds = Math.floor(absDiffInMs / 1000);
             const diffInMinutes = Math.floor(diffInSeconds / 60);
             const diffInHours = Math.floor(diffInMinutes / 60);
             const diffInDays = Math.floor(diffInHours / 24);
 
             // Calculate years and months
-            let years = now.getFullYear() - selectedDateTime.getFullYear();
-            let months = now.getMonth() - selectedDateTime.getMonth();
-
+            let years, months;
+            
+            if (isFuture) {
+                // 未来时间：从当前时间到目标时间
+                years = selectedDateTime.getFullYear() - now.getFullYear();
+                months = selectedDateTime.getMonth() - now.getMonth();
+            } else {
+                // 过去时间：从目标时间到当前时间
+                years = now.getFullYear() - selectedDateTime.getFullYear();
+                months = now.getMonth() - selectedDateTime.getMonth();
+            }
+            
             if (months < 0) {
                 years--;
                 months += 12;
             }
 
-            // Adjust months if day of month is earlier
-            if (now.getDate() < selectedDateTime.getDate()) {
-                months--;
-                if (months < 0) {
-                    years--;
-                    months += 12;
+            // Calculate remaining days
+            let remainingDays = diffInDays;
+            
+            if (isFuture) {
+                // 未来时间：从当前时间到目标时间
+                const tempDate = new Date(now);
+                tempDate.setFullYear(selectedDateTime.getFullYear(), selectedDateTime.getMonth(), now.getDate());
+                
+                if (tempDate > selectedDateTime) {
+                    months--;
+                    if (months < 0) {
+                        years--;
+                        months += 12;
+                    }
+                }
+                
+                // 计算剩余天数
+                remainingDays = Math.floor((selectedDateTime - tempDate) / (1000 * 60 * 60 * 24));
+                if (remainingDays < 0) {
+                    const lastDayOfMonth = new Date(selectedDateTime.getFullYear(), selectedDateTime.getMonth() + 1, 0).getDate();
+                    remainingDays += lastDayOfMonth;
+                }
+            } else {
+                // 过去时间：从目标时间到当前时间
+                const tempDate = new Date(selectedDateTime);
+                tempDate.setFullYear(now.getFullYear(), now.getMonth(), selectedDateTime.getDate());
+                
+                if (tempDate > now) {
+                    months--;
+                    if (months < 0) {
+                        years--;
+                        months += 12;
+                    }
+                }
+                
+                remainingDays = Math.floor((now - tempDate) / (1000 * 60 * 60 * 24));
+                if (remainingDays < 0) {
+                    remainingDays += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
                 }
             }
-
-            // Calculate remaining days
-            const tempDate = new Date(selectedDateTime);
-            tempDate.setFullYear(now.getFullYear(), now.getMonth(), selectedDateTime.getDate());
-
-            let remainingDays = Math.floor((now - tempDate) / (1000 * 60 * 60 * 24));
-            if (remainingDays < 0) {
-                remainingDays += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
-            }
+            
+            // 确保值不为负数
+            years = Math.max(years, 0);
+            months = Math.max(months, 0);
+            remainingDays = Math.max(remainingDays, 0);
 
             // Update display
             document.getElementById('yearsDiff').textContent = years;
@@ -468,30 +502,55 @@
             document.getElementById('minutesDiff').textContent = diffInMinutes % 60;
             document.getElementById('secondsDiff').textContent = diffInSeconds % 60;
 
+            // Add pulse animation to seconds
+            const secondsDiffElement = document.getElementById('secondsDiff');
+            secondsDiffElement.classList.remove('pulse');
+            void secondsDiffElement.offsetWidth; // Trigger reflow
+            secondsDiffElement.classList.add('pulse');
+            
+            // 修改：添加时间方向指示
+            const timeDifferenceElement = document.getElementById('timeDifference');
+            if (isFuture) {
+                timeDifferenceElement.classList.add('future-time');
+                timeDifferenceElement.classList.remove('past-time');
+            } else {
+                timeDifferenceElement.classList.add('past-time');
+                timeDifferenceElement.classList.remove('future-time');
+            }
+
             // Show the time difference section
-            document.getElementById('timeDifference').style.display = 'grid';
+            timeDifferenceElement.style.display = 'grid';
 
             // Update selected date details
-            updateSelectedDateDetails();
+            updateSelectedDateDetails(isFuture, Math.floor(absDiffInMs / (1000 * 60 * 60 * 24)));
         }
 
         // Update selected date details
-        function updateSelectedDateDetails() {
+        function updateSelectedDateDetails(isFuture = false, diffInDays) {
             if (!selectedDateTime) return;
 
-            const now = new Date();
-            const diffInDays = Math.floor((now - selectedDateTime) / (1000 * 60 * 60 * 24));
             const diffInWeeks = Math.floor(diffInDays / 7);
             const diffInMonths = Math.floor(diffInDays / 30.44);
 
             const details = document.getElementById('selectedDateDetails');
-            details.innerHTML = `
-                <span>${diffInDays} days ago</span>
-                <span>•</span>
-                <span>${diffInWeeks} weeks ago</span>
-                <span>•</span>
-                <span>${diffInMonths} months ago</span>
-            `;
+            
+            if (isFuture) {
+                details.innerHTML = `
+                    <span>In ${diffInDays} days</span>
+                    <span>•</span>
+                    <span>In ${diffInWeeks} weeks</span>
+                    <span>•</span>
+                    <span>In ${diffInMonths} months</span>
+                `;
+            } else {
+                details.innerHTML = `
+                    <span>${diffInDays} days ago</span>
+                    <span>•</span>
+                    <span>${diffInWeeks} weeks ago</span>
+                    <span>•</span>
+                    <span>${diffInMonths} months ago</span>
+                `;
+            }
         }
 
         // Update the clock and date
