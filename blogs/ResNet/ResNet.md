@@ -247,13 +247,13 @@ $$\frac{\partial x_L}{\partial x_l}=\frac{\partial x_L}{\partial x_{L-1}}\cdot \
 
 将公式(5)代入公式(6)：
 
-$$\frac{\partial x_L}{\partial x_l}=∏_{i=l}^{L-1}\frac{\partial x_{i+1}}{\partial x_i}=∏_{i=l}^{L-1} (I + \frac{∂F_i}{∂x_i}) \tag{7}$$
+$$\frac{\partial x_L}{\partial x_l}=\prod_{i=l}^{L-1}\frac{\partial x_{i+1}}{\partial x_i}=\prod_{i=l}^{L-1} (I + \frac{\partial F_i}{\partial x_i}) \tag{7}$$
 
 #### **8. 完整梯度公式**
 
 将公式(7)代入公式(4)：
 
-$$\frac{\partial \mathcal{L}}{\partial x_l}=\frac{\partial \mathcal{L}}{\partial x_L}\frac{\partial x_L}{\partial x_l}=\frac{\partial \mathcal{L}}{\partial x_L}∏_{i=l}^{L-1} (I + \frac{∂F_i}{∂x_i}) \tag{8}$$
+$$\frac{\partial \mathcal{L}}{\partial x_l}=\frac{\partial \mathcal{L}}{\partial x_L}\frac{\partial x_L}{\partial x_l}=\frac{\partial \mathcal{L}}{\partial x_L}\prod_{i=l}^{L-1} (I + \frac{∂F_i}{∂x_i}) \tag{8}$$
 
 这就是ResNet的**梯度反向传播公式**。
 
