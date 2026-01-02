@@ -11,6 +11,7 @@ const pathList = [
   "6_ResNet",
   "7_Normalization_in_Deep_Learning",
   "8_Attention_Mechanism",
+  "9_Transformer_BERT_GPT",
 ];
 const nameList = [
   "一阶倒立摆的系统模型",
@@ -21,6 +22,7 @@ const nameList = [
   "Introduction to ResNet",
   "Normalization in Deep Learning",
   "Introduction to Attention Mechanism",
+  "Introduction to Transformer, BERT and GPT",
 ];
 
 function loadMd(name, id = null) {
