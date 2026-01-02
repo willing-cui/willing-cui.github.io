@@ -9,6 +9,7 @@ const pathList = [
   "WiFi_CSI",
   "Sinusoidal_Positional_Encoding",
   "ResNet",
+  "Normalization_in_Deep_Learning",
 ];
 const nameList = [
   "一阶倒立摆的系统模型",
@@ -17,6 +18,7 @@ const nameList = [
   "Introduction to WiFi CSI",
   "Sinusoidal Positional Encoding",
   "Introduction to ResNet",
+  "Normalization in Deep Learning"
 ];
 
 function loadMd(name, id = null) {
