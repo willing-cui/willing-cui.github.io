@@ -403,6 +403,7 @@ ol {
     right: 1rem;
     max-width: calc((100vw - 64rem)/2);
     overflow-y: auto;
+    max-height: 87%;
     background-color: rgba(27, 31, 34, 0.85);
     padding: 1.5rem 1.5rem 1.5rem 1.5rem;
     border-radius: 4px;
@@ -462,6 +463,7 @@ ol {
 
 #catalogue::-webkit-scrollbar {
     height: 4px;
+    width: 4px;
 }
 
 #catalogue::-webkit-scrollbar-track {
