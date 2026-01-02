@@ -11,7 +11,7 @@ In any case, this article serves as a review of some fundamental RL concepts for
 The Multi-armed Bandit problem is a basic and classical problem in RL. It is described as a **stateless setting** of RL. The stateless means, the problem does not involve state transitioning from one to another, unlike more complex RL problems.
 
 <span class="image main">
-<img class="main img-in-blog" style="max-width: 50%" src="./blogs/RL_Multi-Armed_Bandit/Las_Vegas_slot_machines.jpg" alt="Rewards" />
+<img class="main img-in-blog" style="max-width: 50%" src="./blogs/3_RL_Multi-Armed_Bandit/Las_Vegas_slot_machines.jpg" alt="Rewards" />
 <i>By <a href="https://en.wikipedia.org/wiki/User:Yamaguchi%E5%85%88%E7%94%9F" class="extiw" title="en:User:Yamaguchi先生">Yamaguchi先生</a>, <a href="http://creativecommons.org/licenses/by-sa/3.0/" title="Creative Commons Attribution-Share Alike 3.0">CC BY-SA 3.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=57295504">Link</a></i>
 </span>
 
@@ -265,13 +265,13 @@ if __name__ == "__main__":
 The reward obtained by the agent varies across different simulation environment settings and strategies.
 
 <span class="image main">
-<img class="main img-in-blog" style="max-width: 45rem" src="./blogs/RL_Multi-Armed_Bandit/Simulation_Results_2.webp" alt="Rewards" />
+<img class="main img-in-blog" style="max-width: 45rem" src="./blogs/3_RL_Multi-Armed_Bandit/Simulation_Results_2.webp" alt="Rewards" />
 </span>
 
 The accumulated rewards.
 
 <span class="image main">
-<img class="main img-in-blog" style="max-width: 45rem" src="./blogs/RL_Multi-Armed_Bandit/Simulation_Results_1.webp" alt="Accumulated rewards" />
+<img class="main img-in-blog" style="max-width: 45rem" src="./blogs/3_RL_Multi-Armed_Bandit/Simulation_Results_1.webp" alt="Accumulated rewards" />
 </span>
 
 ### Analysis
@@ -304,7 +304,7 @@ In Bayesian probability theory, if given a likelihood function:  $p(x|\theta)$, 
 * And the prior is called a conjugate prior for the likelihood function.
 
 <span class="image main medium">
-<img class="main img-in-blog medium" style="max-width: 30rem" src="./blogs/RL_Multi-Armed_Bandit/Prior_Likelihood_Posterior.webp" alt="The relationship between the Prior, Likelihood and Posterior probability." />
+<img class="main img-in-blog medium" style="max-width: 30rem" src="./blogs/3_RL_Multi-Armed_Bandit/Prior_Likelihood_Posterior.webp" alt="The relationship between the Prior, Likelihood and Posterior probability." />
 </span>
 
 ### Beta Distribution

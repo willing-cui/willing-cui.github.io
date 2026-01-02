@@ -1,7 +1,7 @@
 ## **ResNet（深度残差网络）**
 
 <span class="image main">
-<img class="main img-in-blog" style="max-width: 50%" src="./blogs/ResNet/ResBlock.png" alt="ResBlock" />
+<img class="main img-in-blog" style="max-width: 50%" src="./blogs/6_ResNet/ResBlock.png" alt="ResBlock" />
 <i>常规残差块结构示意图, By <a href="//commons.wikimedia.org/w/index.php?title=User:LunarLullaby&amp;action=edit&amp;redlink=1" class="new" title="User:LunarLullaby (page does not exist)">LunarLullaby</a> - <span class="int-own-work" lang="en">Own work</span>, <a href="https://creativecommons.org/licenses/by-sa/4.0" title="Creative Commons Attribution-Share Alike 4.0">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=131458370">Link</a></i>
 </span>
 

@@ -3,13 +3,14 @@ var blogContent = "";
 var initialLoad = true;
 
 const pathList = [
-  "一阶倒立摆的系统模型",
-  "对一阶倒立摆的LQR控制",
-  "RL_Multi-Armed_Bandit",
-  "WiFi_CSI",
-  "Sinusoidal_Positional_Encoding",
-  "ResNet",
-  "Normalization_in_Deep_Learning",
+  "1_一阶倒立摆的系统模型",
+  "2_对一阶倒立摆的LQR控制",
+  "3_RL_Multi-Armed_Bandit",
+  "4_WiFi_CSI",
+  "5_Sinusoidal_Positional_Encoding",
+  "6_ResNet",
+  "7_Normalization_in_Deep_Learning",
+  "8_Attention_Mechanism",
 ];
 const nameList = [
   "一阶倒立摆的系统模型",
@@ -18,13 +19,14 @@ const nameList = [
   "Introduction to WiFi CSI",
   "Sinusoidal Positional Encoding",
   "Introduction to ResNet",
-  "Normalization in Deep Learning"
+  "Normalization in Deep Learning",
+  "Introduction to Attention Mechanism",
 ];
 
 function loadMd(name, id = null) {
   if (id) {
-    path = pathList[id];
-    name = nameList[id];
+    path = pathList[id - 1];
+    name = nameList[id - 1];
   }
 
   blogTitle = name;

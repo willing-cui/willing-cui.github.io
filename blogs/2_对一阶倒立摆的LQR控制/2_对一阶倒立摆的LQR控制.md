@@ -143,7 +143,7 @@ x\\\\
 
 <span class="image main">
 
-<img class="main img-in-blog" style="max-width: 40rem" src="./blogs/对一阶倒立摆的LQR控制/open_loop.webp" alt="开环阶跃响应" />
+<img class="main img-in-blog" style="max-width: 40rem" src="./blogs/2_对一阶倒立摆的LQR控制/open_loop.webp" alt="开环阶跃响应" />
 
 </span>
 
@@ -151,7 +151,7 @@ x\\\\
 
 <span class="image main">
 
-<img class="main img-in-blog" style="max-width: 40rem" src="./blogs/对一阶倒立摆的LQR控制/LQR_control.webp" alt="LQR阶跃响应" />
+<img class="main img-in-blog" style="max-width: 40rem" src="./blogs/2_对一阶倒立摆的LQR控制/LQR_control.webp" alt="LQR阶跃响应" />
 
 </span>
 
