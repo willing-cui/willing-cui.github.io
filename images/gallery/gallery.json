@@ -3,12 +3,16 @@
         "Shenzhen": ["测试.png"],
         "Dali": ["测试.png"],
         "Lijiang": ["测试.png"],
-        "Jinan": ["测试.png"]
+        "Jinan": ["测试.png"],
+        "Zhongshan": ["测试.png"],
+        "HKSAR": ["测试.png"]
     },
 	"time": {
 		"Shenzhen": ["2025/10/19"],
         "Dali": ["2025/10/19"],
         "Lijiang": ["2025/10/19"],
-        "Jinan": ["2025/10/19"]
+        "Jinan": ["2025/10/19"],
+        "Zhongshan": ["2026/1/1"],
+        "HKSAR": ["2026/1/1"]
 	}
 }
