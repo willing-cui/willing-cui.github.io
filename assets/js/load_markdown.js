@@ -12,6 +12,8 @@ const pathList = [
   "7_Normalization_in_Deep_Learning",
   "8_Attention_Mechanism",
   "9_Transformer_BERT_GPT",
+  "10_Multimodal_Fusion",
+  "11_WWH_When_Attention_Mechanism_Fail",
 ];
 const nameList = [
   "一阶倒立摆的系统模型",
@@ -23,6 +25,8 @@ const nameList = [
   "Normalization in Deep Learning",
   "Introduction to Attention Mechanism",
   "Introduction to Transformer, BERT and GPT",
+  "Multimodal Fusion",
+  "What, Why, and How: When Attention Mechanisms Fail",
 ];
 
 function loadMd(name, id = null) {
