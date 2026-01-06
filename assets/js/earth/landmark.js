@@ -6,7 +6,7 @@ var areas = [
     {
         name: "Shenzhen",
         position: [114.085947, 22.547],
-        text_position: [115.085947, 22.547]
+        text_position: [116.085947, 21.247]
     }, {
         name: "Dali",
         position: [100.2676, 25.6065],
@@ -22,11 +22,23 @@ var areas = [
     }, {
         name: "Zhongshan",
         position: [113.393, 22.516],
-        text_position: [112.393, 21.516]
+        text_position: [110.893, 21.516]
     }, {
         name: "HKSAR",
         position: [114.1694, 22.3193],
-        text_position: [115.1694, 20.3193]
+        text_position: [115.1694, 20.0193]
+    }, {
+        name: "Dongguan",
+        position: [113.7518, 23.0207],
+        text_position: [113.7518, 23.5207]
+    }, {
+        name: "Zhangzhou",
+        position: [117.6472, 24.5135],
+        text_position: [117.6472, 24.5135]
+    }, {
+        name: "Huizhou",
+        position: [114.4155, 23.1125],
+        text_position: [116.4155, 22.4125]
     }
 ];
 
