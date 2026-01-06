@@ -691,6 +691,22 @@ ol {
     font-size: 16px;
 }
 
+.image-display.lazy {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-display.loaded {
+    opacity: 1;
+}
+
+.loading-more, .loading-indicator {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+    font-size: 14px;
+    grid-column: 1 / -1;
+}
 
 /* Base Styles and Font */
 :root {

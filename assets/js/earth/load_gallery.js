@@ -21,19 +21,19 @@ async function initializeGallery() {
     if (isInitialized) {
         return; // 如果已初始化，直接返回
     }
-    
+
     try {
         const response = await fetch(basePath + 'gallery.json');
         photoListDict = await response.json();
-        
+
         // 初始化Intersection Observer用于懒加载
         initLazyLoadObserver();
-        
+
         // 监听滚动事件
         if (photoListContainer) {
             photoListContainer.addEventListener('scroll', handleScroll);
         }
-        
+
         isInitialized = true;
         console.log('Gallery initialized successfully');
     } catch (error) {
@@ -47,13 +47,13 @@ function cleanupGallery() {
     photoListDict = null;
     isInitialized = false;
     currentLandmarkName = null;
-    
+
     // 清理观察器
     if (observer) {
         observer.disconnect();
         observer = null;
     }
-    
+
     // 移除事件监听
     if (photoListContainer) {
         photoListContainer.removeEventListener('scroll', handleScroll);
@@ -91,13 +91,13 @@ function handleScroll() {
     if (scrollTimeout) {
         clearTimeout(scrollTimeout);
     }
-    
+
     scrollTimeout = setTimeout(() => {
         if (!photoListContainer) return;
-        
+
         const { scrollTop, scrollHeight, clientHeight } = photoListContainer;
         const scrollBottom = scrollHeight - scrollTop - clientHeight;
-        
+
         // 当接近底部时加载更多
         if (scrollBottom < 300 && !isLoading && loadedCount < allPhotos.length) {
             loadMorePhotos();
@@ -126,10 +126,11 @@ function createImageCard(dataUrl, name, time, isLazy = true) {
     const card = document.createElement('div');
     card.className = 'image-card';
     const largeImgUrl = dataUrl.replaceAll("glance", "check");
-    
-    const imgSrc = isLazy ? 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjJmMmYyIi8+PC9zdmc+' : dataUrl;
+
+    // const imgSrc = isLazy ? 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjJmMmYyIi8+PC9zdmc+' : dataUrl;
+    const imgSrc = isLazy ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAD+klEQVR4nO2cT4gcRRyFyz/BBDWCSEKIoqKiIAgSAiEiBIIBk5MHFYIHjx7Uk3+uSjwlJ8Gck0NIJAQNKHoxkIABSRAERTwERRQ3y850v1e9izGalBTOwLCMM9093TP1a94H7zIM1V31TTVdNVXlnBBCCCGEEEIIIYQQQgghhBBClKLf7z9A8gxJTzIonBQP4FOSj7cpo59ARYOxZLHtGhcy6BkBwOdra2vbG79Ax+j1evcD+GIg5XTjFxg+puKFGi+8o/T/e6pEIWy88GEXbLzgjsO22k1C6iEhiSEhiSEhiSEhiSEhiSEhiSEhiWFSSJyKAfAGyaODvNmVGQFTQkIIt5I8BODa+kk5AH+R/CCEcJszjCkhAI5Nmy0FcNwZxowQAC+WncIG8JIziiUh31T4T+GSM4oJIcvLy3cBuFmhh9zs9XqbnUFMCMnz/KGq/7wBeMQZxISQlZWVu6v2kCzL7nEGMSFkUN7lCj3kW2cUM0IAHKzQQw46o5gREkK4heTJEkJOxe86o5gREgkh3A7gMIDrY3rFdQBH4necYUwJGZLn+cMk34qj8hiSb8fPXAcwKaTLUELSQkISQ0ISQ0ISQ0ISQ0ISQ0IqEkLYQPIxADu890+EEDa6BpGQkpDcPW43GIA/SX5J8kATUzYSMoWlpaU7SZ4oObH5VVEUW90MSMgEiqLYQvK7CtP+scf8XhTFk64mEvI/rK6ubgPwQxUZI8m898+4GkjIGLIse5DklZoyhlkj+byriISsI25LJvnbjDKGj6+/Sb7quiKE5K64GhHAZwAuxl2qAD4kub+NFYpZlj0F4GoTMkak3ADwumkheZ4/HQVMqewV7/0LTd0vgJ0t76t/36QQAK+NW7s7IR/N2lu898/GrcgtyhjmaFyf3Ea7TaVqwYP/zN+r+Vg4G0LYVOc+8zzfQ7KYg4zhvX4yaXSfhJB4gyQ/nrGi56uuxYqj68FIO8w55+Jas1nbrRJlC/be3wfg64Z+fd+XPcYDwMvjFkvMMZdi3eu2W2XKFBxHtCR/abiiP8fJvyn39srglXRRMoY/oB/XHzSzMCF5nu8lmbdU0avxTW3CS8ONRcsYya+jRzItREgcLM3hcVEAeG70ut77dxIQMC7xdXvX3IXM8iZVs6dcixt94rUBvJtAw0/KKoB9cxMSQrij5FLQpqX8M3IOVdIZHX+1KgTAvQAuLLrCNJTWhMSNMwB+WnQFaSxtCuktunI0mNaEKJQQdiASwrQiIUwrEsK0IiHsvhCd9856AfBH40IGB8svvHK0mRNtLafJEqhcMJZ+K4fxj5xlfnpOCwiC8UTOAHi0FRlCCCGEEEIIIYQQQgghhBBCCNc9/gW1WARKxMla2QAAAABJRU5ErkJggg==' : dataUrl;
     const dataSrc = isLazy ? dataUrl : null;
-    
+
     card.innerHTML = `
         <div class="image-card-content">
             <img 
@@ -146,13 +147,13 @@ function createImageCard(dataUrl, name, time, isLazy = true) {
             <span>${time}</span>
         </div>
     `;
-    
+
     // 如果是懒加载图片，添加到观察器
     if (isLazy && observer) {
         const img = card.querySelector('img');
         observer.observe(img);
     }
-    
+
     return card;
 }
 
@@ -164,7 +165,7 @@ function resetLoadState() {
     if (grid) {
         grid.innerHTML = '';
     }
-    
+
     // 重置滚动事件
     if (scrollTimeout) {
         clearTimeout(scrollTimeout);
@@ -178,29 +179,29 @@ async function loadPhotos(landmarkName) {
     if (!isInitialized) {
         await initializeGallery();
     }
-    
+
     // 如果正在加载相同的内容，直接返回
     if (currentLandmarkName === landmarkName && loadedCount > 0) {
         return;
     }
-    
+
     currentLandmarkName = landmarkName;
     resetLoadState();
-    
+
     if (!photoListDict || !photoListDict["photo"] || !photoListDict["photo"][landmarkName]) {
         grid.innerHTML = '<div class="no-photos">暂无照片</div>';
         return;
     }
-    
+
     var directories = photoListDict["photo"];
     var photo_file_names = directories[landmarkName];
     var photo_time_info = photoListDict["time"] ? (photoListDict["time"][landmarkName] || []) : [];
-    
+
     if (photo_file_names.length === 0) {
         grid.innerHTML = '<div class="no-photos">暂无照片</div>';
         return;
     }
-    
+
     // 准备所有照片数据
     photo_file_names.forEach((file_name, index) => {
         var filePath = basePath + 'glance/' + landmarkName + '/' + file_name;
@@ -211,7 +212,7 @@ async function loadPhotos(landmarkName) {
             time: time
         });
     });
-    
+
     // 初始加载第一批
     loadBatch(0, Math.min(BATCH_SIZE, allPhotos.length));
 }
@@ -219,34 +220,34 @@ async function loadPhotos(landmarkName) {
 // 加载一批照片
 function loadBatch(startIndex, endIndex) {
     if (!grid) return;
-    
+
     isLoading = true;
-    
+
     // 显示加载指示器
     if (startIndex === 0) {
         grid.innerHTML = '<div class="loading-indicator">加载中...</div>';
     }
-    
+
     // 移除之前的加载指示器
     const loadingIndicator = grid.querySelector('.loading-indicator');
     if (loadingIndicator) {
         loadingIndicator.remove();
     }
-    
+
     // 使用文档片段提高性能
     const fragment = document.createDocumentFragment();
-    
+
     for (let i = startIndex; i < endIndex && i < allPhotos.length; i++) {
         const photo = allPhotos[i];
         const isLazy = i >= 5; // 前5张立即加载，其余懒加载
         const card = createImageCard(photo.path, photo.name, photo.time, isLazy);
         fragment.appendChild(card);
     }
-    
+
     grid.appendChild(fragment);
     loadedCount = endIndex;
     isLoading = false;
-    
+
     // 如果还有更多图片，显示加载更多提示
     if (loadedCount < allPhotos.length) {
         const loadMoreIndicator = document.createElement('div');
@@ -254,7 +255,7 @@ function loadBatch(startIndex, endIndex) {
         loadMoreIndicator.textContent = '滚动加载更多...';
         grid.appendChild(loadMoreIndicator);
     }
-    
+
     // 如果已经加载了所有图片，移除滚动监听
     if (loadedCount >= allPhotos.length) {
         const loadMoreIndicator = grid.querySelector('.loading-more');
@@ -267,47 +268,22 @@ function loadBatch(startIndex, endIndex) {
 // 加载更多照片
 function loadMorePhotos() {
     if (isLoading || loadedCount >= allPhotos.length) return;
-    
+
     const nextBatchStart = loadedCount;
     const nextBatchEnd = Math.min(loadedCount + BATCH_SIZE, allPhotos.length);
-    
+
     // 移除"加载更多"提示
     const loadMoreIndicator = grid.querySelector('.loading-more');
     if (loadMoreIndicator) {
         loadMoreIndicator.remove();
     }
-    
+
     loadBatch(nextBatchStart, nextBatchEnd);
 }
 
 // 导出函数
 window.loadPhotos = loadPhotos; // 暴露到window对象
 export { loadPhotos, initializeGallery, cleanupGallery };
-
-// 添加一些CSS样式来改善体验
-if (!document.querySelector('#gallery-styles')) {
-    const style = document.createElement('style');
-    style.id = 'gallery-styles';
-    style.textContent = `
-        .image-display.lazy {
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .image-display.loaded {
-            opacity: 1;
-        }
-        
-        .loading-more, .loading-indicator {
-            text-align: center;
-            padding: 20px;
-            color: #999;
-            font-size: 14px;
-            grid-column: 1 / -1;
-        }
-    `;
-    document.head.appendChild(style);
-}
 
 // 如果需要在页面加载时自动初始化
 if (document.readyState === 'loading') {

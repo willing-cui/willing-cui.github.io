@@ -14,6 +14,7 @@ const pathList = [
   "9_Transformer_BERT_GPT",
   "10_Multimodal_Fusion",
   "11_WWH_When_Attention_Mechanism_Fail",
+  "12_SenseFi_Paper_Reading_Report",
 ];
 const nameList = [
   "一阶倒立摆的系统模型",
@@ -27,6 +28,7 @@ const nameList = [
   "Introduction to Transformer, BERT and GPT",
   "Multimodal Fusion",
   "What, Why, and How: When Attention Mechanisms Fail",
+  "SenseFi Paper Reading Report",
 ];
 
 function loadMd(name, id = null) {
