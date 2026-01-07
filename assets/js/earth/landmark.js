@@ -6,19 +6,15 @@ var areas = [
     {
         name: "Shenzhen",
         position: [114.085947, 22.547],
-        text_position: [116.085947, 21.247]
+        text_position: [115.585947, 21.247]
     }, {
         name: "Dali",
         position: [100.2676, 25.6065],
-        text_position: [98.2676, 25.6065]
+        text_position: [97.2676, 26.1065]
     }, {
         name: "Lijiang",
         position: [100.2271, 26.8565],
-        text_position: [100.2271, 26.8565]
-    }, {
-        name: "Jinan",
-        position: [117.01, 36.38],
-        text_position: [117.01, 36.38]
+        text_position: [100.2271, 27.3565]
     }, {
         name: "Zhongshan",
         position: [113.393, 22.516],
@@ -30,23 +26,31 @@ var areas = [
     }, {
         name: "Dongguan",
         position: [113.7518, 23.0207],
-        text_position: [113.7518, 23.5207]
+        text_position: [112.7518, 23.6207]
     }, {
         name: "Zhangzhou",
         position: [117.6472, 24.5135],
-        text_position: [117.6472, 24.5135]
+        text_position: [117.6472, 25.0135]
     }, {
         name: "Huizhou",
         position: [114.4155, 23.1125],
-        text_position: [116.4155, 22.4125]
+        text_position: [116.4155, 22.3125]
     }, {
         name: "Shanghai",
         position: [121.4737, 31.2304],
-        text_position: [121.4737, 31.2304]
+        text_position: [121.4737, 31.7304]
     }, {
         name: "Kunming",
         position: [102.8332, 24.8797],
-        text_position: [102.8332, 24.8797]
+        text_position: [102.8332, 25.3797]
+    }, {
+        name: "Shouguang",
+        position: [118.7910, 36.8554],
+        text_position: [118.7910, 37.3554]
+    }, {
+        name: "Wuhan",
+        position: [114.3052, 30.5928],
+        text_position: [114.3052, 31.0928]
     }
 ];
 
@@ -403,7 +407,7 @@ function toggleGlow(sprite, camera) {
 function resetCurrentSelectedLandmark() {
     const spriteData = textSprites.get(currentSelectedLandmark);
     if (!spriteData || !currentSelectedLandmark) return;
-    
+
     spriteData.isGlowing = false;
     spriteData.material.map = spriteData.normalTexture;
     spriteData.material.needsUpdate = true;
@@ -413,7 +417,7 @@ function resetCurrentSelectedLandmark() {
     if (cameraPointer) {
         startCameraAnimation(cameraPointer, DEFAULT_CAMERA_POSITION, new THREE.Vector3(0, 0, 0), false);
     }
-    
+
     currentSelectedLandmark = null;
     currentSelectedLandmarkName = null;
 }

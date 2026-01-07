@@ -16,6 +16,7 @@ const pathList = [
     "11_WWH_When_Attention_Mechanism_Fail",
     "12_SenseFi_Paper_Reading_Report",
     "13_Transformer_for_Classification_Tasks",
+    "14_Activation_Functions",
 ];
 const nameList = [
     "一阶倒立摆的系统模型",
@@ -31,6 +32,7 @@ const nameList = [
     "What, Why, and How: When Attention Mechanisms Fail",
     "SenseFi Paper Reading Report",
     "Transformer for Classification Tasks",
+    "Activation Functions",
 ];
 
 function loadMd(name, id = null) {
