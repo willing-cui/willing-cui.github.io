@@ -10,7 +10,7 @@ var areas = [
     }, {
         name: "Dali",
         position: [100.2676, 25.6065],
-        text_position: [100.2676, 25.6065]
+        text_position: [98.2676, 25.6065]
     }, {
         name: "Lijiang",
         position: [100.2271, 26.8565],
@@ -39,6 +39,14 @@ var areas = [
         name: "Huizhou",
         position: [114.4155, 23.1125],
         text_position: [116.4155, 22.4125]
+    }, {
+        name: "Shanghai",
+        position: [121.4737, 31.2304],
+        text_position: [121.4737, 31.2304]
+    }, {
+        name: "Kunming",
+        position: [102.8332, 24.8797],
+        text_position: [102.8332, 24.8797]
     }
 ];
 
