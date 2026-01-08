@@ -17,6 +17,7 @@ const pathList = [
     "12_SenseFi_Paper_Reading_Report",
     "13_Transformer_for_Classification_Tasks",
     "14_Activation_Functions",
+    "15_Access_Repo_via_GitHub_SSH",
 ];
 const nameList = [
     "一阶倒立摆的系统模型",
@@ -33,6 +34,7 @@ const nameList = [
     "SenseFi Paper Reading Report",
     "Transformer for Classification Tasks",
     "Activation Functions",
+    "Access Repo via GitHub SSH",
 ];
 
 function loadMd(name, id = null) {
