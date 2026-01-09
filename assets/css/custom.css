@@ -514,7 +514,8 @@ ol {
     border-radius: 2px
 }
 
-.photo-list-title {
+.photo-list-title,
+.indicator-bar {
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -705,12 +706,10 @@ ol {
     opacity: 1;
 }
 
-.loading-more, .loading-indicator {
-    text-align: center;
-    padding: 20px;
-    color: #999;
-    font-size: 14px;
-    grid-column: 1 / -1;
+.loading-more {
+    color: rgb(156, 163, 175);
+    font-size: 0.95rem;
+    width: 100%;
 }
 
 /* Base Styles and Font */

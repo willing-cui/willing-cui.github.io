@@ -18,6 +18,7 @@ const pathList = [
     "13_Transformer_for_Classification_Tasks",
     "14_Activation_Functions",
     "15_Access_Repo_via_GitHub_SSH",
+    "16_Feature_Alignment",
 ];
 const nameList = [
     "一阶倒立摆的系统模型",
@@ -35,6 +36,7 @@ const nameList = [
     "Transformer for Classification Tasks",
     "Activation Functions",
     "Access Repo via GitHub SSH",
+    "Feature Alignment",
 ];
 
 function loadMd(name, id = null) {

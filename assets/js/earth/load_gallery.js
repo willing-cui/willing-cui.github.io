@@ -3,6 +3,7 @@ const modal = document.getElementById('image-modal');
 const modalImage = document.getElementById('modal-image');
 const basePath = "../images/gallery/";
 const grid = document.getElementById('waterfall-grid');
+const indicator = document.getElementById('state-indicator')
 const photoListContainer = document.getElementById('photo-list'); // 获取滚动容器
 
 // 瀑布流布局相关变量
@@ -79,6 +80,7 @@ function cleanupGallery() {
 
 // 初始化懒加载观察器
 function initLazyLoadObserver() {
+    // 确定IntersectionObserver构造函数是否可作为全局对象的属性使用window
     if ('IntersectionObserver' in window) {
         observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -148,6 +150,8 @@ function updateColumnCount() {
     if (!grid) return;
 
     const containerWidth = grid.clientWidth;
+    console.log(`显示窗口宽度为 ${containerWidth} px`)
+
     let newColumnCount = 3; // 默认
 
     if (containerWidth <= 576) { // 手机
@@ -172,7 +176,8 @@ function updateColumnCount() {
 function applyWaterfallLayout() {
     if (!grid) return;
 
-    const cards = grid.querySelectorAll('.image-card:not(.placeholder)');
+    const cards = grid.querySelectorAll('.image-card');
+    console.log(`当前图像卡片数量: ${cards.length}`)
     if (cards.length === 0) return;
 
     // 更新列数
@@ -204,7 +209,7 @@ function applyWaterfallLayout() {
         card.style.margin = '0'; // 清除可能的margin
 
         // 获取卡片实际高度（包括padding和margin）
-        const cardHeight = card.offsetHeight;
+        const cardHeight = getStableCardHeight(card);
 
         // 更新列高度
         columnHeights[colIndex] += cardHeight + gap;
@@ -218,6 +223,29 @@ function applyWaterfallLayout() {
 
     isWaterfallApplied = true;
     console.log(`瀑布流布局应用完成，${columnCount}列，总高度: ${maxHeight}px`);
+}
+
+// 获取稳定的卡片高度
+function getStableCardHeight(card) {
+    // 临时禁用所有可能影响高度的样式
+    const originalTransition = card.style.transition;
+    const originalTransform = card.style.transform;
+    const originalBoxShadow = card.style.boxShadow;
+
+    card.style.transition = 'none';
+    card.style.transform = 'none';
+    card.style.boxShadow = 'none';
+
+    // 强制同步布局
+    const cardHeight = card.offsetHeight;
+
+
+    // 恢复原始样式
+    card.style.transition = originalTransition;
+    card.style.transform = originalTransform;
+    card.style.boxShadow = originalBoxShadow;
+
+    return cardHeight;
 }
 
 // 显示模态框
@@ -342,17 +370,6 @@ function loadBatch(startIndex, endIndex) {
 
     isLoading = true;
 
-    // 显示加载指示器
-    if (startIndex === 0) {
-        grid.innerHTML = '<div class="loading-indicator">加载中...</div>';
-    }
-
-    // 移除之前的加载指示器
-    const loadingIndicator = grid.querySelector('.loading-indicator');
-    if (loadingIndicator) {
-        loadingIndicator.remove();
-    }
-
     // 使用文档片段提高性能
     const fragment = document.createDocumentFragment();
 
@@ -384,15 +401,16 @@ function loadBatch(startIndex, endIndex) {
 
     // 如果还有更多图片，显示加载更多提示
     if (loadedCount < allPhotos.length) {
+        const oldLoadMoreIndicator = indicator.querySelector('.loading-more');
+        if (oldLoadMoreIndicator) {
+            oldLoadMoreIndicator.remove();
+        }
         const loadMoreIndicator = document.createElement('div');
         loadMoreIndicator.className = 'loading-more';
-        loadMoreIndicator.textContent = '滚动加载更多...';
-        loadMoreIndicator.style.textAlign = 'center';
-        loadMoreIndicator.style.padding = '20px';
-        loadMoreIndicator.style.color = '#666';
+        loadMoreIndicator.textContent = 'Scroll to load more ...';
 
         // 添加到容器末尾
-        grid.appendChild(loadMoreIndicator);
+        indicator.appendChild(loadMoreIndicator);
 
         // 重新计算包含加载提示的布局
         setTimeout(applyWaterfallLayout, 50);
@@ -414,10 +432,11 @@ function loadMorePhotos() {
     const nextBatchStart = loadedCount;
     const nextBatchEnd = Math.min(loadedCount + BATCH_SIZE, allPhotos.length);
 
-    // 移除"加载更多"提示
-    const loadMoreIndicator = grid.querySelector('.loading-more');
+    // 更改"加载更多"提示
+    const loadMoreIndicator = indicator.querySelector('.loading-more');
     if (loadMoreIndicator) {
-        loadMoreIndicator.remove();
+        // loadMoreIndicator.remove();
+        loadMoreIndicator.innerHTML = 'Loading completed';
     }
 
     loadBatch(nextBatchStart, nextBatchEnd);

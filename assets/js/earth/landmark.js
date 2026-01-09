@@ -10,7 +10,7 @@ var areas = [
     }, {
         name: "Dali",
         position: [100.2676, 25.6065],
-        text_position: [97.2676, 26.1065]
+        text_position: [97.9676, 25.6065]
     }, {
         name: "Lijiang",
         position: [100.2271, 26.8565],
