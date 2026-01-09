@@ -5,6 +5,14 @@ const basePath = "../images/gallery/";
 const grid = document.getElementById('waterfall-grid');
 const photoListContainer = document.getElementById('photo-list'); // 获取滚动容器
 
+// 瀑布流布局相关变量
+let columnCount = 3; // 默认列数
+let columnHeights = []; // 每列的当前高度
+let columnTops = []; // 每列的顶部位置
+let gap = 20; // 卡片间距
+let isWaterfallApplied = false; // 标记是否已应用瀑布流布局
+let resizeTimeout = null; // 防抖计时器
+
 // 状态管理
 let photoListDict = null; // 改为null，表示未加载
 let currentLandmarkName = null;
@@ -34,6 +42,9 @@ async function initializeGallery() {
             photoListContainer.addEventListener('scroll', handleScroll);
         }
 
+        // 监听窗口大小变化，重新计算瀑布流布局
+        window.addEventListener('resize', handleResize);
+
         isInitialized = true;
         console.log('Gallery initialized successfully');
     } catch (error) {
@@ -47,6 +58,7 @@ function cleanupGallery() {
     photoListDict = null;
     isInitialized = false;
     currentLandmarkName = null;
+    isWaterfallApplied = false;
 
     // 清理观察器
     if (observer) {
@@ -57,6 +69,11 @@ function cleanupGallery() {
     // 移除事件监听
     if (photoListContainer) {
         photoListContainer.removeEventListener('scroll', handleScroll);
+    }
+
+    window.removeEventListener('resize', handleResize);
+    if (resizeTimeout) {
+        clearTimeout(resizeTimeout);
     }
 }
 
@@ -73,6 +90,11 @@ function initLazyLoadObserver() {
                         img.classList.remove('lazy');
                         img.classList.add('loaded');
                         img.removeAttribute('data-src');
+
+                        // 图片加载完成后重新计算瀑布流布局
+                        img.onload = () => {
+                            setTimeout(applyWaterfallLayout, 100);
+                        };
                     }
                     observer.unobserve(img);
                 }
@@ -103,6 +125,99 @@ function handleScroll() {
             loadMorePhotos();
         }
     }, 100);
+}
+
+// 窗口大小变化处理（带防抖）
+function handleResize() {
+    if (resizeTimeout) {
+        clearTimeout(resizeTimeout);
+    }
+
+    resizeTimeout = setTimeout(() => {
+        // 根据窗口宽度动态调整列数
+        updateColumnCount();
+        // 重新计算瀑布流布局
+        if (isWaterfallApplied) {
+            applyWaterfallLayout();
+        }
+    }, 250);
+}
+
+// 根据窗口宽度更新列数
+function updateColumnCount() {
+    if (!grid) return;
+
+    const containerWidth = grid.clientWidth;
+    let newColumnCount = 3; // 默认
+
+    if (containerWidth <= 576) { // 手机
+        newColumnCount = 1;
+    } else if (containerWidth <= 768) { // 平板
+        newColumnCount = 2;
+    } else if (containerWidth <= 1024) { // 小桌面
+        newColumnCount = 3;
+    } else { // 大桌面
+        newColumnCount = 4;
+    }
+
+    if (newColumnCount !== columnCount) {
+        columnCount = newColumnCount;
+        return true; // 列数有变化
+    }
+
+    return false; // 列数无变化
+}
+
+// 应用瀑布流布局
+function applyWaterfallLayout() {
+    if (!grid) return;
+
+    const cards = grid.querySelectorAll('.image-card:not(.placeholder)');
+    if (cards.length === 0) return;
+
+    // 更新列数
+    updateColumnCount();
+
+    // 重置列高度
+    columnHeights = new Array(columnCount).fill(0);
+    columnTops = new Array(columnCount).fill(0);
+
+    // 获取容器和卡片信息
+    const containerWidth = grid.clientWidth;
+    const cardWidth = (containerWidth - (gap * (columnCount - 1))) / columnCount;
+
+    // 计算每个卡片的位置
+    cards.forEach((card, index) => {
+        // 找到当前最低的列
+        const minHeight = Math.min(...columnHeights);
+        const colIndex = columnHeights.indexOf(minHeight);
+
+        // 计算位置
+        const left = colIndex * (cardWidth + gap);
+        const top = columnTops[colIndex];
+
+        // 应用绝对定位
+        card.style.position = 'absolute';
+        card.style.left = left + 'px';
+        card.style.top = top + 'px';
+        card.style.width = cardWidth + 'px';
+        card.style.margin = '0'; // 清除可能的margin
+
+        // 获取卡片实际高度（包括padding和margin）
+        const cardHeight = card.offsetHeight;
+
+        // 更新列高度
+        columnHeights[colIndex] += cardHeight + gap;
+        columnTops[colIndex] += cardHeight + gap;
+    });
+
+    // 设置容器高度
+    const maxHeight = Math.max(...columnHeights);
+    grid.style.position = 'relative';
+    grid.style.height = maxHeight + 'px';
+
+    isWaterfallApplied = true;
+    console.log(`瀑布流布局应用完成，${columnCount}列，总高度: ${maxHeight}px`);
 }
 
 // 显示模态框
@@ -162,8 +277,12 @@ function resetLoadState() {
     loadedCount = 0;
     isLoading = false;
     allPhotos = [];
+    isWaterfallApplied = false;
+
     if (grid) {
         grid.innerHTML = '';
+        grid.style.position = '';
+        grid.style.height = '';
     }
 
     // 重置滚动事件
@@ -246,21 +365,44 @@ function loadBatch(startIndex, endIndex) {
 
     grid.appendChild(fragment);
     loadedCount = endIndex;
-    isLoading = false;
+
+    // 应用瀑布流布局
+    if (loadedCount > 0) {
+        // 等待图片加载完成后再计算布局
+        if (startIndex < 5) { // 前5张是立即加载的
+            setTimeout(() => {
+                applyWaterfallLayout();
+                isLoading = false;
+            }, 100);
+        } else {
+            // 对于懒加载的图片，会在每张图片加载完成后自动重新计算布局
+            isLoading = false;
+        }
+    } else {
+        isLoading = false;
+    }
 
     // 如果还有更多图片，显示加载更多提示
     if (loadedCount < allPhotos.length) {
         const loadMoreIndicator = document.createElement('div');
         loadMoreIndicator.className = 'loading-more';
         loadMoreIndicator.textContent = '滚动加载更多...';
-        grid.appendChild(loadMoreIndicator);
-    }
+        loadMoreIndicator.style.textAlign = 'center';
+        loadMoreIndicator.style.padding = '20px';
+        loadMoreIndicator.style.color = '#666';
 
-    // 如果已经加载了所有图片，移除滚动监听
-    if (loadedCount >= allPhotos.length) {
+        // 添加到容器末尾
+        grid.appendChild(loadMoreIndicator);
+
+        // 重新计算包含加载提示的布局
+        setTimeout(applyWaterfallLayout, 50);
+    } else {
+        // 如果已经加载了所有图片，移除滚动监听
         const loadMoreIndicator = grid.querySelector('.loading-more');
         if (loadMoreIndicator) {
             loadMoreIndicator.remove();
+            // 重新计算最终布局
+            setTimeout(applyWaterfallLayout, 50);
         }
     }
 }
@@ -281,9 +423,28 @@ function loadMorePhotos() {
     loadBatch(nextBatchStart, nextBatchEnd);
 }
 
+// 手动触发瀑布流布局重新计算（用于外部调用）
+function refreshWaterfallLayout() {
+    if (grid && loadedCount > 0) {
+        applyWaterfallLayout();
+    }
+}
+
+// 设置瀑布流列数（用于外部调用）
+function setWaterfallColumns(columns) {
+    if (columns >= 1 && columns <= 6) {
+        columnCount = columns;
+        if (isWaterfallApplied) {
+            applyWaterfallLayout();
+        }
+    }
+}
+
 // 导出函数
 window.loadPhotos = loadPhotos; // 暴露到window对象
-export { loadPhotos, initializeGallery, cleanupGallery };
+window.refreshWaterfallLayout = refreshWaterfallLayout;
+window.setWaterfallColumns = setWaterfallColumns;
+export { loadPhotos, initializeGallery, cleanupGallery, refreshWaterfallLayout, setWaterfallColumns };
 
 // 如果需要在页面加载时自动初始化
 if (document.readyState === 'loading') {

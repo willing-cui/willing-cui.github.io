@@ -520,45 +520,50 @@ ol {
     width: 100%;
 }
 
-/* --- Custom CSS Replacements for Tailwind --- */
+/* === 瀑布流布局相关样式 === */
+#waterfall-grid {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    transition: height 0.3s ease;
+}
+
+/* 瀑布流卡片容器 */
 .waterfall-grid-container {
-    max-width: 1280px;
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
-    column-gap: 1.5rem;
-    columns: 2;
+    padding: 0 1rem;
+    width: 100%;
+    min-height: 200px; /* 确保容器有最小高度 */
 }
 
-@media (min-width: 640px) {
-    .waterfall-grid-container {
-        columns: 3;
-    }
-}
-
-@media (min-width: 1024px) {
-    .waterfall-grid-container {
-        columns: 4;
-    }
-}
-
+/* 图片卡片样式 - 瀑布流优化 */
 .image-card {
     background-color: rgb(31, 41, 55);
-    padding: 0.5rem;
+    padding: 0.75rem;
     border-radius: 0.75rem;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 300ms ease-in-out;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    margin-bottom: 0; /* 瀑布流中由JS控制间距 */
+    width: 100%; /* 宽度由JS控制 */
+    will-change: transform, opacity;
     break-inside: avoid;
-    margin-bottom: 1.5rem;
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
 }
 
 .image-card:hover {
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
 }
 
 .image-card-content {
     width: 100%;
     overflow: hidden;
     border-radius: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    min-height: 100px; /* 防止图片加载时高度塌陷 */
 }
 
 .image-display {
@@ -566,52 +571,52 @@ ol {
     width: 100%;
     height: auto;
     object-fit: cover;
-    transform: scale(1);
-    transition: transform 500ms ease-in-out;
+    transition: transform 0.5s ease;
     cursor: zoom-in;
+    border-radius: 0.375rem;
+    max-width: 100%;
+    vertical-align: middle;
 }
 
 .image-display:hover {
-    transform: scale(1.02);
+    transform: scale(1.05);
 }
 
 .card-meta-container {
     margin-top: 0.75rem;
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
-    grid-column: 1;
-    grid-row: span 2;
-}
-
-.card-title {
+    padding: 0 0.25rem;
+    color: rgb(209, 213, 219);
     font-size: 0.875rem;
-    font-weight: 600;
-    color: rgb(229, 231, 235);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.card-subtitle {
-    font-size: 0.75rem;
-    color: rgb(107, 114, 128);
-}
-
-.card-meta-container span {
-    grid-column: 2;
-    z-index: 3000;
+    line-height: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 }
 
 .card-meta-container span:first-of-type {
-    font-size: 1rem;
-    padding-top: 1rem;
-    padding-right: 0.5rem;
+    font-weight: 600;
+    color: rgb(229, 231, 235);
+    font-size: 0.95rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .card-meta-container span:last-of-type {
     font-size: 0.8rem;
+    color: rgb(156, 163, 175);
     font-style: italic;
-    padding-bottom: 1rem;
+}
+
+/* 响应式列数设置 */
+@media (max-width: 640px) {
+    .waterfall-grid-container {
+        padding: 0 0.5rem;
+    }
+    
+    .image-card {
+        padding: 0.5rem;
+    }
 }
 
 /* Image Modal (Lightbox) */
