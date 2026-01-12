@@ -69,8 +69,8 @@
 ### 4. Leaky ReLU
 
 <span class="image main">
-<img class="main img-in-blog" style="max-width: 40%" src="./blogs/14_Activation_Functions/ReLU_and_GELU.webp" alt="ReLU and GELU" />
-<i>ReLU 和 GELU 激活函数</i>
+<img class="main img-in-blog" style="max-width: 40%" src="./blogs/14_Activation_Functions/ReLU-Leaky-ReLU-ELU.webp" alt="ReLU, Leaky-ReLU and GELU" />
+<i>ReLU, Leaky-ReLU 和 GELU 激活函数</i>
 </span>
 
 **公式**：$f(x) = \text{max}(αx, x)$，$α$通常取0.01

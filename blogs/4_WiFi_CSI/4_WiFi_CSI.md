@@ -1,50 +1,136 @@
-## What is CSI?
+## 一、CSI基本概念与原理
 
-CSI (channel state information) provides physical channel measurements in subcarrier-level granularity, and it can be easily accessed from the commodity Wi-Fi network interface controller (NIC).
+Wi-Fi **CSI**（Channel State Information，信道状态信息）是无线通信中描述信号从发射端到接收端传播过程的详细参数。与传统**RSSI**（Received Signal Strength Indicator，接收信号强度指示）相比，CSI提供了**子载波级别**的细粒度信道特征，能够捕捉到信号在传播路径上的微小变化。
 
-Most research paper treat the CFR (channel frequency response) sampled at different subcarriers as the CSI data.
+### 什么是CSI？
+CSI提供了物理信道的细粒度测量（子载波级），并且可以很容易地从商用Wi-Fi网络接口控制器（NIC）中获取。大多数研究论文将在不同子载波上采样得到的**CFR**（Channel Frequency Response，信道频率响应）视为CSI数据。
 
-CFR is essentially the Fourier transform of CIR (channel impulse response).
+### 技术原理：两种主流模型
+CSI感知基于无线信号的**多径效应**。理解信号传播过程主要有两种模型，它们各有优势，适用于不同场景。
 
-## From Raw Data to Statistical Insight
+#### 1. 射线追踪模型
+在典型的室内环境中，由于无线电波的反射，发射端发出的信号会通过多条路径到达接收端。
 
-Think of the CSI as a high-resolution snapshot of the channel's frequency response over a short time. A single CSI measurement tells you about the state *at that instant*, but it doesn't reveal the *dynamics*.
+- **信号模型**：接收端在特定时刻测量到的复基带信号强度可表示为：
+  $$
+  V = \sum_{n=1}^{N} \| V_n \| e^{-j\phi_n}
+  $$
+  其中 $V_n$ 和 $\phi_n$ 分别是第 $n$ 个多径分量的幅度和相位，$N$ 是分量总数。RSSI则可表示为该信号强度的功率（dB）：
+  $$
+  \text{RSSI} = 10 \log_2(\| V \|^2)
+  $$
+  作为多径分量叠加的结果，RSSI会快速波动，即使对于静态链路也是如此。特定多径分量的微小变化可能导致显著的相长或相消干涉，引起RSSI的巨大波动。
 
-The **Autocorrelation Function** transforms this series of snapshots into a tool that answers critical questions about how the channel evolves over time and frequency. It quantifies the "memory" of the channel.
+- **信道脉冲响应（CIR）与信道频率响应（CFR）**：
+    - 为了完全表征每条路径，无线信道被建模为一个线性时域滤波器，即**CIR**。在时不变假设下，CIR $h(t)$ 表示为：
+      $$
+      h(t) = \sum_{n=1}^{N} \alpha_n e^{-j\phi_n} \delta(t - \tau_n)
+      $$
+      其中 $\alpha_n$, $\phi_n$, $\tau_n$ 分别是第 $n$ 条路径的复衰减、相位和时延。
+    - 在频域，多径引起频率选择性衰落，其特征由**CFR**描述。**CFR本质上是CIR的傅里叶变换**。它包含幅度响应和相位响应。
+    - 接收信号 $r(t)$ 是发送信号 $s(t)$ 与CIR $h(t)$ 的卷积：$r(t) = s(t) \otimes h(t)$。
+    - 在频域，接收信号频谱 $R(f)$ 是发送信号频谱 $S(f)$ 与CFR $H(f)$ 的乘积：$R(f) = S(f) H(f)$。
+    - 因此，CFR可以看作是接收频谱与发送频谱之比。在采用OFDM的Wi-Fi标准中，可以方便地从接收机获取每个子载波上CFR的采样值 $H(f_j) = \| H(f_j) \| e^{\angle H(f_j)}$。
 
-### Key Statistical Properties Revealed by the ACF
+- **应用与局限**：射线追踪模型建立了信号传播空间的几何特性与CSI数据之间的关系，广泛应用于无线定位和追踪。但其基于简化的环境假设，在复杂环境中难以精确恢复所有空间信息。
 
-#### 1. Temporal Correlation (Over Time)
+#### 2. 散射模型
+在充满散射体的复杂环境中，射线追踪模型可能不再适用。散射模型将环境中的所有物体视为向所有方向扩散信号的**散射体**。
 
-This is the most common application. By computing the ACF along the time dimension for a single subcarrier, you can determine:
+- **信号模型**：观察到的CSI是静态散射体（家具、墙壁等）和动态散射体（手臂、腿等）贡献部分的叠加：
+  $$
+  H(f,t) = \sum_{o \in \Omega_s(t)} H_o(f,t) + \sum_{p \in \Omega_d(t)} H_p(f,t)
+  $$
 
-- **Coherence Time 相干时间 ($T_c$):** This is the *maximum time duration* over which the channel's impulse response is essentially invariant. It's a direct measure of how fast the channel is changing.
-  - **How to find it:** The ACF of a static channel will be high for short time lags (对于静态信道，时滞越短，信道表现出的相关性越强). The **coherence time is typically defined as the time lag where the ACF magnitude falls below a certain threshold (e.g., 0.5 or 1/e)**. A slow decay indicates a highly correlated (slow-changing) channel, common in static environments. A fast decay indicates a rapidly changing channel, caused by high mobility or Doppler spread.
-- **Doppler Spread ($B_d$):** The Doppler spread is the frequency domain dual of coherence time ($T_c ≈ 1/B_d$). It represents the spectral broadening due to motion. The ACF in time is directly related to the Doppler Power Spectral Density via the Fourier Transform. Analyzing the width of the ACF gives you the Doppler spread.
+- **自相关函数（ACF）与速度估计**：通过分析CSI的**自相关函数（ACF）**，可以建立其统计特性与动态散射体速度之间的关系：
+  $$
+  \rho_H(f, \tau) \approx \text{sinc}(kv\tau)
+  $$
+  其中 $k = 2\pi/\lambda$，$v$ 是速度，$\tau$ 是时间滞后。通过匹配ACF的第一个峰值位置 $\tau_0$ 和sinc函数的第一个峰值位置 $x_0$，可以估计速度：
+  $$
+  v = \frac{x_0 \lambda}{2\pi \tau_0}
+  $$
+  这种方法即使在非视距和多径干扰严重的环境中也表现出很强的鲁棒性。
 
-#### 2. Frequency Correlation (Over Subcarriers)
+- **应用与局限**：散射模型适用于入侵检测、跌倒检测等以速度为导向的感知任务，但在精确几何定位方面存在不足。
 
-By computing the ACF across different subcarriers at the same time instant, you can determine:
+### 数据获取方式
+在Wi-Fi的**OFDM**（正交频分复用）系统中，信道被分割成多个子载波。接收端通过比对已知的导频信号与实际接收到的信号，计算出每个子载波的信道响应（CSI）。商用Wi-Fi网卡的进步使得获取这些细粒度的CSI数据成为可能。
 
-- **Coherence Bandwidth ($B_c$):** This is the *frequency range* over which the channel can be considered "flat" (i.e., the channel's gain and phase are highly correlated).
-  - **How to find it:** Similar to coherence time, you find the **frequency lag where the ACF magnitude falls below a threshold**. A slow decay (wide ACF) means a large coherence bandwidth, typical of environments with little multipath (e.g., a line-of-sight link). A fast decay (narrow ACF) means a small coherence bandwidth, indicative of significant delay spread caused by rich multipath.
-- **Delay Spread ($σ_τ$):** The delay spread is the time-domain dual of coherence bandwidth ($B_c ≈ 1/σ_τ$). It measures the dispersion of the signal in time due to multiple propagation paths. The ACF in frequency is the Fourier Transform of the Power Delay Profile. The width of this ACF reveals the delay spread.
+## 二、从原始数据到统计洞察：自相关函数（ACF）的关键作用
 
-#### 3. Spatial Correlation (Over Multiple Antennas)
+可以将一次CSI测量视为信道在**一个瞬间**的高分辨率快照。但单个CSI无法揭示信道的**动态特性**。
 
-In MIMO systems with multiple antennas, you can compute the spatial ACF across antennas.
+**自相关函数（ACF）** 将一系列CSI快照转化为一个强大的工具，用于揭示信道随时间、频率和空间的演化规律，量化信道的“记忆”效应。
 
-- **Coherence Distance ($D_c$):** This is the spatial separation required for two antenna signals to become uncorrelated.
-  - **How to find it:** The ACF is calculated over the antenna index. The **spatial lag where the ACF decays** gives the coherence distance. This is crucial for understanding the effectiveness of spatial diversity and multiplexing in MIMO.
+### ACF揭示的关键统计特性
 
-## Infer the Environment
+#### 1. 时间相关性（随时间变化）
+计算单个子载波上CSI随时间变化的ACF，可以确定：
 
-By monitoring how the ACF changes, you can infer the environment.
+- **相干时间 $T_c$**：信道冲激响应基本保持不变的最大时间间隔。它直接衡量信道变化的快慢。
+  - **如何确定**：静态信道的ACF在短时滞下值较高。**相干时间通常定义为ACF幅度下降到某个阈值（如0.5或1/e）时所对应的时滞**。ACF衰减慢表示信道高度相关（变化慢），衰减快表示信道变化快（由高移动性或多普勒扩展引起）。
+- **多普勒扩展 $B_d$**：多普勒扩展是相干时间的频域对偶（$T_c \approx 1/B_d$）。它代表了由于运动导致的频谱展宽。时间ACF通过傅里叶变换与多普勒功率谱密度直接相关。分析ACF的宽度可以获得多普勒扩展。
 
-- **Human Activity Recognition:** A person walking through an environment will change the multipath profile. This will directly affect the **delay spread** (changing the frequency ACF) and create Doppler shifts (changing the time ACF). The ACF provides a clean, statistical signature of these activities, which is more robust than looking at raw CSI amplitude/phase.
-- **Speed Estimation:** The Doppler spread (derived from the temporal ACF) is directly proportional to the velocity of a moving object. By tracking how the ACF width changes over time, you can estimate a person's or vehicle's speed.
-- **Fall Detection / Intrusion Detection:** A sudden, dramatic change in the temporal or frequency statistics (a "break" in the correlation) can be a very reliable indicator of an anomalous event.
+#### 2. 频率相关性（跨子载波）
+计算同一时刻不同子载波间CSI的ACF，可以确定：
 
-## References
+- **相干带宽 $B_c$**：信道可被视为“平坦”（即信道增益和相位高度相关）的频率范围。
+  - **如何确定**：类似于相干时间，找到**ACF幅度下降到阈值以下时的频率滞后**。ACF衰减慢（宽）意味着相干带宽大，多见于多径较少的环境（如视距链路）。ACF衰减快（窄）意味着相干带宽小，表明由丰富多径引起的显著时延扩展。
+- **时延扩展 $ \sigma_\tau $**：时延扩展是相干带宽的时域对偶（$ B_c \approx 1/\sigma_\tau $）。它测量了由于多径传播导致的信号在时间上的弥散。频率ACF是功率延迟剖面（PDP）的傅里叶变换。ACF的宽度揭示了时延扩展。
 
-1. **Understanding CSI:** https://tns.thss.tsinghua.edu.cn/wst/docs/pre/
+#### 3. 空间相关性（跨多天线）
+在具有多天线的MIMO系统中，可以计算跨天线的空间ACF。
+
+- **相干距离 $D_c$**：两个天线信号变得不相关所需的空间分离距离。
+  - **如何确定**：ACF在天线索引上计算。**ACF衰减时所对应的空间滞后**就是相干距离。这对于理解MIMO中空间分集和复用的有效性至关重要。
+
+### 利用ACF推断环境状态
+通过监测ACF的变化，可以推断环境状态。
+
+- **人体活动识别**：人行走会改变多径轮廓，这将直接影响**时延扩展**（改变频率ACF）并产生多普勒频移（改变时间ACF）。ACF为这些活动提供了比原始CSI幅度/相位更鲁棒的统计特征。
+- **速度估计**：多普勒扩展（从时间ACF推导出）与运动物体的速度成正比。通过跟踪ACF宽度随时间的变化，可以估计人或车辆的速度。
+- **跌倒检测/入侵检测**：时间或频率统计特性的突然剧烈变化（相关性的“断裂”）可以作为异常事件的可靠指标。
+
+## 三、CSI的计算与信号处理流程
+
+### 1. 信号模型
+CSI可以表示为一个复数矩阵 $H$，其中每个元素对应一个子载波的信道响应：
+$$
+H = |H| e^{j\theta}
+$$
+其中 $|H|$ 是信号的幅度衰减，$\theta$ 是信号的相位偏移。
+
+### 2. 信号处理流程
+1.  **相位校准**：采用相邻子载波差分法（$ \Delta\phi = \phi_{k+1} - \phi_k $）消除时钟偏移等固有噪声。
+2.  **幅值滤波**：使用中值滤波抑制脉冲干扰，再通过移动平均平滑高频噪声，提升信噪比。
+3.  **特征提取**：采用小波变换等进行多尺度分析，既保留时间信息又能捕捉频率变化。
+
+## 四、Wi-Fi CSI在AI方面的应用
+
+### 1. 人体活动识别
+基于CSI的AI模型能够识别行走、坐卧、手势等动作，甚至能够检测跌倒等危险行为。通过CNN提取空间特征（人体轮廓），LSTM建模动作时序，误检率可控制在很低水平。
+
+### 2. 呼吸与心跳监测
+CSI对环境变化极其敏感，能够捕捉人体呼吸造成的微小胸腔起伏。通过提取CSI的规律性变化，可以估计呼吸频率和心跳节奏，实现非接触式生命体征监测。
+
+### 3. 室内定位与追踪
+结合**AoA**（到达角）等测量算法，可以实现米级甚至亚米级精度的室内定位。
+
+### 4. 环境感知与智能控制
+基于CSI的感知系统能够实现人来设备唤醒、人走节能关闭的智能控制，或为独居老人提供无感安全监护。
+
+### 5. 入侵检测与安全防护
+利用ACF等统计特征，Wi-Fi CSI能够可靠识别人员进出、门窗开关等异常动作，误报率极低。
+
+## 五、技术优势
+
+| 优势               | 说明                                                         |
+| :----------------- | :----------------------------------------------------------- |
+| **低成本与易部署** | 直接利用现有Wi-Fi AP，无需专用传感器硬件。                   |
+| **穿墙能力**       | 工作在2.4GHz/5GHz频段，具有优异的绕射和穿墙能力。            |
+| **隐私保护**       | 不采集图像或视频，不存在侵犯隐私的风险。                     |
+| **高精度感知**     | 能够实现厘米级微小运动检测和亚米级定位。                     |
+| **环境洞察力**     | 通过ACF等分析，能深刻揭示信道的时、频、空统计特性，推断环境状态。 |
+
+随着Wi-Fi 7技术的普及和AI算法的进步，CSI感知技术将在智慧园区、智能家居、医疗健康等领域发挥更重要的作用，推动无线网络从“连接工具”向“智能感知基础设施”演进。

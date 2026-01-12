@@ -19,6 +19,8 @@ const pathList = [
     "14_Activation_Functions",
     "15_Access_Repo_via_GitHub_SSH",
     "16_Feature_Alignment",
+    "17_Autocorrelation_Function",
+    "18_Autocorrelation_Cross-correlation_Convolution",
 ];
 const nameList = [
     "一阶倒立摆的系统模型",
@@ -37,6 +39,8 @@ const nameList = [
     "Activation Functions",
     "Access Repo via GitHub SSH",
     "Feature Alignment",
+    "Introduction to Autocorrelation Function",
+    "Autocorrelation, Cross-correlation, and Convolution",
 ];
 
 function loadMd(name, id = null) {
