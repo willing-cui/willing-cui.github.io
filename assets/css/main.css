@@ -320,39 +320,29 @@ h1 {
 }
 
 h2 {
-	font-size: 1.5rem;
-	line-height: 1.4;
-	letter-spacing: 0.3rem;
+	font-size: 1.75rem;
+	line-height: 1.1;
+	letter-spacing: 0.33rem;
 }
 
 h3 {
-	font-size: 1rem;
+	font-size: 1.5rem;
 }
 
 h4 {
-	font-size: 0.8rem;
+	font-size: 1.25rem;
 }
 
 h5 {
-	font-size: 0.7rem;
+	font-size: 1.1rem;
 }
 
 h6 {
-	font-size: 0.6rem;
+	font-size: 1rem;
 }
 
-@media screen and (max-width: 736px) {
-
-	h1 {
-		font-size: 1.75rem;
-		line-height: 1.4;
-	}
-
-	h2 {
-		font-size: 1.25em;
-		line-height: 1.5;
-	}
-
+p {
+    font-size: 1rem;
 }
 
 sub {

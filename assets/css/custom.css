@@ -372,7 +372,7 @@ html::-webkit-scrollbar-thumb {
 #blogContent h2 {
     margin: 1.5rem 0 1.5rem 0;
     white-space: normal;
-    font-size: x-large;
+    font-size: 1.75rem;
     text-transform: none;
     letter-spacing: 0.1rem;
 }
@@ -380,17 +380,16 @@ html::-webkit-scrollbar-thumb {
 #blogContent h3 {
     margin: 1rem 0 1rem 0;
     white-space: normal;
-    font-size: larger;
+    font-size: 1.5rem;
     text-transform: none;
 }
 
 #blogContent h4 {
     margin: 0.75rem 0 0.75rem 0;
     white-space: normal;
-    font-size: large;
+    font-size: 1.25rem;
     text-transform: none;
 }
-
 
 #blogContent ul,
 ol {
