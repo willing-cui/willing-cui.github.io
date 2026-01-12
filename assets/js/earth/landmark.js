@@ -18,7 +18,7 @@ var areas = [
     }, {
         name: "Zhongshan",
         position: [113.393, 22.516],
-        text_position: [110.893, 21.516]
+        text_position: [110.893, 21.416]
     }, {
         name: "HKSAR",
         position: [114.1694, 22.3193],
@@ -26,7 +26,7 @@ var areas = [
     }, {
         name: "Dongguan",
         position: [113.7518, 23.0207],
-        text_position: [112.7518, 23.6207]
+        text_position: [114.7518, 23.6207]
     }, {
         name: "Zhangzhou",
         position: [117.6472, 24.5135],
@@ -51,6 +51,10 @@ var areas = [
         name: "Wuhan",
         position: [114.3052, 30.5928],
         text_position: [114.3052, 31.0928]
+    }, {
+        name: "Qingyuan",
+        position: [113.0561, 23.6820],
+        text_position: [110.5561, 22.6820]
     }
 ];
 

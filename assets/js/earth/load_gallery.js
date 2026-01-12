@@ -209,7 +209,7 @@ function applyWaterfallLayout() {
         card.style.margin = '0'; // 清除可能的margin
 
         // 获取卡片实际高度（包括padding和margin）
-        const cardHeight = getStableCardHeight(card);
+        const cardHeight = card.offsetHeight;
 
         // 更新列高度
         columnHeights[colIndex] += cardHeight + gap;
@@ -223,29 +223,6 @@ function applyWaterfallLayout() {
 
     isWaterfallApplied = true;
     console.log(`瀑布流布局应用完成，${columnCount}列，总高度: ${maxHeight}px`);
-}
-
-// 获取稳定的卡片高度
-function getStableCardHeight(card) {
-    // 临时禁用所有可能影响高度的样式
-    const originalTransition = card.style.transition;
-    const originalTransform = card.style.transform;
-    const originalBoxShadow = card.style.boxShadow;
-
-    card.style.transition = 'none';
-    card.style.transform = 'none';
-    card.style.boxShadow = 'none';
-
-    // 强制同步布局
-    const cardHeight = card.offsetHeight;
-
-
-    // 恢复原始样式
-    card.style.transition = originalTransition;
-    card.style.transform = originalTransform;
-    card.style.boxShadow = originalBoxShadow;
-
-    return cardHeight;
 }
 
 // 显示模态框
@@ -391,6 +368,11 @@ function loadBatch(startIndex, endIndex) {
                 applyWaterfallLayout();
                 isLoading = false;
             }, 100);
+
+            // 强制刷新动画，对齐卡片
+            setTimeout(() => {
+                applyWaterfallLayout();
+            }, 500);
         } else {
             // 对于懒加载的图片，会在每张图片加载完成后自动重新计算布局
             isLoading = false;
