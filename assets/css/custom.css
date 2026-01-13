@@ -295,6 +295,7 @@ html::-webkit-scrollbar-thumb {
 .img-in-blog {
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 1rem;
 }
 
 .formula-in-blog {
