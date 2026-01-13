@@ -364,6 +364,12 @@ html::-webkit-scrollbar-thumb {
 
 }
 
+#blogTitle {
+	white-space: normal;
+	letter-spacing: normal;
+	text-transform: none;
+}
+
 #blogContent p {
     margin: 0 0 0.5rem 0;
     white-space: normal;
@@ -382,6 +388,7 @@ html::-webkit-scrollbar-thumb {
     white-space: normal;
     font-size: 1.5rem;
     text-transform: none;
+	letter-spacing: 0.086rem;
 }
 
 #blogContent h4 {
@@ -389,6 +396,15 @@ html::-webkit-scrollbar-thumb {
     white-space: normal;
     font-size: 1.25rem;
     text-transform: none;
+	letter-spacing: 0.071rem;
+}
+
+#blogContent h5 {
+    margin: 0.5rem 0 0.5rem 0;
+    white-space: normal;
+    font-size: 1.1rem;
+    text-transform: none;
+	letter-spacing: 0.05rem;
 }
 
 #blogContent ul,

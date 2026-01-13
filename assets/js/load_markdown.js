@@ -21,6 +21,9 @@ const pathList = [
     "16_Feature_Alignment",
     "17_Autocorrelation_Function",
     "18_Autocorrelation_Cross-correlation_Convolution",
+	"19_MVX-Net_Paper_Reading_Report",
+	"20_DeepFusion_Paper_Reading_Report",
+	"21_Cross-Attention_Mechanism",
 ];
 const nameList = [
     "一阶倒立摆的系统模型",
@@ -41,6 +44,9 @@ const nameList = [
     "Feature Alignment",
     "Introduction to Autocorrelation Function",
     "Autocorrelation, Cross-correlation, and Convolution",
+	"MVX-Net Paper Reading Report",
+	"DeepFusion Paper Reading Report",
+	"Introduction to Cross-Attention Mechanism",
 ];
 
 function loadMd(name, id = null) {
