@@ -1,2 +1,7 @@
 /images/earth/backup/*
 /images/gallery/_Camera/*
+!/images/gallery/_Camera/image_process/add_watermark_u1.py
+!/images/gallery/_Camera/image_process/convert2webp_check.py
+!/images/gallery/_Camera/image_process/convert2webp_glance.py
+!/images/gallery/_Camera/image_process/generate_json.py
+!/images/gallery/_Camera/image_process/icon_process.py
