@@ -25,18 +25,6 @@ model = nn.Sequential(
 )
 ```
 
-**TensorFlow/Keras实现**：
-
-```
-from tensorflow.keras import layers
-
-model = tf.keras.Sequential([
-    layers.Dense(256, activation='relu'),
-    layers.Dropout(0.5),  # 丢弃率0.5
-    layers.Dense(10, activation='softmax')
-])
-```
-
 ## 二、Dropout在神经网络中的主要作用
 
 ### 2.1 防止过拟合
@@ -71,9 +59,9 @@ Dropout最常应用于全连接层（FC层），因为全连接层参数密集�
 
 Dropout的主要超参数是丢弃率p，表示神经元被丢弃的概率。常见的设置建议如下：
 
-- **全连接层**：p=0.5（最常用）
-- **输入层**：p=0.1∼0.2（较低）
-- **卷积层**：p≤0.2（较少使用）
+- **全连接层**：$p=0.5$（最常用）
+- **输入层**：$p=0.1\approx 0.2$（较低）
+- **卷积层**：$p\leq 0.2$（较少使用）
 - **靠近输出层的层**：设置较小的丢弃率
 
 ### 4.2 参数选择原则
