@@ -25,6 +25,10 @@ let isInitialized = false; // 标记是否已初始化
 const BATCH_SIZE = 20; // 每次加载的数量
 const PRELOAD_THRESHOLD = 5; // 预加载阈值（距离底部多少张图片时开始加载下一批）
 
+// 卡片尺寸缓存
+let cardWidth = 0;
+let lastContainerWidth = 0;
+
 // 初始化函数
 async function initializeGallery() {
     if (isInitialized) {
@@ -172,6 +176,17 @@ function updateColumnCount() {
     return false; // 列数无变化
 }
 
+// 计算卡片宽度
+function calculateCardWidth() {
+    if (!grid) return 0;
+    const containerWidth = grid.clientWidth;
+    if (containerWidth !== lastContainerWidth || cardWidth === 0) {
+        cardWidth = (containerWidth - (gap * (columnCount - 1))) / columnCount;
+        lastContainerWidth = containerWidth;
+    }
+    return cardWidth;
+}
+
 // 应用瀑布流布局
 function applyWaterfallLayout() {
     if (!grid) return;
@@ -189,9 +204,9 @@ function applyWaterfallLayout() {
 
     // 获取容器和卡片信息
     const containerWidth = grid.clientWidth;
-    const cardWidth = (containerWidth - (gap * (columnCount - 1))) / columnCount;
+    cardWidth = (containerWidth - (gap * (columnCount - 1))) / columnCount;
 
-    // 计算每个卡片的位置
+    // 批量计算并应用样式
     cards.forEach((card, index) => {
         // 找到当前最低的列
         const minHeight = Math.min(...columnHeights);
@@ -208,7 +223,7 @@ function applyWaterfallLayout() {
         card.style.width = cardWidth + 'px';
         card.style.margin = '0'; // 清除可能的margin
 
-        // 获取卡片实际高度（包括padding和margin）
+        // 获取卡片实际高度
         const cardHeight = card.offsetHeight;
 
         // 更新列高度
@@ -245,9 +260,12 @@ window.hideModal = (event) => {
 function createImageCard(dataUrl, name, time, isLazy = true) {
     const card = document.createElement('div');
     card.className = 'image-card';
+    
+    // 在应用布局前保持卡片隐藏
+    card.style.visibility = 'hidden';
+    card.style.opacity = '0';
+    
     const largeImgUrl = dataUrl.replaceAll("glance", "check");
-
-    // const imgSrc = isLazy ? 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjJmMmYyIi8+PC9zdmc+' : dataUrl;
     const imgSrc = isLazy ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAD+klEQVR4nO2cT4gcRRyFyz/BBDWCSEKIoqKiIAgSAiEiBIIBk5MHFYIHjx7Uk3+uSjwlJ8Gck0NIJAQNKHoxkIABSRAERTwERRQ3y850v1e9izGalBTOwLCMM9093TP1a94H7zIM1V31TTVdNVXlnBBCCCGEEEIIIYQQQgghhBBClKLf7z9A8gxJTzIonBQP4FOSj7cpo59ARYOxZLHtGhcy6BkBwOdra2vbG79Ax+j1evcD+GIg5XTjFxg+puKFGi+8o/T/e6pEIWy88GEXbLzgjsO22k1C6iEhiSEhiSEhiSEhiSEhiSEhiSEhiWFSSJyKAfAGyaODvNmVGQFTQkIIt5I8BODa+kk5AH+R/CCEcJszjCkhAI5Nmy0FcNwZxowQAC+WncIG8JIziiUh31T4T+GSM4oJIcvLy3cBuFmhh9zs9XqbnUFMCMnz/KGq/7wBeMQZxISQlZWVu6v2kCzL7nEGMSFkUN7lCj3kW2cUM0IAHKzQQw46o5gREkK4heTJEkJOxe86o5gREgkh3A7gMIDrY3rFdQBH4necYUwJGZLn+cMk34qj8hiSb8fPXAcwKaTLUELSQkISQ0ISQ0ISQ0ISQ0ISQ0IqEkLYQPIxADu890+EEDa6BpGQkpDcPW43GIA/SX5J8kATUzYSMoWlpaU7SZ4oObH5VVEUW90MSMgEiqLYQvK7CtP+scf8XhTFk64mEvI/rK6ubgPwQxUZI8m898+4GkjIGLIse5DklZoyhlkj+byriISsI25LJvnbjDKGj6+/Sb7quiKE5K64GhHAZwAuxl2qAD4kub+NFYpZlj0F4GoTMkak3ADwumkheZ4/HQVMqewV7/0LTd0vgJ0t76t/36QQAK+NW7s7IR/N2lu898/GrcgtyhjmaFyf3Ea7TaVqwYP/zN+r+Vg4G0LYVOc+8zzfQ7KYg4zhvX4yaXSfhJB4gyQ/nrGi56uuxYqj68FIO8w55+Jas1nbrRJlC/be3wfg64Z+fd+XPcYDwMvjFkvMMZdi3eu2W2XKFBxHtCR/abiiP8fJvyn39srglXRRMoY/oB/XHzSzMCF5nu8lmbdU0avxTW3CS8ONRcsYya+jRzItREgcLM3hcVEAeG70ut77dxIQMC7xdXvX3IXM8iZVs6dcixt94rUBvJtAw0/KKoB9cxMSQrij5FLQpqX8M3IOVdIZHX+1KgTAvQAuLLrCNJTWhMSNMwB+WnQFaSxtCuktunI0mNaEKJQQdiASwrQiIUwrEsK0IiHsvhCd9856AfBH40IGB8svvHK0mRNtLafJEqhcMJZ+K4fxj5xlfnpOCwiC8UTOAHi0FRlCCCGEEEIIIYQQQgghhBBCCNc9/gW1WARKxMla2QAAAABJRU5ErkJggg==' : dataUrl;
     const dataSrc = isLazy ? dataUrl : null;
 
@@ -272,6 +290,15 @@ function createImageCard(dataUrl, name, time, isLazy = true) {
     if (isLazy && observer) {
         const img = card.querySelector('img');
         observer.observe(img);
+    } else {
+        // 非懒加载图片加载完成后显示卡片
+        const img = card.querySelector('img');
+        img.onload = function() {
+            requestAnimationFrame(() => {
+                card.style.visibility = 'visible';
+                card.style.opacity = '1';
+            });
+        };
     }
 
     return card;
@@ -289,11 +316,46 @@ function resetLoadState() {
         grid.style.position = '';
         grid.style.height = '';
     }
+    
+    // 清除指示栏状态
+    if (indicator) {
+        const oldLoadMoreIndicator = indicator.querySelector('.loading-more');
+        if (oldLoadMoreIndicator) {
+            oldLoadMoreIndicator.remove();
+        }
+    }
 
     // 重置滚动事件
     if (scrollTimeout) {
         clearTimeout(scrollTimeout);
         scrollTimeout = null;
+    }
+}
+
+// 更新指示栏状态
+function updateIndicator() {
+    if (!indicator) return;
+    
+    const oldLoadMoreIndicator = indicator.querySelector('.loading-more');
+    if (oldLoadMoreIndicator) {
+        oldLoadMoreIndicator.remove();
+    }
+    
+    if (isLoading) {
+        const loadMoreIndicator = document.createElement('div');
+        loadMoreIndicator.className = 'loading-more';
+        loadMoreIndicator.textContent = 'Loading ...';
+        indicator.appendChild(loadMoreIndicator);
+    } else if (loadedCount < allPhotos.length) {
+        const loadMoreIndicator = document.createElement('div');
+        loadMoreIndicator.className = 'loading-more';
+        loadMoreIndicator.textContent = 'Scroll to Load More ...';
+        indicator.appendChild(loadMoreIndicator);
+    } else if (allPhotos.length > 0) {
+        const loadMoreIndicator = document.createElement('div');
+        loadMoreIndicator.className = 'loading-more';
+        loadMoreIndicator.textContent = 'Loading Complete';
+        indicator.appendChild(loadMoreIndicator);
     }
 }
 
@@ -314,6 +376,7 @@ async function loadPhotos(landmarkName) {
 
     if (!photoListDict || !photoListDict["photo"] || !photoListDict["photo"][landmarkName]) {
         grid.innerHTML = '<div class="no-photos">暂无照片</div>';
+        updateIndicator();
         return;
     }
 
@@ -323,6 +386,7 @@ async function loadPhotos(landmarkName) {
 
     if (photo_file_names.length === 0) {
         grid.innerHTML = '<div class="no-photos">暂无照片</div>';
+        updateIndicator();
         return;
     }
 
@@ -337,6 +401,9 @@ async function loadPhotos(landmarkName) {
         });
     });
 
+    // 更新指示栏
+    updateIndicator();
+    
     // 初始加载第一批
     loadBatch(0, Math.min(BATCH_SIZE, allPhotos.length));
 }
@@ -346,15 +413,27 @@ function loadBatch(startIndex, endIndex) {
     if (!grid) return;
 
     isLoading = true;
+    updateIndicator();
 
+    // 计算卡片宽度
+    calculateCardWidth();
+    
     // 使用文档片段提高性能
     const fragment = document.createDocumentFragment();
+    const cards = [];
 
     for (let i = startIndex; i < endIndex && i < allPhotos.length; i++) {
         const photo = allPhotos[i];
         const isLazy = i >= 5; // 前5张立即加载，其余懒加载
         const card = createImageCard(photo.path, photo.name, photo.time, isLazy);
+        
+        // 设置初始宽度以减少布局抖动
+        if (cardWidth > 0) {
+            card.style.width = cardWidth + 'px';
+        }
+        
         fragment.appendChild(card);
+        cards.push(card);
     }
 
     grid.appendChild(fragment);
@@ -362,48 +441,33 @@ function loadBatch(startIndex, endIndex) {
 
     // 应用瀑布流布局
     if (loadedCount > 0) {
-        // 等待图片加载完成后再计算布局
-        if (startIndex < 5) { // 前5张是立即加载的
+        // 等待下一帧以确保DOM已更新
+        requestAnimationFrame(() => {
+            applyWaterfallLayout();
+            
+            // 延迟显示卡片，避免闪烁
             setTimeout(() => {
-                applyWaterfallLayout();
+                cards.forEach(card => {
+                    card.style.visibility = 'visible';
+                    card.style.opacity = '1';
+                });
+            }, 50);
+            
+            // 图片加载完成后重新计算布局
+            if (startIndex < 5) { // 前5张是立即加载的
+                setTimeout(() => {
+                    applyWaterfallLayout();
+                    isLoading = false;
+                    updateIndicator();
+                }, 100);
+            } else {
                 isLoading = false;
-            }, 100);
-
-            // 强制刷新动画，对齐卡片
-            setTimeout(() => {
-                applyWaterfallLayout();
-            }, 500);
-        } else {
-            // 对于懒加载的图片，会在每张图片加载完成后自动重新计算布局
-            isLoading = false;
-        }
+                updateIndicator();
+            }
+        });
     } else {
         isLoading = false;
-    }
-
-    // 如果还有更多图片，显示加载更多提示
-    if (loadedCount < allPhotos.length) {
-        const oldLoadMoreIndicator = indicator.querySelector('.loading-more');
-        if (oldLoadMoreIndicator) {
-            oldLoadMoreIndicator.remove();
-        }
-        const loadMoreIndicator = document.createElement('div');
-        loadMoreIndicator.className = 'loading-more';
-        loadMoreIndicator.textContent = 'Scroll to load more ...';
-
-        // 添加到容器末尾
-        indicator.appendChild(loadMoreIndicator);
-
-        // 重新计算包含加载提示的布局
-        setTimeout(applyWaterfallLayout, 50);
-    } else {
-        // 如果已经加载了所有图片，移除滚动监听
-        const loadMoreIndicator = grid.querySelector('.loading-more');
-        if (loadMoreIndicator) {
-            loadMoreIndicator.remove();
-            // 重新计算最终布局
-            setTimeout(applyWaterfallLayout, 50);
-        }
+        updateIndicator();
     }
 }
 
@@ -413,13 +477,6 @@ function loadMorePhotos() {
 
     const nextBatchStart = loadedCount;
     const nextBatchEnd = Math.min(loadedCount + BATCH_SIZE, allPhotos.length);
-
-    // 更改"加载更多"提示
-    const loadMoreIndicator = indicator.querySelector('.loading-more');
-    if (loadMoreIndicator) {
-        // loadMoreIndicator.remove();
-        loadMoreIndicator.innerHTML = 'Loading completed';
-    }
 
     loadBatch(nextBatchStart, nextBatchEnd);
 }
