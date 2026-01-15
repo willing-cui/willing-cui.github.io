@@ -278,6 +278,7 @@ html::-webkit-scrollbar-thumb {
 .blog-card span {
     grid-column: 2;
     z-index: 3000;
+    margin-left: 0.5rem;
 }
 
 .blog-card span:first-of-type {
