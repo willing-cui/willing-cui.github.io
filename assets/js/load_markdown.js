@@ -19,11 +19,13 @@ const pathList = [
     "14_Activation_Functions",
     "15_Access_Repo_via_GitHub_SSH",
     "16_Feature_Alignment",
-    "17_Autocorrelation_Function",
+    "17_Autocorrelation_of_CSI",
     "18_Autocorrelation_Cross-correlation_Convolution",
 	"19_MVX-Net_Paper_Reading_Report",
 	"20_DeepFusion_Paper_Reading_Report",
 	"21_Cross-Attention_Mechanism",
+	"22_Dropout_Function",
+	"23_Two-Layer_MLP_Can_Approximate_Any_Function",
 ];
 const nameList = [
     "一阶倒立摆的系统模型",
@@ -42,11 +44,13 @@ const nameList = [
     "Activation Functions",
     "Access Repo via GitHub SSH",
     "Feature Alignment",
-    "Introduction to Autocorrelation Function",
+    "Autocorrelation of CSI",
     "Autocorrelation, Cross-correlation, and Convolution",
 	"MVX-Net Paper Reading Report",
 	"DeepFusion Paper Reading Report",
 	"Introduction to Cross-Attention Mechanism",
+	"Dropout Function",
+	"Two-Layer MLP Can Approximate Any Function?",
 ];
 
 function loadMd(name, id = null) {
