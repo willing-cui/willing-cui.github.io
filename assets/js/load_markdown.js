@@ -26,6 +26,8 @@ const pathList = [
 	"21_Cross-Attention_Mechanism",
 	"22_Dropout_Function",
 	"23_Two-Layer_MLP_Can_Approximate_Any_Function",
+	"24_Multi-Head_Attention_Mechanism",
+	"25_Training_Stability",
 ];
 const nameList = [
     "一阶倒立摆的系统模型",
@@ -51,6 +53,8 @@ const nameList = [
 	"Introduction to Cross-Attention Mechanism",
 	"Dropout Function",
 	"Two-Layer MLP Can Approximate Any Function?",
+	"Multi-Head Attention Mechanism",
+	"Stable Model Training: Reducing Validation Variance",
 ];
 
 function loadMd(name, id = null) {
