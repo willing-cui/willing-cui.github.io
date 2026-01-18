@@ -83,19 +83,11 @@ var cameraAnimation = {
 const DEFAULT_CAMERA_POSITION = new THREE.Vector3(8, 3.5, 5);
 const DEFAULT_CAMERA_FOV = 25;
 
-// 创建地标
-function createLandmark(group) {
-    // 循环创建地标，文字标签
-    for (let i = 0, length = areas.length; i < length; i++) {
-        const name = areas[i].name
-        const position = createPosition(areas[i].position)
-        const hexagon = createHexagon(position); // 地标函数
-        const text_position = createPosition(areas[i].text_position)
-        const fontMesh = createTxt(text_position, name); // 精灵标签函数
-        group.add(hexagon)
-        group.add(fontMesh)
-    }
-}
+// 定义金色颜色
+const GOLD_COLOR = 0xFFD700; // 金色
+const WHITE_COLOR = 0xFFFFFF; // 白色
+
+const OFFSET_DISTANCE = 0;
 
 // 经纬度转坐标
 function createPosition(lnglat) {
@@ -152,12 +144,12 @@ function createHexagon(position) {
 
     // 创建材质
     let lineMaterial = new THREE.LineBasicMaterial({
-        color: 0xffffff,
+        color: WHITE_COLOR,
         linewidth: 2
     });
 
     let planeMaterial = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
+        color: WHITE_COLOR,
         side: THREE.DoubleSide,
         transparent: true,
         opacity: 0.5
@@ -175,20 +167,100 @@ function createHexagon(position) {
 
     hexagon.add(circleLine);
     hexagon.add(circlePlane);
+    
+    // 存储材质引用，以便后续修改颜色
+    hexagon.userData.lineMaterial = lineMaterial;
+    hexagon.userData.planeMaterial = planeMaterial;
+    
     return hexagon;
 }
 
 // Store glowing state for each text sprite
 const textSprites = new Map();
+// Store landmark hexagons
+const landmarks = new Map();
+
+// 为鼠标悬停创建高亮画布
+function createHoverTextCanvas(text, isGlowing, isSelected = false) {
+    const w = 600, h = 300;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = w;
+    canvas.height = h;
+    ctx.clearRect(0, 0, w, h);
+
+    ctx.font = `${h / 3}px "微软雅黑", sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    if (isSelected) {
+        // 选中状态：金色高亮
+        // Draw gold glow effect
+        ctx.fillStyle = 'rgba(255, 215, 0, 0.2)'; // 金色半透明
+        for (let i = 12; i > 0; i--) {
+            ctx.filter = `blur(${i}px)`;
+            ctx.fillText(text, w / 2, h / 2);
+        }
+
+        ctx.fillStyle = 'rgba(255, 215, 0, 0.6)'; // 更亮的金色
+        for (let i = 6; i > 0; i--) {
+            ctx.filter = `blur(${i}px)`;
+            ctx.fillText(text, w / 2, h / 2);
+        }
+    } else if (isGlowing) {
+        // 高亮状态
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        for (let i = 10; i > 0; i--) {
+            ctx.filter = `blur(${i}px)`;
+            ctx.fillText(text, w / 2, h / 2);
+        }
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        for (let i = 5; i > 0; i--) {
+            ctx.filter = `blur(${i}px)`;
+            ctx.fillText(text, w / 2, h / 2);
+        }
+    } else {
+        // 普通悬停状态
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        for (let i = 8; i > 0; i--) {
+            ctx.filter = `blur(${i}px)`;
+            ctx.fillText(text, w / 2, h / 2);
+        }
+        
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'; // 悬停时为白色
+        for (let i = 4; i > 0; i--) {
+            ctx.filter = `blur(${i}px)`;
+            ctx.fillText(text, w / 2, h / 2);
+        }
+    }
+
+    // Draw solid text
+    ctx.filter = 'none';
+    if (isSelected) {
+        ctx.fillStyle = '#FFD700'; // 金色文字
+    } else if (isGlowing) {
+        ctx.fillStyle = '#FFFFFF'; // 白色文字
+    } else {
+        ctx.fillStyle = '#FFFFFF'; // 白色文字
+    }
+    ctx.fillText(text, w / 2, h / 2);
+
+    return canvas;
+}
+
+// 创建悬停纹理
+function createHoverTexture(text, isHover, isSelected = false) {
+    const canvas = createHoverTextCanvas(text, isHover, isSelected);
+    return new THREE.CanvasTexture(canvas);
+}
 
 function createTxt(position, name) {
-    // Create normal (non-glowing) canvas texture
-    const normalCanvas = createTextCanvas(name, false);
-    const glowCanvas = createTextCanvas(name, true);
-
-    // Create textures
-    const normalTexture = new THREE.CanvasTexture(normalCanvas);
-    const glowTexture = new THREE.CanvasTexture(glowCanvas);
+    // 创建三种状态下的纹理
+    const normalTexture = createHoverTexture(name, false, false);
+    const hoverTexture = createHoverTexture(name, false, false); // 悬停纹理
+    const glowTexture = createHoverTexture(name, true, true); // 选中状态使用金色纹理
+    const selectedTexture = createHoverTexture(name, true, true); // 新增：专门为选中状态准备的金色纹理
 
     // Create sprite with normal texture
     const material = new THREE.SpriteMaterial({
@@ -210,46 +282,151 @@ function createTxt(position, name) {
         )
     );
 
+    // 存储原始缩放
+    sprite.userData.originalScale = sprite.scale.clone();
+    
     // Store references for toggling
     textSprites.set(sprite, {
         normalTexture,
-        name,
+        hoverTexture,
         glowTexture,
+        selectedTexture, // 新增选中纹理
+        name,
         material,
         isGlowing: false,
-        position: position.clone() // 存储地标位置
+        isSelected: false, // 新增选中状态
+        isHovering: false,
+        position: position.clone(),
+        originalScale: sprite.scale.clone()
     });
 
     return sprite;
 }
 
-// Toggle glow effect on click
+// 修改setupTextClickHandler函数，同时处理点击和悬停事件
 function setupTextClickHandler(renderer, camera, scene) {
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-
-    function onClick(event) {
+    let hoveredSprite = null;
+    
+    // 用于控制光标样式
+    const rendererDom = renderer.domElement;
+    
+    function updateMouse(event) {
         // Calculate mouse position in normalized device coordinates
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
+        mouse.x = (event.clientX / rendererDom.clientWidth) * 2 - 1;
+        mouse.y = -(event.clientY / rendererDom.clientHeight) * 2 + 1;
+    }
+    
+    function onMouseMove(event) {
+        if (isCameraAnimating) return;
+        
+        updateMouse(event);
+        
         // Update the raycaster
         raycaster.setFromCamera(mouse, camera);
 
         // Calculate objects intersecting the ray
         const intersects = raycaster.intersectObjects(Array.from(textSprites.keys()));
-
+        
+        // 移除之前的悬停效果
+        if (hoveredSprite && textSprites.has(hoveredSprite)) {
+            const hoveredData = textSprites.get(hoveredSprite);
+            if (hoveredData && !hoveredData.isSelected) { // 仅对非选中状态应用悬停效果
+                if (hoveredData.isGlowing) {
+                    // 如果是高亮状态（非选中），恢复高亮状态
+                    hoveredSprite.scale.copy(hoveredData.originalScale).multiplyScalar(1.2);
+                    hoveredData.material.map = hoveredData.hoverTexture;
+                } else {
+                    // 普通状态
+                    hoveredSprite.scale.copy(hoveredData.originalScale);
+                    hoveredData.material.map = hoveredData.normalTexture;
+                }
+                hoveredData.material.needsUpdate = true;
+                hoveredData.isHovering = false;
+            }
+        }
+        
+        // 设置光标样式
         if (intersects.length > 0) {
-            const clickedSprite = intersects[0].object;
-            toggleGlow(clickedSprite, camera);
+            rendererDom.style.cursor = 'pointer';
+            hoveredSprite = intersects[0].object;
+            const hoveredData = textSprites.get(hoveredSprite);
+            
+            if (hoveredData && !hoveredData.isSelected) { // 选中状态不应用悬停效果
+                // 应用悬停效果
+                if (hoveredData.isGlowing) {
+                    hoveredSprite.scale.copy(hoveredData.originalScale).multiplyScalar(1.3);
+                } else {
+                    hoveredSprite.scale.multiplyScalar(1.2); // 放大效果
+                }
+                hoveredData.material.map = hoveredData.hoverTexture;
+                hoveredData.material.needsUpdate = true;
+                hoveredData.isHovering = true;
+            }
+        } else {
+            rendererDom.style.cursor = 'auto';
+            hoveredSprite = null;
         }
     }
+    
+    function onMouseLeave() {
+        rendererDom.style.cursor = 'auto';
+        
+        // 移除悬停效果
+        if (hoveredSprite && textSprites.has(hoveredSprite)) {
+            const hoveredData = textSprites.get(hoveredSprite);
+            if (hoveredData && !hoveredData.isSelected && hoveredData.isHovering) {
+                if (hoveredData.isGlowing) {
+                    hoveredSprite.scale.copy(hoveredData.originalScale).multiplyScalar(1.2);
+                    hoveredData.material.map = hoveredData.hoverTexture;
+                } else {
+                    hoveredSprite.scale.copy(hoveredData.originalScale);
+                    hoveredData.material.map = hoveredData.normalTexture;
+                }
+                hoveredData.material.needsUpdate = true;
+                hoveredData.isHovering = false;
+            }
+        }
+        hoveredSprite = null;
+    }
+    
+    function onClick(event) {
+        console.log("检测到鼠标点击")
+        if (isCameraAnimating) return;
+        
+        updateMouse(event);
+        
+        // Update the raycaster
+        raycaster.setFromCamera(mouse, camera);
 
-    window.addEventListener('click', onClick, false);
+        // Calculate objects intersecting the ray
+        const intersects = raycaster.intersectObjects(Array.from(textSprites.keys()), false);
+
+        if (intersects.length > 0) {
+            console.log("检测到有效地标点击事件")
+            const clickedSprite = intersects[0].object;
+            toggleGlow(clickedSprite, camera, scene);
+        } else {
+            console.log("点击了文本精灵之外的位置");
+            if (landMarkClicked) {
+                console.log("阻断镜头响应")
+            }
+            // 明确不执行任何操作
+            return;
+        }
+    }
+    
+    // 添加事件监听器
+    rendererDom.addEventListener('mousemove', onMouseMove, false);
+    rendererDom.addEventListener('mouseleave', onMouseLeave, false);
+    rendererDom.addEventListener('click', onClick, false);
 
     return {
         dispose: () => {
-            window.removeEventListener('click', onClick);
+            rendererDom.removeEventListener('mousemove', onMouseMove);
+            rendererDom.removeEventListener('mouseleave', onMouseLeave);
+            rendererDom.removeEventListener('click', onClick);
         }
     };
 }
@@ -274,8 +451,7 @@ function calculateCameraPosition(landmarkPosition, cameraDistance) {
     const rightVector = new THREE.Vector3().crossVectors(earthToLandmark, upVector).normalize();
 
     // 计算一个偏移向量，让地球向左移动
-    const offsetDistance = 1.2;
-    const offsetVector = rightVector.multiplyScalar(offsetDistance);
+    const offsetVector = rightVector.multiplyScalar(OFFSET_DISTANCE);
 
     // 最终相机位置 = 基础位置 + 偏移向量
     const finalPosition = new THREE.Vector3().copy(basePosition).add(offsetVector);
@@ -354,8 +530,28 @@ function updateCameraAnimation(camera, deltaTime) {
     camera.updateProjectionMatrix();
 }
 
-// 修改toggleGlow函数
-function toggleGlow(sprite, camera) {
+// 更新地标的发光效果
+function updateLandmarkColor(landmark, isGold) {
+    if (landmark && landmark.userData.lineMaterial && landmark.userData.planeMaterial) {
+        if (isGold) {
+            // 设为金色
+            landmark.userData.lineMaterial.color.setHex(GOLD_COLOR);
+            landmark.userData.planeMaterial.color.setHex(GOLD_COLOR);
+        } else {
+            // 恢复白色
+            landmark.userData.lineMaterial.color.setHex(WHITE_COLOR);
+            landmark.userData.planeMaterial.color.setHex(WHITE_COLOR);
+        }
+        
+        // 更新材质
+        landmark.userData.lineMaterial.needsUpdate = true;
+        landmark.userData.planeMaterial.needsUpdate = true;
+    }
+}
+
+// 修改toggleGlow函数，确保点击时恢复悬停状态
+function toggleGlow(sprite, camera, scene) {
+    console.log("进入 toggleGlow 函数")
     const spriteData = textSprites.get(sprite);
     if (!spriteData) return;
 
@@ -365,12 +561,14 @@ function toggleGlow(sprite, camera) {
     const worldPosition = new THREE.Vector3();
     sprite.getWorldPosition(worldPosition);
 
-    if (!spriteData.isGlowing) {
+    if (!spriteData.isSelected) {
+        console.log("点击新地标")
         // 点击未选中的地标（选中新地标）
         spriteData.isGlowing = true;
-        spriteData.material.map = spriteData.glowTexture;
+        spriteData.isSelected = true;
+        spriteData.material.map = spriteData.selectedTexture; // 使用金色选中纹理
         spriteData.material.needsUpdate = true;
-        sprite.scale.multiplyScalar(1.1);
+        sprite.scale.copy(spriteData.originalScale).multiplyScalar(1.3); // 点击时放大更多
         landMarkClicked = true;
 
         // 计算目标相机位置
@@ -382,23 +580,53 @@ function toggleGlow(sprite, camera) {
 
         // 取消其他地标的高亮
         textSprites.forEach((data, otherSprite) => {
-            if (otherSprite !== sprite && data.isGlowing) {
+            if (otherSprite !== sprite && (data.isGlowing || data.isSelected)) {
                 data.isGlowing = false;
+                data.isSelected = false;
                 data.material.map = data.normalTexture;
                 data.material.needsUpdate = true;
-                otherSprite.scale.multiplyScalar(1 / 1.1);
+                otherSprite.scale.copy(data.originalScale);
+                
+                // 恢复其他地标的颜色
+                updateLandmarkColor(landmarks.get(data.name), false);
             }
         });
+        
+        // 查找对应的地标并设为金色
+        let foundLandmark = null;
+        scene.traverse((child) => {
+            if (child.userData.isLandmark && child.position.distanceTo(worldPosition) < 0.1) {
+                foundLandmark = child;
+            }
+        });
+        
+        if (foundLandmark) {
+            updateLandmarkColor(foundLandmark, true);
+        }
+        
         currentSelectedLandmark = sprite;
         currentSelectedLandmarkName = spriteData.name;
         cameraPointer = camera;
     } else {
         // 点击已选中的地标（取消选中）
         spriteData.isGlowing = false;
+        spriteData.isSelected = false;
         spriteData.material.map = spriteData.normalTexture;
         spriteData.material.needsUpdate = true;
-        sprite.scale.multiplyScalar(1 / 1.1);
+        sprite.scale.copy(spriteData.originalScale);
         landMarkClicked = false;
+        
+        // 恢复地标颜色
+        let foundLandmark = null;
+        scene.traverse((child) => {
+            if (child.userData.isLandmark && child.position.distanceTo(worldPosition) < 0.1) {
+                foundLandmark = child;
+            }
+        });
+        
+        if (foundLandmark) {
+            updateLandmarkColor(foundLandmark, false);
+        }
 
         // 返回默认视角
         startCameraAnimation(camera, DEFAULT_CAMERA_POSITION, new THREE.Vector3(0, 0, 0), false);
@@ -413,10 +641,28 @@ function resetCurrentSelectedLandmark() {
     if (!spriteData || !currentSelectedLandmark) return;
 
     spriteData.isGlowing = false;
+    spriteData.isSelected = false;
     spriteData.material.map = spriteData.normalTexture;
     spriteData.material.needsUpdate = true;
-    currentSelectedLandmark.scale.multiplyScalar(1 / 1.1);
+    currentSelectedLandmark.scale.copy(spriteData.originalScale);
     landMarkClicked = false;
+    
+    // 恢复地标颜色
+    if (cameraPointer && cameraPointer.parent) { // scene is the parent of camera
+        const worldPosition = new THREE.Vector3();
+        currentSelectedLandmark.getWorldPosition(worldPosition);
+        
+        let foundLandmark = null;
+        cameraPointer.parent.traverse((child) => {
+            if (child.userData.isLandmark && child.position.distanceTo(worldPosition) < 0.1) {
+                foundLandmark = child;
+            }
+        });
+        
+        if (foundLandmark) {
+            updateLandmarkColor(foundLandmark, false);
+        }
+    }
 
     if (cameraPointer) {
         startCameraAnimation(cameraPointer, DEFAULT_CAMERA_POSITION, new THREE.Vector3(0, 0, 0), false);
@@ -426,43 +672,29 @@ function resetCurrentSelectedLandmark() {
     currentSelectedLandmarkName = null;
 }
 
+function createLandmark(group) {
+    // 循环创建地标，文字标签
+    for (let i = 0, length = areas.length; i < length; i++) {
+        const name = areas[i].name
+        const position = createPosition(areas[i].position)
+        const hexagon = createHexagon(position); // 地标函数
+        const text_position = createPosition(areas[i].text_position)
+        const fontMesh = createTxt(text_position, name); // 精灵标签函数
+        
+        // 标记为地标
+        hexagon.userData.isLandmark = true;
+        hexagon.userData.name = name;
+        
+        // 存储地标引用
+        landmarks.set(name, hexagon);
+        
+        group.add(hexagon)
+        group.add(fontMesh)
+    }
+}
+
 // 添加到全局作用域
 window.resetCurrentSelectedLandmark = resetCurrentSelectedLandmark;
-
-function createTextCanvas(text, isGlowing) {
-    const w = 600, h = 300;
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = w;
-    canvas.height = h;
-    ctx.clearRect(0, 0, w, h);
-
-    ctx.font = `${h / 3}px "微软雅黑", sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    if (isGlowing) {
-        // Draw glow effect
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-        for (let i = 10; i > 0; i--) {
-            ctx.filter = `blur(${i}px)`;
-            ctx.fillText(text, w / 2, h / 2);
-        }
-
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-        for (let i = 5; i > 0; i--) {
-            ctx.filter = `blur(${i}px)`;
-            ctx.fillText(text, w / 2, h / 2);
-        }
-    }
-
-    // Draw solid text
-    ctx.filter = 'none';
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText(text, w / 2, h / 2);
-
-    return canvas;
-}
 
 export {
     createLandmark,
