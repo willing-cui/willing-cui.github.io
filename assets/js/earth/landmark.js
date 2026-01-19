@@ -34,7 +34,7 @@ var areas = [
     }, {
         name: "Huizhou",
         position: [114.4155, 23.1125],
-        text_position: [116.4155, 22.3125]
+        text_position: [116.4155, 22.2125]
     }, {
         name: "Shanghai",
         position: [121.4737, 31.2304],
@@ -87,7 +87,7 @@ const DEFAULT_CAMERA_FOV = 25;
 const GOLD_COLOR = 0xFFD700; // 金色
 const WHITE_COLOR = 0xFFFFFF; // 白色
 
-const OFFSET_DISTANCE = 0;
+const OFFSET_DISTANCE = 1.2;
 
 // 经纬度转坐标
 function createPosition(lnglat) {
@@ -304,10 +304,11 @@ function createTxt(position, name) {
 }
 
 // 修改setupTextClickHandler函数，同时处理点击和悬停事件
-function setupTextClickHandler(renderer, camera, scene) {
+function setupTextClickHandler(renderer, camera, scene, controls) {
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     let hoveredSprite = null;
+    let timer = null;
     
     // 用于控制光标样式
     const rendererDom = renderer.domElement;
@@ -341,6 +342,14 @@ function setupTextClickHandler(renderer, camera, scene) {
                     // 普通状态
                     hoveredSprite.scale.copy(hoveredData.originalScale);
                     hoveredData.material.map = hoveredData.normalTexture;
+                    
+                    // 解除视角锁定
+                    if (timer) clearTimeout(timer);
+                    // 设置新的定时器
+                    timer = setTimeout(() => {
+                        console.log('解除视角锁定');
+                        controls.enabled = true;
+                    }, 1000);
                 }
                 hoveredData.material.needsUpdate = true;
                 hoveredData.isHovering = false;
@@ -349,6 +358,9 @@ function setupTextClickHandler(renderer, camera, scene) {
         
         // 设置光标样式
         if (intersects.length > 0) {
+            // 禁用 controls, 锁定视角
+            controls.enabled = false;
+
             rendererDom.style.cursor = 'pointer';
             hoveredSprite = intersects[0].object;
             const hoveredData = textSprites.get(hoveredSprite);
@@ -409,9 +421,6 @@ function setupTextClickHandler(renderer, camera, scene) {
             toggleGlow(clickedSprite, camera, scene);
         } else {
             console.log("点击了文本精灵之外的位置");
-            if (landMarkClicked) {
-                console.log("阻断镜头响应")
-            }
             // 明确不执行任何操作
             return;
         }
