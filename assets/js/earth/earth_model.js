@@ -195,7 +195,7 @@ const getTextureNightJpg = () => {
 };
 
 const getTextureBumpRoughnessLandsJpg = () => {
-    const bumpRoughnessLandsTexture = textureLoader.load("earth_topography_8k.png");
+    const bumpRoughnessLandsTexture = textureLoader.load("earth_topography_8k.webp");
 
     // Improves texture clarity when viewed at oblique angles 
     // (e.g., when the camera looks at a surface edge-on).
@@ -207,7 +207,7 @@ const getTextureBumpRoughnessLandsJpg = () => {
 };
 
 const getTextureLandMask = () => {
-    const landMask = textureLoader.load("land_mask_v2_8k.png");
+    const landMask = textureLoader.load("land_mask_v2_8k.webp");
     return landMask;
 };
 

@@ -44,7 +44,7 @@ container.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-controls.dampingFactor = 0.01;
+// controls.dampingFactor = 0.01;
 controls.minDistance = 0.1;
 controls.maxDistance = 50;
 
