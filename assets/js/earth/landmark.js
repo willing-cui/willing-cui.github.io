@@ -6,55 +6,42 @@ var areas = [
     {
         name: "Shenzhen",
         position: [114.085947, 22.547],
-        text_position: [115.585947, 21.247]
     }, {
         name: "Dali",
         position: [100.2676, 25.6065],
-        text_position: [97.9676, 25.6065]
     }, {
         name: "Lijiang",
         position: [100.2271, 26.8565],
-        text_position: [100.2271, 27.3565]
     }, {
         name: "Zhongshan",
         position: [113.393, 22.516],
-        text_position: [110.893, 21.416]
     }, {
         name: "HKSAR",
         position: [114.1694, 22.3193],
-        text_position: [115.1694, 20.0193]
     }, {
         name: "Dongguan",
         position: [113.7518, 23.0207],
-        text_position: [114.7518, 23.6207]
     }, {
         name: "Zhangzhou",
         position: [117.6472, 24.5135],
-        text_position: [117.6472, 25.0135]
     }, {
         name: "Huizhou",
         position: [114.4155, 23.1125],
-        text_position: [116.4155, 22.2125]
     }, {
         name: "Shanghai",
         position: [121.4737, 31.2304],
-        text_position: [121.4737, 31.7304]
     }, {
         name: "Kunming",
         position: [102.8332, 24.8797],
-        text_position: [102.8332, 25.3797]
     }, {
         name: "Shouguang",
         position: [118.7910, 36.8554],
-        text_position: [118.7910, 37.3554]
     }, {
         name: "Wuhan",
         position: [114.3052, 30.5928],
-        text_position: [114.3052, 31.0928]
     }, {
         name: "Qingyuan",
         position: [113.0561, 23.6820],
-        text_position: [110.5561, 22.6820]
     }
 ];
 
@@ -88,6 +75,11 @@ const GOLD_COLOR = 0xFFD700; // 金色
 const WHITE_COLOR = 0xFFFFFF; // 白色
 
 const OFFSET_DISTANCE = 1.2;
+
+// 文字的实际长宽比（宽0.08，高0.04，所以高/宽=0.5）
+const TEXT_ASPECT_RATIO = 0.5; // 高度是宽度的一半
+const TEXT_WIDTH = 0.08;
+const TEXT_HEIGHT = TEXT_WIDTH * TEXT_ASPECT_RATIO;
 
 // 经纬度转坐标
 function createPosition(lnglat) {
@@ -255,6 +247,229 @@ function createHoverTexture(text, isHover, isSelected = false) {
     return new THREE.CanvasTexture(canvas);
 }
 
+
+// 调整文本位置以避免重叠（优化版 - 保持相对位置关系）
+function adjustTextPositions(textPositions) {
+    // 创建副本，保持原始位置不变
+    const adjustedPositions = textPositions.map(pos => ({
+        ...pos,
+        position: pos.position.clone(),
+        originalPosition: pos.position.clone(),
+        isFixed: false,
+        overlapCount: 0,
+        // 计算原始方位角（相对于地球中心）
+        originalAzimuth: Math.atan2(pos.position.y, pos.position.x)
+    }));
+    
+    const maxIterations = 1000;
+    const maxDistanceFromOriginal = 0.15; // 严格控制最大偏移
+    
+    // 由于文字是水平排列的，水平方向需要更大间距
+    const minDistanceHorizontal = TEXT_WIDTH * 1.5 * 0.7;  // 水平方向最小距离
+    const minDistanceVertical = TEXT_HEIGHT * 1.5 * 0.4;   // 垂直方向可以稍小一些
+    
+    for (let iteration = 0; iteration < maxIterations; iteration++) {
+        let totalOverlap = 0;
+        
+        // 第一阶段：检测重叠并计算移动
+        for (let i = 0; i < adjustedPositions.length; i++) {
+            if (adjustedPositions[i].isFixed) continue;
+            
+            const pos1 = adjustedPositions[i];
+            let totalForce = new THREE.Vector3(0, 0, 0);
+            let overlapCount = 0;
+            
+            for (let j = 0; j < adjustedPositions.length; j++) {
+                if (i === j || adjustedPositions[j].isFixed) continue;
+                
+                const pos2 = adjustedPositions[j];
+                const distance = pos1.position.distanceTo(pos2.position);
+                
+                // 计算两个位置之间的方向向量
+                const direction = new THREE.Vector3()
+                    .subVectors(pos1.position, pos2.position)
+                    .normalize();
+                
+                // 计算在水平方向和垂直方向的分量
+                const dotProductHorizontal = Math.abs(direction.dot(new THREE.Vector3(1, 0, 0)));
+                const dotProductVertical = Math.abs(direction.dot(new THREE.Vector3(0, 1, 0)));
+                
+                // 判断主要重叠方向
+                const isHorizontalOverlap = dotProductHorizontal > dotProductVertical;
+                const requiredDistance = isHorizontalOverlap ? 
+                    minDistanceHorizontal : minDistanceVertical;
+                
+                if (distance < requiredDistance) {
+                    overlapCount++;
+                    
+                    // 根据原始相对位置调整排斥方向
+                    const forceDirection = calculateAdjustedDirection(pos1, pos2, direction);
+                    
+                    const overlapFactor = (requiredDistance - distance) / requiredDistance;
+                    const forceWeight = isHorizontalOverlap ? 1.2 : 0.8; // 水平重叠权重更高
+                    const force = forceDirection.multiplyScalar(overlapFactor * forceWeight * 0.005);
+                    
+                    totalForce.add(force);
+                }
+            }
+            
+            pos1.overlapCount = overlapCount;
+            totalOverlap += overlapCount;
+            
+            // 应用排斥力
+            if (totalForce.length() > 0.001) {
+                const newPosition = pos1.position.clone().add(totalForce).normalize().multiplyScalar(1.05);
+                
+                // 严格检查偏移范围
+                const distanceFromOriginal = newPosition.distanceTo(pos1.originalPosition);
+                if (distanceFromOriginal <= maxDistanceFromOriginal) {
+                    pos1.position.copy(newPosition);
+                } else {
+                    // 超出范围，强制向原始位置拉回
+                    const pullDirection = new THREE.Vector3()
+                        .subVectors(pos1.originalPosition, newPosition)
+                        .normalize();
+                    const pullDistance = distanceFromOriginal - maxDistanceFromOriginal;
+                    pos1.position.add(pullDirection.multiplyScalar(pullDistance)).normalize().multiplyScalar(1.05);
+                }
+            }
+        }
+        
+        // 第二阶段：检查是否可以固定位置
+        for (let i = 0; i < adjustedPositions.length; i++) {
+            if (adjustedPositions[i].isFixed) continue;
+            
+            const pos = adjustedPositions[i];
+            let canBeFixed = true;
+            
+            for (let j = 0; j < adjustedPositions.length; j++) {
+                if (i === j) continue;
+                
+                const otherPos = adjustedPositions[j];
+                const distance = pos.position.distanceTo(otherPos.position);
+                
+                // 同样考虑方向性的距离检查
+                const direction = new THREE.Vector3()
+                    .subVectors(pos.position, otherPos.position)
+                    .normalize();
+                
+                const dotProductHorizontal = Math.abs(direction.dot(new THREE.Vector3(1, 0, 0)));
+                const dotProductVertical = Math.abs(direction.dot(new THREE.Vector3(0, 1, 0)));
+                const isHorizontal = dotProductHorizontal > dotProductVertical;
+                const requiredDistance = isHorizontal ? minDistanceHorizontal : minDistanceVertical;
+                
+                if (distance < requiredDistance * 0.9) {
+                    canBeFixed = false;
+                    break;
+                }
+            }
+            
+            if (canBeFixed && pos.overlapCount === 0) {
+                pos.isFixed = true;
+            }
+        }
+        
+        // 第三阶段：根据原始相对位置进行方位校正
+        for (let i = 0; i < adjustedPositions.length; i++) {
+            const pos = adjustedPositions[i];
+            
+            // 计算当前方位角
+            const currentAzimuth = Math.atan2(pos.position.y, pos.position.x);
+            
+            // 计算方位角偏差
+            let azimuthDiff = currentAzimuth - pos.originalAzimuth;
+            
+            // 将偏差标准化到 -π 到 π 范围内
+            if (azimuthDiff > Math.PI) azimuthDiff -= 2 * Math.PI;
+            if (azimuthDiff < -Math.PI) azimuthDiff += 2 * Math.PI;
+            
+            // 如果方位角偏差过大，进行校正
+            if (Math.abs(azimuthDiff) > Math.PI / 12) { // 15度阈值
+                const correctionStrength = 0.1;
+                const correctionAngle = -azimuthDiff * correctionStrength;
+                
+                // 创建旋转矩阵来校正方位
+                const rotationMatrix = new THREE.Matrix4().makeRotationZ(correctionAngle);
+                pos.position.applyMatrix4(rotationMatrix).normalize().multiplyScalar(1.01);
+            }
+        }
+        
+        // 第四阶段：持续向原始位置拉回，避免过度偏移
+        for (let i = 0; i < adjustedPositions.length; i++) {
+            const pos = adjustedPositions[i];
+            const distanceFromOriginal = pos.position.distanceTo(pos.originalPosition);
+            
+            // 根据当前偏移程度调整拉回力度
+            if (distanceFromOriginal > maxDistanceFromOriginal * 0.5) {
+                const pullStrength = Math.min(0.1, (distanceFromOriginal - maxDistanceFromOriginal * 0.5) * 0.3);
+                const pullDirection = new THREE.Vector3()
+                    .subVectors(pos.originalPosition, pos.position)
+                    .normalize();
+                pos.position.add(pullDirection.multiplyScalar(pullStrength)).normalize().multiplyScalar(1.01);
+            }
+        }
+        
+        // 检查终止条件
+        const fixedCount = adjustedPositions.filter(p => p.isFixed).length;
+        if (totalOverlap === 0 || fixedCount === adjustedPositions.length || iteration > 800) {
+            break;
+        }
+    }
+    
+    return adjustedPositions;
+}
+
+// 辅助函数：根据原始相对位置计算调整后的方向
+function calculateAdjustedDirection(pos1, pos2, baseDirection) {
+    // 计算原始相对位置
+    const originalDiffX = pos1.originalPosition.x - pos2.originalPosition.x;
+    const originalDiffY = pos1.originalPosition.y - pos2.originalPosition.y;
+    
+    // 计算当前相对位置
+    const currentDiffX = pos1.position.x - pos2.position.x;
+    const currentDiffY = pos1.position.y - pos2.position.y;
+    
+    // 如果原始相对位置与当前相对位置方向基本一致，使用基础方向
+    const originalAngle = Math.atan2(originalDiffY, originalDiffX);
+    const currentAngle = Math.atan2(currentDiffY, currentDiffX);
+    const angleDiff = Math.abs(originalAngle - currentAngle);
+    
+    // 如果角度差异在可接受范围内，使用基础方向
+    if (angleDiff < Math.PI / 6) { // 30度阈值
+        return baseDirection.clone();
+    }
+    
+    // 否则，根据原始相对位置调整方向
+    // 优先保持垂直方向的关系
+    if (Math.abs(originalDiffY) > Math.abs(originalDiffX) * 2) {
+        // 原始位置主要是垂直关系
+        if (originalDiffY > 0) {
+            // pos1 在 pos2 上方
+            return new THREE.Vector3(0, 1, 0);
+        } else {
+            // pos1 在 pos2 下方
+            return new THREE.Vector3(0, -1, 0);
+        }
+    } else if (Math.abs(originalDiffX) > Math.abs(originalDiffY) * 2) {
+        // 原始位置主要是水平关系
+        if (originalDiffX > 0) {
+            // pos1 在 pos2 右方
+            return new THREE.Vector3(1, 0, 0);
+        } else {
+            // pos1 在 pos2 左方
+            return new THREE.Vector3(-1, 0, 0);
+        }
+    } else {
+        // 对角线关系，保持原始相对方向
+        return new THREE.Vector3(
+            Math.sign(originalDiffX),
+            Math.sign(originalDiffY),
+            0
+        ).normalize();
+    }
+}
+
+
 function createTxt(position, name) {
     // 创建三种状态下的纹理
     const normalTexture = createHoverTexture(name, false, false);
@@ -273,7 +488,7 @@ function createTxt(position, name) {
     });
 
     const sprite = new THREE.Sprite(material);
-    sprite.scale.set(0.08, 0.04, 1);
+    sprite.scale.set(TEXT_WIDTH, TEXT_HEIGHT, 1);
     sprite.position.copy(position).add(
         new THREE.Vector3(
             position.x > 0 ? 0.02 : -0.02,
@@ -682,13 +897,33 @@ function resetCurrentSelectedLandmark() {
 }
 
 function createLandmark(group) {
-    // 循环创建地标，文字标签
+    // 收集所有文本位置
+    const textPositions = [];
+    
     for (let i = 0, length = areas.length; i < length; i++) {
-        const name = areas[i].name
-        const position = createPosition(areas[i].position)
-        const hexagon = createHexagon(position); // 地标函数
-        const text_position = createPosition(areas[i].text_position)
-        const fontMesh = createTxt(text_position, name); // 精灵标签函数
+        const name = areas[i].name;
+        const position = createPosition(areas[i].position);
+        const text_position = createPosition(areas[i].position);
+        
+        textPositions.push({
+            name: name,
+            position: text_position,
+            originalPosition: text_position.clone()
+        });
+    }
+    
+    // 调整文本位置以避免重叠
+    const adjustedPositions = adjustTextPositions(textPositions);
+    
+    // 创建地标和文本
+    for (let i = 0, length = areas.length; i < length; i++) {
+        const name = areas[i].name;
+        const position = createPosition(areas[i].position);
+        const hexagon = createHexagon(position);
+        
+        // 查找调整后的文本位置
+        const adjustedPosition = adjustedPositions.find(p => p.name === name)?.position || createPosition(areas[i].text_position);
+        const fontMesh = createTxt(adjustedPosition, name);
         
         // 标记为地标
         hexagon.userData.isLandmark = true;
@@ -697,8 +932,8 @@ function createLandmark(group) {
         // 存储地标引用
         landmarks.set(name, hexagon);
         
-        group.add(hexagon)
-        group.add(fontMesh)
+        group.add(hexagon);
+        group.add(fontMesh);
     }
 }
 

@@ -7,7 +7,7 @@ const moonModel = () => {
     // 纹理加载器
     const moonTextureLoader = new THREE.TextureLoader().setPath("../images/earth/");
     // .load()方法加载图像，返回一个纹理对象Texture
-    const moonTexture = moonTextureLoader.load("moon.jpg");
+    const moonTexture = moonTextureLoader.load("moon.webp");
     // 注意最新版本，webgl渲染器默认编码方式已经改变，为了避免色差，纹理对象编码方式要修改为THREE.SRGBColorSpace
     moonTexture.colorSpace = THREE.SRGBColorSpace; //设置为SRGB颜色空间
     moonTexture.wrapS = THREE.RepeatWrapping;
