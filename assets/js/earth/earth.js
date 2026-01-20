@@ -44,10 +44,11 @@ container.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
+controls.dampingFactor = 0.01;
 controls.minDistance = 0.1;
 controls.maxDistance = 50;
 
-setupTextClickHandler(renderer, camera, scene)
+setupTextClickHandler(renderer, camera, scene, controls)
 
 let clock = new THREE.Clock();
 
@@ -91,6 +92,8 @@ var loadedLandmarkName = null;
 function raisePhotoList() {
     if (photoListRaised == false) {
         photoListRaised = true;
+        photoList.style.display = 'inline';
+        
         setTimeout(() => {
             photoList.style.visibility = 'visible';
             photoList.style.opacity = 100;
@@ -109,6 +112,10 @@ function hidePhotoList() {
         photoListRaised = false;
         photoList.style.visibility = 'hidden';
         photoList.style.opacity = 0;
+
+        setTimeout(() => {
+            photoList.style.display = 'none';
+        }, 1000)
     }
 }
 
