@@ -2,75 +2,52 @@ var blogTitle = "";
 var blogContent = "";
 var initialLoad = true;
 
-const pathList = [
-    "1_一阶倒立摆的系统模型",
-    "2_对一阶倒立摆的LQR控制",
-    "3_RL_Multi-Armed_Bandit",
-    "4_WiFi_CSI",
-    "5_Sinusoidal_Positional_Encoding",
-    "6_ResNet",
-    "7_Normalization_in_Deep_Learning",
-    "8_Attention_Mechanism",
-    "9_Transformer_BERT_GPT",
-    "10_Multimodal_Fusion",
-    "11_WWH_When_Attention_Mechanism_Fail",
-    "12_SenseFi_Paper_Reading_Report",
-    "13_Transformer_for_Classification_Tasks",
-    "14_Activation_Functions",
-    "15_Access_Repo_via_GitHub_SSH",
-    "16_Feature_Alignment",
-    "17_Autocorrelation_of_CSI",
-    "18_Autocorrelation_Cross-correlation_Convolution",
-    "19_MVX-Net_Paper_Reading_Report",
-    "20_DeepFusion_Paper_Reading_Report",
-    "21_Cross-Attention_Mechanism",
-    "22_Dropout_Function",
-    "23_Two-Layer_MLP_Can_Approximate_Any_Function",
-    "24_Multi-Head_Attention_Mechanism",
-    "25_Training_Stability",
-    "26_RoPE_Positional_Encoding",
-    "27_Chinchilla_Scaling_Laws",
-	"28_Mixture_of_Experts",
-	"29_Robotics_Research_Production_Line",
-	"30_Low_Rank_Adaptation"
-];
-const nameList = [
-    "一阶倒立摆的系统模型",
-    "对一阶倒立摆的LQR控制",
-    "Multi-Armed Bandit Problem (RL)",
-    "Introduction to WiFi CSI",
-    "Sinusoidal Positional Encoding",
-    "Introduction to ResNet",
-    "Normalization in Deep Learning",
-    "Introduction to Attention Mechanism",
-    "Introduction to Transformer, BERT and GPT",
-    "Multimodal Fusion",
-    "What, Why, and How: When Attention Mechanisms Fail",
-    "SenseFi Paper Reading Report",
-    "Transformer for Classification Tasks",
-    "Activation Functions",
-    "Access Repo via GitHub SSH",
-    "Feature Alignment",
-    "Autocorrelation of CSI",
-    "Autocorrelation, Cross-correlation, and Convolution",
-    "MVX-Net Paper Reading Report",
-    "DeepFusion Paper Reading Report",
-    "Introduction to Cross-Attention Mechanism",
-    "Dropout Function",
-    "Two-Layer MLP Can Approximate Any Function?",
-    "Multi-Head Attention Mechanism",
-    "Stable Model Training: Reducing Validation Variance",
-    "RoPE Positional Encoding",
-    "Chinchilla Scaling Laws",
-	"Mixture of Experts",
-	"Robotics Research Production Line",
-	"Low-Rank Adaptation (LoRA)",
-];
+// 从JSON文件动态加载的博客数据
+var blogData = null;
+var pathList = [];
+var nameList = [];
+
+/**
+ * 从JSON文件加载博客数据
+ */
+async function loadBlogData() {
+    try {
+        const response = await fetch('./blogs/blogs.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        blogData = await response.json();
+        blogData.blogs.sort((a, b) => a.id - b.id);
+        
+        // 生成pathList和nameList
+        pathList = [];
+        nameList = [];
+        
+        blogData.blogs.forEach(blog => {
+            // 读取路径
+            const path = blog.path;
+            pathList.push(path);
+            nameList.push(blog.title);
+        });
+        
+        console.log('成功加载博客数据:', blogData.blogs.length, '篇文章');
+        console.log(pathList)
+        console.log(nameList)
+        
+    } catch (error) {
+        console.error('加载博客数据失败:', error);
+        // 使用默认数据作为后备
+        loadFallbackData();
+    }
+}
+
 
 function loadMd(name, id = null) {
     if (id) {
         path = pathList[id - 1];
         name = nameList[id - 1];
+    } else {
+        return
     }
 
     blogTitle = name;
@@ -196,3 +173,24 @@ function highlightCurrentSection() {
             }
         });
 }
+
+// 页面加载时初始化博客数据
+document.addEventListener('DOMContentLoaded', () => {
+    // 加载博客数据
+    loadBlogData().then(() => {
+        console.log('博客数据加载完成');
+        
+        // 检查URL参数，如果有博客ID则自动加载
+        const urlParams = new URLSearchParams(window.location.search);
+        const part = urlParams.get('part');
+        const id = urlParams.get('id');
+        
+        if (part === 'blogs' && id) {
+            setTimeout(() => {
+                loadMd(null, parseInt(id));
+            }, 100);
+        }
+    }).catch(error => {
+        console.error('初始化博客数据失败:', error);
+    });
+});

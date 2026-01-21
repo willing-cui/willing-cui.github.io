@@ -1,0 +1,244 @@
+{
+  "blogs": [
+    {
+      "id": 3,
+      "path": "3_RL_Multi-Armed_Bandit",
+      "title": "Multi-Armed Bandit Problem (RL)",
+      "date": "2025/4/10",
+      "category": "AI & RL",
+      "image": "./blogs/3_RL_Multi-Armed_Bandit/Simulation_Results_2.webp"
+    },
+    {
+      "id": 6,
+      "path": "6_ResNet",
+      "title": "Introduction to ResNet",
+      "date": "2025/12/31",
+      "category": "AI & RL",
+      "image": "./blogs/6_ResNet/ResBlock.webp"
+    },
+    {
+      "id": 7,
+      "path": "7_Normalization_in_Deep_Learning",
+      "title": "Normalization in Deep Learning",
+      "date": "2026/1/2",
+      "category": "AI & RL",
+      "image": null
+    },
+    {
+      "id": 8,
+      "path": "8_Attention_Mechanism",
+      "title": "Attention Mechanism",
+      "date": "2026/1/2",
+      "category": "AI & RL",
+      "image": "./blogs/8_Attention_Mechanism/Attention_Mechanism.webp"
+    },
+    {
+      "id": 21,
+      "path": "21_Cross-Attention_Mechanism",
+      "title": "Cross-Attention Mechanism",
+      "date": "2026/1/13",
+      "category": "AI & RL",
+      "image": "./blogs/8_Attention_Mechanism/Attention_Mechanism.webp"
+    },
+    {
+      "id": 24,
+      "path": "24_Multi-Head_Attention_Mechanism",
+      "title": "Multi-Head Attention Mechanism",
+      "date": "2026/1/16",
+      "category": "AI & RL",
+      "image": "./blogs/24_Multi-Head_Attention_Mechanism/Multi-Head_Attention.webp"
+    },
+    {
+      "id": 9,
+      "path": "9_Transformer_BERT_GPT",
+      "title": "Introduction to Transformer, BERT, and GPT",
+      "date": "2026/1/2",
+      "category": "AI & RL",
+      "image": "./blogs/9_Transformer_BERT_GPT/Transformer_Structure.webp"
+    },
+    {
+      "id": 28,
+      "path": "28_Mixture_of_Experts",
+      "title": "Mixture of Experts",
+      "date": "2026/1/21",
+      "category": "AI & RL",
+      "image": "./blogs/28_Mixture_of_Experts/DeepSeek_MoE.webp"
+    },
+    {
+      "id": 5,
+      "path": "5_Sinusoidal_Positional_Encoding",
+      "title": "Sinusoidal Positional Encoding",
+      "date": "2025/10/18",
+      "category": "AI & RL",
+      "image": null
+    },
+    {
+      "id": 26,
+      "path": "26_RoPE_Positional_Encoding",
+      "title": "RoPE Positional Encoding",
+      "date": "2026/1/20",
+      "category": "AI & RL",
+      "image": "./blogs/26_RoPE_Positional_Encoding/SuperMacro_Rope.webp"
+    },
+    {
+      "id": 10,
+      "path": "10_Multimodal_Fusion",
+      "title": "Multimodal Fusion",
+      "date": "2026/1/5",
+      "category": "AI & RL",
+      "image": null
+    },
+    {
+      "id": 11,
+      "path": "11_WWH_When_Attention_Mechanism_Fail",
+      "title": "What, Why, and How: When Attention Mechanisms Fail",
+      "date": "2026/1/5",
+      "category": "AI & RL",
+      "image": null
+    },
+    {
+      "id": 13,
+      "path": "13_Transformer_for_Classification_Tasks",
+      "title": "Transformer for Classification Tasks",
+      "date": "2026/1/6",
+      "category": "AI & RL",
+      "image": null
+    },
+    {
+      "id": 14,
+      "path": "14_Activation_Functions",
+      "title": "Activation Functions",
+      "date": "2026/1/7",
+      "category": "AI & RL",
+      "image": "./blogs/14_Activation_Functions/activation_func.webp"
+    },
+    {
+      "id": 22,
+      "path": "22_Dropout_Function",
+      "title": "Dropout Function",
+      "date": "2026/1/14",
+      "category": "AI & RL",
+      "image": null
+    },
+    {
+      "id": 16,
+      "path": "16_Feature_Alignment",
+      "title": "Feature Alignment",
+      "date": "2026/1/9",
+      "category": "AI & RL",
+      "image": null
+    },
+    {
+      "id": 23,
+      "path": "23_Two-Layer_MLP_Can_Approximate_Any_Function",
+      "title": "Two-Layer MLP Can Approximate Any Function?",
+      "date": "2026/1/15",
+      "category": "AI & RL",
+      "image": null
+    },
+    {
+      "id": 25,
+      "path": "25_Training_Stability",
+      "title": "Stable Model Training: Reducing Validation Variance",
+      "date": "2026/1/16",
+      "category": "AI & RL",
+      "image": "./blogs/25_Training_Stability/stability.webp"
+    },
+    {
+      "id": 27,
+      "path": "27_Chinchilla_Scaling_Laws",
+      "title": "Chinchilla Scaling Laws",
+      "date": "2026/1/20",
+      "category": "AI & RL",
+      "image": "./blogs/27_Chinchilla_Scaling_Laws/Chinchilla.webp"
+    },
+    {
+      "id": 30,
+      "path": "30_Low_Rank_Adaptation",
+      "title": "Low-Rank Adaptation (LoRA)",
+      "date": "2026/1/21",
+      "category": "AI & RL",
+      "image": "./blogs/30_Low_Rank_Adaptation/LoRA.webp"
+    },
+    {
+      "id": 29,
+      "path": "29_Robotics_Research_Production_Line",
+      "title": "Robotics Research Production Line",
+      "date": "2026/1/21",
+      "category": "Embodied Intelligence",
+      "image": "./blogs/29_Robotics_Research_Production_Line/Robotics_Research_Production_Line.webp"
+    },
+    {
+      "id": 4,
+      "path": "4_WiFi_CSI",
+      "title": "Introduction to WiFi CSI",
+      "date": "2025/10/08",
+      "category": "Wireless Communication",
+      "image": null
+    },
+    {
+      "id": 18,
+      "path": "18_Autocorrelation_Cross-correlation_Convolution",
+      "title": "Autocorrelation, Cross-correlation, and Convolution",
+      "date": "2026/1/12",
+      "category": "Wireless Communication",
+      "image": "./blogs/18_Autocorrelation_Cross-correlation_Convolution/Comparison_convolution_correlation.webp"
+    },
+    {
+      "id": 17,
+      "path": "17_Autocorrelation_of_CSI",
+      "title": "Autocorrelation of CSI",
+      "date": "2026/1/12",
+      "category": "Wireless Communication",
+      "image": null
+    },
+    {
+      "id": 1,
+      "path": "1_一阶倒立摆的系统模型",
+      "title": "一阶倒立摆的系统模型",
+      "date": "2020/11/21",
+      "category": "Control Theory",
+      "image": "./blogs/1_一阶倒立摆的系统模型/cart_pole.gif"
+    },
+    {
+      "id": 2,
+      "path": "2_对一阶倒立摆的LQR控制",
+      "title": "对一阶倒立摆的LQR控制",
+      "date": "2020/11/25",
+      "category": "Control Theory",
+      "image": "./blogs/2_对一阶倒立摆的LQR控制/LQR_control.webp"
+    },
+    {
+      "id": 12,
+      "path": "12_SenseFi_Paper_Reading_Report",
+      "title": "SenseFi Paper Reading Report",
+      "date": "2026/1/6",
+      "category": "Other Notes",
+      "image": null
+    },
+    {
+      "id": 19,
+      "path": "19_MVX-Net_Paper_Reading_Report",
+      "title": "MVX-Net Paper Reading Report",
+      "date": "2026/1/13",
+      "category": "Other Notes",
+      "image": null
+    },
+    {
+      "id": 20,
+      "path": "20_DeepFusion_Paper_Reading_Report",
+      "title": "DeepFusion Paper Reading Report",
+      "date": "2026/1/13",
+      "category": "Other Notes",
+      "image": null
+    },
+    {
+      "id": 15,
+      "path": "15_Access_Repo_via_GitHub_SSH",
+      "title": "Access Repo via GitHub SSH",
+      "date": "2026/1/8",
+      "category": "Other Notes",
+      "image": null
+    }
+  ]
+}
