@@ -29,6 +29,7 @@ const pathList = [
     "24_Multi-Head_Attention_Mechanism",
     "25_Training_Stability",
     "26_RoPE_Positional_Encoding",
+    "27_Chinchilla_Scaling_Laws",
 ];
 const nameList = [
     "一阶倒立摆的系统模型",
@@ -57,6 +58,7 @@ const nameList = [
     "Multi-Head Attention Mechanism",
     "Stable Model Training: Reducing Validation Variance",
     "RoPE Positional Encoding",
+    "Chinchilla Scaling Laws",
 ];
 
 function loadMd(name, id = null) {
