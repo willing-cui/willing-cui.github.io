@@ -34,9 +34,74 @@ def set_seed(seed=42):
 
 ### **3. 调整超参数与训练策略**
 
-- **学习率**：最关键的参数之一。 使用**学习率预热**（Warmup）：如前几轮从较小学习率线性增加，避免初期震荡。 采用**余弦退火**（Cosine Annealing）或**带重启的调度器**（CosineWarmRestarts），替代阶梯下降。 若波动仍大，可适当**降低初始学习率**（如减少30%-50%）。
+- **学习率**：最关键的参数之一。 使用**学习率预热**（Warmup）：如前几轮从较小学习率线性增加，避免初期震荡。 采用**余弦退火**（Cosine Annealing）或**带重启的调度器**（CosineWarmRestarts），替代阶梯下降。 若波动仍大，可适当**降低初始学习率**（如减少30%-50%）。下面提供了一种自定义 Warmup 调度器的实现
+
+  ```python
+  import torch
+  import torch.nn as nn
+  import torch.optim as optim
+  from torch.optim.lr_scheduler import _LRScheduler
+  
+  # 自定义线性Warmup调度器
+  class LinearWarmupLR(_LRScheduler):
+      def __init__(self, optimizer, warmup_epochs, total_epochs, base_lr, last_epoch=-1):
+          self.warmup_epochs = warmup_epochs
+          self.total_epochs = total_epochs
+          self.base_lr = base_lr
+          super().__init__(optimizer, last_epoch)
+  
+      def get_lr(self):
+          epoch = self.last_epoch + 1  # last_epoch初始为-1，对应第0轮
+          
+          # 预热阶段：从0线性增加到base_lr
+          if epoch <= self.warmup_epochs:
+              lr = self.base_lr * (epoch / self.warmup_epochs)
+          # 预热后：余弦退火衰减
+          else:
+              # 余弦退火公式：lr = base_lr * (1 + cos(pi*(epoch-warmup)/ (total-warmup))) / 2
+              cos_factor = (1 + torch.cos(torch.pi * (epoch - self.warmup_epochs) / (self.total_epochs - self.warmup_epochs))) / 2
+              lr = self.base_lr * cos_factor
+          
+          return [lr for _ in self.optimizer.param_groups]
+  
+  # 测试自定义调度器
+  model = nn.Linear(10, 1)
+  base_lr = 0.001
+  optimizer = optim.SGD(model.parameters(), lr=base_lr)
+  
+  # 初始化自定义调度器
+  warmup_epochs = 5
+  total_epochs = 50
+  scheduler = LinearWarmupLR(optimizer, warmup_epochs, total_epochs, base_lr)
+  
+  # 模拟训练
+  for epoch in range(total_epochs):
+      # 训练步骤（省略）
+      optimizer.step()
+      
+      # 打印学习率
+      current_lr = optimizer.param_groups[0]['lr']
+      print(f"Epoch {epoch+1:2d}, Learning Rate: {current_lr:.6f}")
+      
+      # 更新学习率
+      scheduler.step()
+  ```
+
+  **代码关键解释**：
+
+  - `LinearWarmupLR`继承自`_LRScheduler`，必须实现`get_lr`方法，返回每轮的学习率列表。
+  - 预热阶段：学习率从 0 开始，更适合对初始学习率敏感的场景。
+  - 预热后：使用余弦退火策略，相比线性衰减更平缓，是业界常用的优化策略。
+
+  **实现要点**：
+
+  - 预热轮数（`warmup_epochs`）通常设置为 5-10 轮，具体根据数据集大小调整。
+  - `scheduler.step()`必须在`optimizer.step()`之后调用，否则学习率更新无效。
+
 - **批量大小**：过小的batch可能导致梯度噪声大，过大会降低泛化能力。可尝试适度增大batch size（需同步调整学习率）。
+
 - **优化器选择**： 使用**AdamW**（Adam with decoupled weight decay）替代原始Adam，更稳定且泛化更好。 可尝试**SGD with momentum**（如0.9）配合Nesterov动量，对许多任务更稳定。
+
 - **梯度裁剪**：尤其是RNN或Transformer中，梯度爆炸可能导致波动（设置`clip_grad_norm_`通常为1.0-5.0）。
 
 ### **4. 模型与正则化**
