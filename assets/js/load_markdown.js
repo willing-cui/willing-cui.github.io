@@ -30,6 +30,8 @@ const pathList = [
     "25_Training_Stability",
     "26_RoPE_Positional_Encoding",
     "27_Chinchilla_Scaling_Laws",
+	"28_Mixture_of_Experts",
+	"29_Robotics_Research_Production_Line",
 ];
 const nameList = [
     "一阶倒立摆的系统模型",
@@ -59,6 +61,8 @@ const nameList = [
     "Stable Model Training: Reducing Validation Variance",
     "RoPE Positional Encoding",
     "Chinchilla Scaling Laws",
+	"Mixture of Experts",
+	"Robotics Research Production Line",
 ];
 
 function loadMd(name, id = null) {

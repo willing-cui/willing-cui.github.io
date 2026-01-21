@@ -2,7 +2,7 @@
 
 <span class="image main">
 <img class="main img-in-blog" style="max-width: 40%" src="./blogs/27_Chinchilla_Scaling_Laws/Chinchilla.webp" alt="Chinchilla" />
-<i>Chinchilla (龙猫), 原产于南美洲安第斯山脉的晨昏活动性啮齿动物,<br> By <a href="//commons.wikimedia.org/w/index.php?title=User:Maxunbanned&amp;action=edit&amp;redlink=1" class="new" title="User:Maxunbanned (page does not exist)">Maxunbanned</a> - <a href="//commons.wikimedia.org/wiki/File:YukiTheChinchilla.jpg" title="File:YukiTheChinchilla.jpg">File:YukiTheChinchilla.jpg</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0" title="Creative Commons Attribution-Share Alike 4.0">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=127726867">Link</a></i>
+<i>Chinchilla (龙猫), 原产于南美洲安第斯山脉的晨昏活动性啮齿动物.<br> By <a href="//commons.wikimedia.org/w/index.php?title=User:Maxunbanned&amp;action=edit&amp;redlink=1" class="new" title="User:Maxunbanned (page does not exist)">Maxunbanned</a> - <a href="//commons.wikimedia.org/wiki/File:YukiTheChinchilla.jpg" title="File:YukiTheChinchilla.jpg">File:YukiTheChinchilla.jpg</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0" title="Creative Commons Attribution-Share Alike 4.0">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=127726867">Link</a></i>
 </span>
 
 ## 1. 背景：为什么需要缩放定律？

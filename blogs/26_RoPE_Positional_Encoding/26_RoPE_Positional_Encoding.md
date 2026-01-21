@@ -2,7 +2,7 @@ RoPE（Rotary Position Embedding，旋转位置编码）是近年来在Transform
 
 <span class="image main">
 <img class="main img-in-blog" style="max-width: 40%" src="./blogs/26_RoPE_Positional_Encoding/SuperMacro_Rope.webp" alt="Rope" />
-<i>Rope, <br> By No machine-readable author provided. <a href="//commons.wikimedia.org/wiki/User:HiveHarbingerCOM" title="User:HiveHarbingerCOM">HiveHarbingerCOM</a> assumed (based on copyright claims). - No machine-readable source provided. Own work assumed (based on copyright claims)., <a href="https://creativecommons.org/licenses/by/3.0" title="Creative Commons Attribution 3.0">CC BY 3.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=3661818">Link</a></i>
+<i>Rope. <br> By No machine-readable author provided. <a href="//commons.wikimedia.org/wiki/User:HiveHarbingerCOM" title="User:HiveHarbingerCOM">HiveHarbingerCOM</a> assumed (based on copyright claims). - No machine-readable source provided. Own work assumed (based on copyright claims)., <a href="https://creativecommons.org/licenses/by/3.0" title="Creative Commons Attribution 3.0">CC BY 3.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=3661818">Link</a></i>
 </span>
 
 
