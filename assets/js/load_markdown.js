@@ -32,6 +32,7 @@ const pathList = [
     "27_Chinchilla_Scaling_Laws",
 	"28_Mixture_of_Experts",
 	"29_Robotics_Research_Production_Line",
+	"30_Low_Rank_Adaptation"
 ];
 const nameList = [
     "一阶倒立摆的系统模型",
@@ -63,6 +64,7 @@ const nameList = [
     "Chinchilla Scaling Laws",
 	"Mixture of Experts",
 	"Robotics Research Production Line",
+	"Low-Rank Adaptation (LoRA)",
 ];
 
 function loadMd(name, id = null) {
