@@ -45,8 +45,8 @@ def set_seed(seed=42):
   # 自定义线性Warmup调度器
   class LinearWarmupLR(_LRScheduler):
       def __init__(self, optimizer, warmup_epochs, total_epochs, base_lr, last_epoch=-1):
-          self.warmup_epochs = warmup_epochs
-          self.total_epochs = total_epochs
+          self.warmup_epochs = torch.tensor(warmup_epochs, dtype=torch.float32)
+          self.total_epochs = torch.tensor(total_epochs, dtype=torch.float32)
           self.base_lr = base_lr
           super().__init__(optimizer, last_epoch)
   
@@ -90,8 +90,15 @@ def set_seed(seed=42):
   **代码关键解释**：
 
   - `LinearWarmupLR`继承自`_LRScheduler`，必须实现`get_lr`方法，返回每轮的学习率列表。
+
   - 预热阶段：学习率从 0 开始，更适合对初始学习率敏感的场景。
-  - 预热后：使用余弦退火策略，相比线性衰减更平缓，是业界常用的优化策略。
+
+  - 预热后：使用**余弦退火**策略，相比线性衰减更平缓，是业界常用的优化策略。
+
+    <span class="image main">
+    <img class="main img-in-blog" style="max-width: 60%" src="./blogs/25_Training_Stability/CosineAnnealingLR.webp" alt="Cosine Annealing Learning Rate" />
+    <i>Cosine annealing learning rate. Image taken from <a href="https://docs.pytorch.org/docs/stable/generated/torch.optim.lr_scheduler.CosineAnnealingLR.html">Pytorch CosineAnnealingLR</a></i>
+    </span>
 
   **实现要点**：
 
