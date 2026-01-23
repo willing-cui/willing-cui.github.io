@@ -167,8 +167,9 @@ html::-webkit-scrollbar-thumb {
     align-items: center;     /* 垂直居中 */
     width: 2rem;
     height: 2rem;
-    border-radius: 2rem;
-    padding: 0px 0px 0px 0.2rem;
+    border-radius: 1rem;
+    padding: 0.0rem 0 0.0rem 0.16rem;
+	font-size: 1rem;
     cursor: pointer;
     color: #666;
     box-shadow: none;
