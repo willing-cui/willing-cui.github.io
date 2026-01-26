@@ -10,8 +10,10 @@
 */
 
 .hljs {
-  color: #c9d1d9;
-  background: #0d1117;
+  /* color: #c9d1d9; */
+  /* background: #0d1117; */
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.075);
 }
 
 .hljs-doctag,
