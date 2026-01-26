@@ -3,7 +3,7 @@ Transformer是自然语言处理领域的革命性架构，理解其实现细节
 - **语义转换**：将原始词向量转换为包含全局上下文信息的表示。
 - **任务转换**：将一种序列（如英文）转换为另一种序列（如中文），适用于机器翻译、摘要生成等任务。
 
-> **命名由来**：Jakob Uszkoreit 的创意
+> 命名由来：Jakob Uszkoreit 的创意
 >
 > “Transformer”这个名字由论文作者之一 Jakob Uszkoreit 提出，主要基于以下两点：
 >
@@ -19,11 +19,11 @@ Transformer是自然语言处理领域的革命性架构，理解其实现细节
 
 ## 0. 项目目标及可行性分析
 
-项目以训练一个**检索增强生成模型 (RAG) **或**问答模型 (QA)**作为目标。对于这个目标我们可以选择Encoder-Decoder (T5风格)架构，Encoder读入 `title`，Decoder生成 `text`。
+项目以训练一个**检索增强生成模型** (RAG) 或**问答模型** (QA)作为目标。对于这个目标我们可以选择Encoder-Decoder (T5风格)架构，Encoder读入 `title`，Decoder生成 `text`。
 
 项目以个人电脑的硬件配置（8GB显存 + 32GB内存）训练一个**微型 (Tiny)** 或**极小 (Mini)** 规模的 Encoder-Decoder Transformer 模型。
 
-虽然你无法训练出像 T5-large 或 mT5 那样拥有数亿参数的大模型，但可以训练一个参数在 **10M 到 50M（1000万到5000万）** 之间的模型，这在个人电脑上绰绰有余，并且完全能够完成“给定标题，生成摘要”的问答任务。
+虽然无法训练出像 T5-large 或 mT5 那样拥有数亿参数的大模型，但可以训练一个参数在 **10M 到 50M（1000万到5000万）** 之间的模型，这在个人电脑上绰绰有余，并且完全能够完成“给定标题，生成摘要”的问答任务。
 
 为了在 8GB 显存下流畅训练，我们需要严格控制模型大小。以下是一个推荐的配置（以 **T5-Small** 为蓝本进行缩小）：
 
@@ -189,7 +189,7 @@ spm.SentencePieceTrainer.train(
 print("模型训练完成！")
 ```
 
-**关键参数解释**:
+#### 关键参数解释
 
 - **`model_type`**: 推荐使用 `'bpe'`(Byte Pair Encoding) 或 `'unigram'`。BPE 更常见，训练快；Unigram 在某些任务上效果更好，但训练稍慢。
 - **`character_coverage`**: 对于像中文这样字符集很大的语言，设置一个较高的覆盖率（如0.9995）可以确保模型能处理绝大多数字符。如果遇到未知字符，会回退到 `[UNK]`。
@@ -267,7 +267,7 @@ Decoded: 数学是研究数量、结构以及空间等概念的一门学科。
 3	[EOS]	0.0
 ```
 
-## Transformer 实现
+## 2. Transformer 实现
 
 ### 2.1 环境准备与依赖导入
 
@@ -293,12 +293,12 @@ torch.manual_seed(42)
 @dataclass
 class TransformerConfig:
     # 模型配置
-    d_model: int = 256      # 模型维度
-    n_heads: int = 8        # 注意力头数
-    d_ff: int = 2048        # 前馈网络维度
-    n_layers: int = 4       # 编码器/解码器层数
-    max_seq_len: int = 1000 # 最大序列长度
-    dropout: float = 0.1    # dropout比例
+    d_model: int = 256  # 模型维度
+    n_heads: int = 8  # 注意力头数
+    d_ff: int = 1024  # 前馈网络维度
+    n_layers: int = 4  # 编码器/解码器层数
+    max_seq_len: int = 512  # 最大序列长度
+    dropout: float = 0.1  # dropout比例
     
     # 训练配置
     batch_size: int = 16
@@ -311,7 +311,7 @@ class TransformerConfig:
     sp_model_path: str = "zh_wiki_spm_comprehensive.model"	# 词表路径
 ```
 
-## 2. 位置编码实现
+### 2.2 位置编码实现
 
 Transformer没有循环结构，需要显式添加位置信息：
 
@@ -347,7 +347,7 @@ class PositionalEncoding(nn.Module):
         return self.dropout(x)
 ```
 
-**关键细节解释**:
+#### 关键细节解释
 
 1. **`div_term`**: 为什么不直接写成 `1 / (10000 ** (2*i / d_model))`与原始论文中的公式一致？
 
@@ -419,7 +419,7 @@ class PositionalEncoding(nn.Module):
 
          所有通过 `register_buffer`注册的张量（如 `pe`）**会自动**被移动到与模型参数相同的设备上。你不需要手动管理 `pe`的设备位置。
 
-## 3. 缩放点积注意力
+### 2.3 缩放点积注意力
 
 这是Transformer的**核心机制**，详细解析，参考 <a href="index.html?part=blogs&id=8">Attention Mechanism </a>.
 
@@ -449,7 +449,7 @@ class ScaledDotProductAttention(nn.Module):
         return output, attn_weights
 ```
 
-## 4. 多头注意力机制
+### 2.4 多头注意力机制
 
 让模型能够同时关注不同表示子空间的信息，详细解析，参考 <a href="index.html?part=blogs&id=24">Multi-Head Attention Mechanism</a>.
 
@@ -492,7 +492,7 @@ class MultiHeadAttention(nn.Module):
         return self.w_o(x)
 ```
 
-**关键细节解释**:
+#### 关键细节解释
 
 **`.contiguous()`**: 这是一个**关键但容易被忽略的操作**，它解决了 PyTorch 张量在内存布局上的一个潜在问题，确保了后续的 `view()`操作能够正确执行。
 
@@ -539,7 +539,7 @@ class MultiHeadAttention(nn.Module):
 
    这行代码与原始代码是等价的，但更加简洁和安全。
 
-## 5. 前馈网络
+### 2.5 前馈网络
 
 对每个位置独立应用相同的**全连接网络**：
 
@@ -557,7 +557,7 @@ class PositionwiseFeedForward(nn.Module):
         return self.linear2(self.dropout(self.activation(self.linear1(x))))
 ```
 
-## 6. 编码器层
+### 2.6 编码器层
 
 包含多头自注意力和前馈网络，都有残差连接和层归一化：
 
@@ -583,7 +583,7 @@ class EncoderLayer(nn.Module):
         return x
 ```
 
-## 7. 解码器层
+### 2.7 解码器层
 
 比编码器层多一个**编码器-解码器**注意力机制，详细解析，参考 <a href="index.html?part=blogs&id=21">Cross Attention Mechanism</a>.
 
@@ -617,7 +617,7 @@ class DecoderLayer(nn.Module):
         return x
 ```
 
-## 8. 完整编码器和解码器
+### 2.8 完整编码器和解码器
 
 ```python
 class Encoder(nn.Module):
@@ -665,7 +665,7 @@ class Decoder(nn.Module):
         return self.norm(x)
 ```
 
-**关键细节解释**:
+#### 关键细节解释
 
 `nn.Embedding`是 PyTorch 中用于词嵌入（Word Embedding） 的核心模块。它的功能非常简单但至关重要：将一个整数索引（通常代表一个词或一个Token）映射为一个固定大小的密集向量（Dense Vector）。
 
@@ -697,7 +697,7 @@ class Decoder(nn.Module):
 
    在处理变长序列时，我们通常会用 `0`来填充（Pad）短句子的末尾。`nn.Embedding`会为索引 `0`也分配一个向量。在训练过程中，这个“填充”位置的向量也会被更新，但通常我们会在计算注意力时通过掩码（Mask）来忽略这些位置。
 
-## 9. 完整的Transformer模型
+### 2.9 完整的Transformer模型
 
 ```python
 class Transformer(nn.Module):
@@ -740,7 +740,7 @@ class Transformer(nn.Module):
         return src_mask, tgt_mask
 ```
 
-**关键细节解释**:
+#### 关键细节解释
 
 1. **`nn.init.xavier_uniform_()`**: 这是 PyTorch 中一个非常重要的**权重初始化函数**。它的作用是根据 **Xavier (Glorot) 初始化** 方法，使用均匀分布来初始化神经网络层的权重。
 
@@ -772,7 +772,7 @@ class Transformer(nn.Module):
    * **下三角部分（包括对角线）** 保持原值
    * **上三角部分** 设置为0
 
-## 10. 训练模型
+### 2.10 训练模型
 
 定义数据集
 
@@ -941,7 +941,7 @@ def train_transformer():
             print(f"模型已保存: transformer_epoch_{epoch+1}.pth")
 ```
 
-**关键细节解释**:
+#### 关键细节解释
 
 1. `load_dataset`函数的行为
 
@@ -955,7 +955,69 @@ def train_transformer():
    * Hugging Face datasets库中的很多数据集确实提供了预划分的 train、validation、test分割，但需要数据集作者在创建时就已经定义好。
    * 对于 fjcanyue/wikipedia-zh-cn这个维基百科数据集，从文件名 wikipedia-zh-cn-20250901.json可以看出，它应该是完整的数据集，没有预划分（通过代码验证数据集**确实没有划分**，请参照**1.1**小节）。
 
-## 11. 完整模型及训练代码
+2. 为什么`output = model(src, tgt[:, :-1], src_mask, tgt_mask[:, :, :-1, :-1])`中，目标序列输入到解码器时需要**去掉最后一个token**？
+
+   这是由Transformer的**自回归生成机制**和**教师强制训练策略**共同决定的。
+
+   **核心原因：时序对齐与预测目标**
+
+   1. 自回归生成原理
+
+      Transformer解码器采用自回归方式生成序列，即：
+
+      - 在时间步`t`，根据**前t-1个已生成token**来预测**第t个token**
+
+      - 每个位置的预测都基于之前所有位置的信息
+
+   2. 训练时的时序对齐
+
+      在代码中的具体体现：
+
+      ```python
+      # 输入解码器的序列：tgt[:, :-1] (去掉最后一个token)
+      # 预测目标：tgt[:, 1:] (去掉第一个token，即[BOS])
+      output = model(src, tgt[:, :-1], src_mask, tgt_mask[:, :, :-1, :-1])
+      loss = criterion(output, tgt[:, 1:])
+      ```
+
+      **时序对齐关系**：
+
+      * **输入序列**：`[BOS, token₁, token₂, ..., tokenₙ₋₁]`
+
+      * **预测目标**：`[token₁, token₂, ..., tokenₙ₋₁, EOS]`
+
+   3. 具体示例说明
+
+      假设完整目标序列为：`[BOS, 数学, 是, 重要, 学科, EOS]`
+      | 解码器输入                    | 期望预测输出 | 掩码确保            |
+      | ----------------------------- | ------------ | ------------------- |
+      | `[BOS]`                       | `数学`       | 只能看到`[BOS]`     |
+      | `[BOS, 数学]`                 | `是`         | 只能看到前两个token |
+      | `[BOS, 数学, 是]`             | `重要`       | 只能看到前三个token |
+      | `[BOS, 数学, 是, 重要]`       | `学科`       | 只能看到前四个token |
+      | `[BOS, 数学, 是, 重要, 学科]` | `EOS`        | 只能看到前五个token |
+
+   4. 其他相关技术细节解析
+
+      掩码的相应调整
+
+      ```python
+      tgt_mask[:, :, :-1, :-1]  # 掩码也相应调整，确保时序一致性
+      ```
+
+      掩码需要与输入序列长度匹配，防止解码器在训练时"偷看"未来信息。
+
+   5. 设计优势
+
+      * **避免信息泄漏**：确保解码器在训练时不会看到要预测的当前token
+   
+      * **模拟推理过程**：训练方式与实际的序列生成过程保持一致
+   
+      * **梯度稳定性**：每个位置的预测都基于真实的前缀，而不是模型自身有误差的生成结果
+   
+      这种"移位"设计是序列到序列模型教师强制训练的标准做法，确保了模型能够学习到正确的条件概率分布：$P(y_t∣y_1,...,y_{t−1},X)$。
+
+### 2.11 完整模型及训练代码
 
 ```python
 import torch
@@ -1402,7 +1464,7 @@ if __name__ == "__main__":
     train_transformer()
 ```
 
-## 12. 关键实现要点
+## 3. 关键实现要点
 
 1. **位置编码**：使用正弦和余弦函数为每个位置生成独特的编码
 2. **掩码机制**：解码器使用因果掩码防止信息泄漏
