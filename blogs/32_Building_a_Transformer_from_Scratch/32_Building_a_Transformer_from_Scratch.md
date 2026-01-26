@@ -313,7 +313,7 @@ class TransformerConfig:
 
 ### 2.2 位置编码实现
 
-Transformer没有循环结构，需要显式添加位置信息：
+Transformer没有循环结构，需要显式添加位置信息，关于**正弦位置编码**的详细解析，参考 <a href="index.html?part=blogs&id=5">Sinusoidal Positional Encoding</a>.
 
 ```python
 class PositionalEncoding(nn.Module):
@@ -1463,6 +1463,13 @@ def train_transformer():
 if __name__ == "__main__":
     train_transformer()
 ```
+
+#### 模型训练时计算资源消耗
+
+<span class="image main">
+<img class="main img-in-blog" style="max-width: 90%" src="./blogs/32_Building_a_Transformer_from_Scratch/Computational_Resource_Consumption.webp" alt="Computational resource consumption" />
+<i>模型训练时的计算资源消耗.</i>
+</span>
 
 ## 3. 关键实现要点
 
