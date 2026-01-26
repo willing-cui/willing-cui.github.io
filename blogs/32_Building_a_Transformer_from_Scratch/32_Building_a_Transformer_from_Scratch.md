@@ -362,14 +362,14 @@ class PositionalEncoding(nn.Module):
 
 2. 为什么要加 `Dropout`?
 
-   这个 Dropout 是施加在**“词嵌入”和“位置编码”的和**之上的。这意味着：
+   这个 Dropout 是施加在“**词嵌入**”和“**位置编码**”的和之上的。这意味着：
 
    - 词嵌入向量（`x`）在加上位置编码后，**立即**被进行了 Dropout 正则化。
    - 这个 Dropout 会随机将“词嵌入+位置编码”这个联合表示中的一些元素置零。
 
    对“内容+位置”的联合表示进行 Dropout，能同时扰动两种信息，迫使模型不依赖于特定的内容或特定的位置，从而学习更鲁棒的特征。这与分别对两者做 Dropout 的效果是相似的。
 
-3. **`register_buffer()`**函数的作用
+3. `register_buffer()`函数的作用
 
    `register_buffer()`是 PyTorch 的 `nn.Module` 类中一个非常重要且实用的方法。它的作用是将张量（Tensor）注册为模块的“缓冲区”（Buffer）。
 
@@ -754,7 +754,7 @@ class Transformer(nn.Module):
    - **前馈网络**：两个线性层 `W1`和 `W2`也需要正确初始化。
    - **嵌入层**：虽然 `nn.Embedding`的输入是 one-hot 向量（方差为1），但 Xavier 初始化也能提供一个合理的起始点。
 
-2. **`torch.tril`**函数的作用: `torch.tril`是 PyTorch 中一个非常实用的函数，它的作用是返回一个矩阵的下三角部分（lower triangular part），并将上三角部分设置为0。
+2. `torch.tril`函数的作用: `torch.tril`是 PyTorch 中一个非常实用的函数，它的作用是返回一个矩阵的下三角部分（lower triangular part），并将上三角部分设置为0。
 
    **函数定义**: 
 
@@ -762,8 +762,8 @@ class Transformer(nn.Module):
    torch.tril(input, diagonal=0) → Tensor
    ```
 
-   * input(Tensor): 输入张量，至少是2维的
-   * diagonal(int, optional): 对角线偏移量，默认为0
+   * `input` (Tensor): 输入张量，至少是2维的
+   * `diagonal` (int, optional): 对角线偏移量，默认为0
 
    **核心功能**: 
 
