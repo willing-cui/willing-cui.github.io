@@ -13,6 +13,8 @@
 		<link rel="stylesheet" href="assets/css/noscript.css" />
 	</noscript>
 	<link rel="stylesheet" rel="prefetch" href="assets/css/custom.css" />
+	<!-- highlight.js theme, from https://github.com/highlightjs/highlight.js/blob/main/src/styles/ -->
+	<link rel="stylesheet" href="assets/css/github-dark.css">
 </head>
 
 <body class="is-preload">
@@ -159,8 +161,10 @@
 	<script src="assets/js/main.js"></script>
 	<script src="assets/js/typewriter.js"></script>
 	<script src="assets/js/dynamic_card.js"></script>
-	<script src="assets/js/load_markdown.js"></script>
 	<script src="assets/js/marked.js"></script>
+	<script src="assets/js/highlight.min.js"></script>
+	<script>hljs.highlightAll();</script>
+	<script src="assets/js/load_markdown.js"></script>
 
 	<script>
 		MathJax = {

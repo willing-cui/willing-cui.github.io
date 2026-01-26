@@ -47,7 +47,7 @@ function loadMd(name, id = null) {
         path = pathList[id - 1];
         name = nameList[id - 1];
     } else {
-        return
+        return;
     }
 
     blogTitle = name;
@@ -63,7 +63,13 @@ function loadMd(name, id = null) {
                 const decoder = new TextDecoder("UTF-8");
                 const text = decoder.decode(fileContent);
 
+                // 使用marked解析Markdown
                 blogContent.innerHTML = marked.parse(text);
+
+                // 高亮所有代码块
+                document.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
 
                 // Generate catalogue in the container
                 generateTOC();
