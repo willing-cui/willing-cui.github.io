@@ -57,6 +57,14 @@
       "image": "./blogs/9_Transformer_BERT_GPT/Transformer_Structure.webp"
     },
     {
+      "id": 32,
+      "path": "32_Building_a_Transformer_from_Scratch",
+      "title": "Building a Transformer from Scratch",
+      "date": "2026/1/26",
+      "category": "AI & RL",
+      "image": "./blogs/32_Building_a_Transformer_from_Scratch/Building_a_Transformer.webp"
+    },
+    {
       "id": 28,
       "path": "28_Mixture_of_Experts",
       "title": "Mixture of Experts",
@@ -159,6 +167,14 @@
       "date": "2026/1/21",
       "category": "AI & RL",
       "image": "./blogs/30_Low_Rank_Adaptation/LoRA.webp"
+    },
+    {
+      "id": 31,
+      "path": "31_K_V_Cache",
+      "title": "K V Cache",
+      "date": "2026/1/23",
+      "category": "AI & RL",
+      "image": null
     },
     {
       "id": 29,

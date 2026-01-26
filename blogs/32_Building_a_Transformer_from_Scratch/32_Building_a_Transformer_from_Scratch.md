@@ -1,4 +1,21 @@
-Transformer是自然语言处理领域的革命性架构，理解其实现细节对掌握现代大语言模型至关重要。我们将从零开始实现一个完整的Transformer模型。
+Transformer是自然语言处理领域的革命性架构，理解其实现细节对掌握现代大语言模型至关重要。Transformer 的核心是**自注意力机制**，它通过计算序列中所有元素之间的关系，将输入序列（如句子）**转换**为一种新的、富含上下文信息的表示。这种“转换”能力体现在：
+
+- **语义转换**：将原始词向量转换为包含全局上下文信息的表示。
+- **任务转换**：将一种序列（如英文）转换为另一种序列（如中文），适用于机器翻译、摘要生成等任务。
+
+> **命名由来**：Jakob Uszkoreit 的创意
+>
+> “Transformer”这个名字由论文作者之一 Jakob Uszkoreit 提出，主要基于以下两点：
+>
+> 1. **功能契合**：该词准确描述了模型“**转换**”数据表示的核心功能。
+> 2. **个人喜好**：Uszkoreit 本人是《变形金刚》（Transformers）的粉丝，认为这个名字“听起来很酷”，因此将其用于模型命名。
+
+<span class="image main">
+<img class="main img-in-blog" style="max-width: 50%" src="./blogs/32_Building_a_Transformer_from_Scratch/Building_a_Transformer.webp" alt="Building a transformer from scratch" />
+<i>Building a transformer from scratch.</i>
+</span>
+
+本文将从零开始实现一个完整的Transformer模型。
 
 ## 0. 项目目标及可行性分析
 
@@ -804,8 +821,6 @@ class WikipediaDataset(Dataset):
         }
 
 ```
-
-
 
 下面是完整的的训练流程：
 
