@@ -21,7 +21,7 @@ Qwen-VL系列是阿里巴巴集团推出的视觉-语言模型（LVLM）家族�
 - **局限性**：仅支持静态图像，无视频理解能力；图像分辨率固定（448×448），动态分辨率适配差；上下文长度有限（2048 tokens），长文档/多图像处理能力弱。
 
   <span class="image main">
-  <img class="main img-in-blog" style="max-width: 50%" src="./blogs/33_Qwen_VL_Paper_Reading_Report/Qwen-VL_Performance.webp" alt="Qwen-VL Performance" />
+  <img class="main img-in-blog" style="max-width: 50%" src="./blogs/33_Qwen_Series_Papers_Reading_Report/Qwen-VL_Performance.webp" alt="Qwen-VL Performance" />
   <i>Qwen-VL在广泛任务中实现SOTA性能。From <a href="https://arxiv.org/pdf/2308.12966" >Qwen-VL: A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond</a></i>
   </span> 
 
