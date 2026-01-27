@@ -7,7 +7,7 @@ const indicator = document.getElementById('state-indicator')
 const photoListContainer = document.getElementById('photo-list'); // 获取滚动容器
 
 // 瀑布流布局相关变量
-let columnCount = 3; // 默认列数
+let columnCount = 0; // 默认列数 (初始化时强制刷新)
 let columnHeights = []; // 每列的当前高度
 let columnTops = []; // 每列的顶部位置
 let gap = 20; // 卡片间距
@@ -158,14 +158,14 @@ function updateColumnCount() {
 
     let newColumnCount = 3; // 默认
 
-    if (containerWidth <= 576) { // 手机
+    if (containerWidth <= 576 * 0.5) { // 手机
         newColumnCount = 1;
-    } else if (containerWidth <= 768) { // 平板
+    } else if (containerWidth <= 768 * 0.5) { // 平板
         newColumnCount = 2;
-    } else if (containerWidth <= 1024) { // 小桌面
+    } else if (containerWidth <= 1024 * 0.5) { // 小桌面
         newColumnCount = 3;
     } else { // 大桌面
-        newColumnCount = 4;
+        newColumnCount = 3;
     }
 
     if (newColumnCount !== columnCount) {

@@ -639,7 +639,8 @@ function setupTextClickHandler(renderer, camera, scene, controls) {
             toggleGlow(clickedSprite, camera, scene);
         } else {
             console.log("点击了文本精灵之外的位置");
-            // 明确不执行任何操作
+            // 解除视角锁定
+            controls.enabled = true;
             return;
         }
     }
