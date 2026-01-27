@@ -249,6 +249,14 @@
       "image": null
     },
     {
+      "id": 33,
+      "path": "33_Qwen_Series_Papers_Reading_Report",
+      "title": "Qwen Series Paper Reading Report",
+      "date": "2026/1/27",
+      "category": "Other Notes",
+      "image": "./blogs/33_Qwen_Series_Papers_Reading_Report/Qwen.webp"
+    },
+    {
       "id": 15,
       "path": "15_Access_Repo_via_GitHub_SSH",
       "title": "Access Repo via GitHub SSH",
