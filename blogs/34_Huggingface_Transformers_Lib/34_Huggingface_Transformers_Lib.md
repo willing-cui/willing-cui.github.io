@@ -19,10 +19,16 @@ Hugging Face Transformers 是一个开源的 Python 库，它封装了大量基�
 
 #### 1. 安装与验证
 
-```python
+```bash
 pip install transformers[torch] torch
-import transformers
+```
+
+验证安装结果：
+
+```python
 import torch
+import transformers
+
 print(f"Transformers version: {transformers.__version__}")
 print(f"PyTorch version: {torch.__version__}")
 print(f"GPU available: {torch.cuda.is_available()}")
@@ -36,7 +42,10 @@ from transformers import pipeline
 classifier = pipeline("sentiment-analysis")
 result = classifier("I love using Hugging Face Transformers!")
 print(result)
-# 输出: [{'label': 'POSITIVE', 'score': 0.9998}]
+```
+
+```python
+# 输出: [{'label': 'POSITIVE', 'score': 0.9971315860748291}]
 ```
 
 #### 3. 使用 AutoModel 进行文本编码
@@ -52,6 +61,10 @@ text = "Hello, Hugging Face!"
 inputs = tokenizer(text, return_tensors="pt")
 outputs = model(**inputs)
 print(outputs.last_hidden_state.shape)
+```
+
+```python
+# 输出：torch.Size([1, 7, 768])
 ```
 
 ### 4. 应用场景

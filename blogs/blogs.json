@@ -177,6 +177,22 @@
       "image": null
     },
     {
+      "id": 34,
+      "path": "34_Huggingface_Transformers_Lib",
+      "title": "Huggingface Transformers Lib",
+      "date": "2026/1/27",
+      "category": "AI & RL",
+      "image": "./blogs/34_Huggingface_Transformers_Lib/Transformers.webp"
+    },
+    {
+      "id": 35,
+      "path": "35_Optimizer",
+      "title": "Optimizer",
+      "date": "2026/1/28",
+      "category": "AI & RL",
+      "image": "./blogs/35_Optimizer/Gradient.webp"
+    },
+    {
       "id": 29,
       "path": "29_Robotics_Research_Production_Line",
       "title": "Robotics Research Production Line",
