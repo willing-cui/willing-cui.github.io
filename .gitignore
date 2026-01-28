@@ -6,3 +6,5 @@ blogs/32_Building_a_Transformer_from_Scratch/Transformer_from_Scratch/dataset
 blogs/33_Qwen_Series_Papers_Reading_Report/Qwen_Papers
 blogs/34_Huggingface_Transformers_Lib/Code/transformers-main
 blogs/34_Huggingface_Transformers_Lib/Code/Evaluate/.venv
+blogs/extract_texts/.idea
+blogs/extract_texts/.venv
