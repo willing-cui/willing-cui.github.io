@@ -76,10 +76,10 @@ def rgb_string_to_tuple(rgb_str):
 
 def main():
     success = replace_color_with_transparency(
-        input_path="../icon_font.png",
-        output_path="../icon_w.png",
-        target_color=(255, 255, 255),  # 白色
-        replacement_color=(255, 255, 255),  # 蓝色
+        input_path="../icon_sim_rm_bg_b_192x192.png",
+        output_path="../icon_sim_rm_bg_b_192x192.png",
+        target_color=(255, 255, 255),  # 将图片中该颜色替换为透明
+        replacement_color=(0, 0, 0),  # 将图片中的剩余颜色替换为该颜色
         tolerance=30
     )
 
