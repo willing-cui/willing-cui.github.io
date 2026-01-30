@@ -1,5 +1,7 @@
 Qwen-VL系列是阿里巴巴集团推出的视觉-语言模型（LVLM）家族，历经Qwen-VL、Qwen2-VL、Qwen2.5-VL到Qwen3-VL四代迭代，在架构设计、核心能力、训练策略和实际性能上实现了持续突破。以下从**每代模型技术创新**、**性能提升**、**迭代改进对比**三个维度展开详细分析，结合官方技术报告数据与实验结果，全面呈现其演进路径。
 
+<a href="https://github.com/huggingface/transformers/tree/8e3e145b427196e014f37aa42ba890b9bc94275e/src/transformers/models/qwen2" target="_blank" rel="noopener noreferrer">访问Qwen2在Huggingface仓库的代码实现</a>
+
 
 ## 一、各代Qwen-VL模型技术创新与性能提升
 ### 1. 第一代：Qwen-VL（2023年）——视觉-语言基础能力奠基

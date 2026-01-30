@@ -49,7 +49,7 @@
 
 <span class="image main">
 <img class="main img-in-blog" style="max-width: 40%" src="./blogs/14_Activation_Functions/ReLU_and_GELU.webp" alt="ReLU and GELU" />
-<i>ReLU 和 GELU 激活函数</i>
+<i>ReLU 和 ELU 激活函数</i>
 </span>
 
 **公式**：$f(x) = \text{max}(0, x)$

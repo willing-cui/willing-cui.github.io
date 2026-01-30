@@ -11,7 +11,7 @@
 
 ### 1.1 基本数学公式
 
-注意力机制的核心计算过程可以用以下公式表示：
+**Scaled Dot-Product Attention (SDPA)** 注意力机制的核心计算过程可以用以下公式表示：
 
 $$\text{Attention}(Q,K,V)=\text{softmax}(\frac{QK^T}{\sqrt{d_k}})V$$
 
