@@ -158,12 +158,10 @@ function updateColumnCount() {
 
     let newColumnCount = 3; // 默认
 
-    if (containerWidth <= 576 * 0.5) { // 手机
+    if (containerWidth <= 1080 * 0.6) { // 小桌面
         newColumnCount = 1;
-    } else if (containerWidth <= 768 * 0.5) { // 平板
+    } else if (containerWidth <= 2560 * 0.4) { // 中等大小桌面
         newColumnCount = 2;
-    } else if (containerWidth <= 1024 * 0.5) { // 小桌面
-        newColumnCount = 3;
     } else { // 大桌面
         newColumnCount = 3;
     }
