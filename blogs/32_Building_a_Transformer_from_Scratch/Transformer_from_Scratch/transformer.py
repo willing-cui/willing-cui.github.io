@@ -413,7 +413,7 @@ def train_transformer():
                 tgt = batch['target_ids'].to(device)
 
                 src_mask, tgt_mask = model.generate_mask(src, tgt)
-                output = model(src, tgt[:, :-1], src_mask, tgt_mask[:, :-1, :-1])
+                output = model(src, tgt[:, :-1], src_mask, tgt_mask[:, :, :-1, :-1])
 
                 loss = criterion(output.contiguous().view(-1, config.vocab_size),
                                  tgt[:, 1:].contiguous().view(-1))
