@@ -1,6 +1,6 @@
 Hugging Face Transformers 是一个开源的 Python 库，它封装了大量基于 Transformer 架构的预训练模型，旨在简化自然语言处理（NLP）、多模态（图像、音频等）任务的开发流程。它支持 PyTorch、TensorFlow 和 JAX 三大深度学习框架，是当前大模型开发中最常用的工具之一。
 
-<a href="https://huggingface.co/docs/transformers/v5.0.0/zh/index">官方教程</a>
+<a target="_blank" rel="noopener noreferrer" href="https://huggingface.co/docs/transformers/v5.0.0/zh/index">官方教程</a>
 
 ### 1. 核心功能与特点
 
