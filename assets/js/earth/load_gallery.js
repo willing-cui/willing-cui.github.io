@@ -144,21 +144,30 @@ function handleResize() {
         updateColumnCount();
         // 重新计算瀑布流布局
         if (isWaterfallApplied) {
+            console.log("因为窗口大小改变造成布局刷新")
             applyWaterfallLayout();
         }
-    }, 250);
+    }, 500);
+
+    // 重复刷新一次，避免css样式过渡中卡片高度读取不准的情况
+    resizeTimeout = setTimeout(() => {
+        if (isWaterfallApplied) {
+            applyWaterfallLayout();
+        }
+    }, 1000);
 }
 
 // 根据窗口宽度更新列数
 function updateColumnCount() {
     if (!grid) return;
 
-    const containerWidth = grid.clientWidth;
+    // console.log('设备像素比:', window.devicePixelRatio);
+    const containerWidth = grid.clientWidth * window.devicePixelRatio;
     console.log(`显示窗口宽度为 ${containerWidth} px`)
 
     let newColumnCount = 3; // 默认
 
-    if (containerWidth <= 1080 * 0.6) { // 小桌面
+    if (containerWidth <= 1080 * 0.4) { // 小桌面
         newColumnCount = 1;
     } else if (containerWidth <= 2560 * 0.4) { // 中等大小桌面
         newColumnCount = 2;
@@ -457,7 +466,7 @@ function loadBatch(startIndex, endIndex) {
                     applyWaterfallLayout();
                     isLoading = false;
                     updateIndicator();
-                }, 100);
+                }, 200);
             } else {
                 isLoading = false;
                 updateIndicator();
