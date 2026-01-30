@@ -273,6 +273,14 @@
       "image": "./blogs/33_Qwen_Series_Papers_Reading_Report/Qwen.webp"
     },
     {
+      "id": 36,
+      "path": "36_LingBot_VLA_Paper_Reading_Report",
+      "title": "LingBot-VLA Paper Reading Report",
+      "date": "2026/1/30",
+      "category": "Other Notes",
+      "image": "./blogs/36_LingBot_VLA_Paper_Reading_Report/LingBot_Diagram.webp"
+    },
+    {
       "id": 15,
       "path": "15_Access_Repo_via_GitHub_SSH",
       "title": "Access Repo via GitHub SSH",
