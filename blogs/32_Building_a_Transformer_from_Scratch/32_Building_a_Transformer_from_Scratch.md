@@ -42,8 +42,9 @@ pip install tqdm
 pip install sentencepiece	# 用于训练中文词表
 
 # 避免安装失败,先升级pip
-pip install --upgrade pip
-pip install --upgrade pip setuptools
+python.exe -m pip install --upgrade pip
+python.exe -m pip install --upgrade pip setuptools
+
 nvcc --version	# 查看当前安装的cuda版本
 # 按照运行环境安装对应版本的pytorch
 # https://pytorch.org/get-started/previous-versions/
