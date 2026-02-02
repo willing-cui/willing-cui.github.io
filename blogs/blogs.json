@@ -137,6 +137,14 @@
       "image": null
     },
     {
+      "id": 38,
+      "path": "38_Feature_Fusion_and_Feature_Alignment",
+      "title": "Feature Fusion and Feature Alignment",
+      "date": "2026/2/2",
+      "category": "AI & RL",
+      "image": "./blogs/38_Feature_Fusion_and_Feature_Alignment/Alignment_and_Fusion.webp"
+    },
+    {
       "id": 23,
       "path": "23_Two-Layer_MLP_Can_Approximate_Any_Function",
       "title": "Two-Layer MLP Can Approximate Any Function?",
@@ -183,6 +191,14 @@
       "date": "2026/1/27",
       "category": "AI & RL",
       "image": "./blogs/34_Huggingface_Transformers_Lib/Transformers.webp"
+    },
+    {
+      "id": 37,
+      "path": "37_Finetune_Qwen_Using_Transformers_Lib",
+      "title": "Finetune Qwen Using Transformers Lib",
+      "date": "2026/2/1",
+      "category": "AI & RL",
+      "image": null
     },
     {
       "id": 35,
