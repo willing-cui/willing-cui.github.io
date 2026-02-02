@@ -25,7 +25,7 @@
 pip install datasets	# Hugging Face datasets
 pip install transformers
 pip install accelerate
-pip install peft accelerate bitsandbytes	# LoRA
+pip install peft bitsandbytes	# LoRA
 
 # 避免安装失败,先升级pip
 python.exe -m pip install --upgrade pip

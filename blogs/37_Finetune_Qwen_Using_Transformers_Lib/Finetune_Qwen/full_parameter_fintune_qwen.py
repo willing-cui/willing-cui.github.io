@@ -47,8 +47,8 @@ def tokenize_function(examples):
     tokenized = tokenizer(
         examples["text"],
         truncation=True,
-        max_length=512,
         padding=True,
+        max_length=512,
         return_tensors=None  # 确保返回的是列表而不是张量，以便后续批处理
     )
 

@@ -24,7 +24,7 @@ tokenizer.pad_token = tokenizer.eos_token
 # 加载模型
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
-    torch_dtype="auto",
+    dtype=torch.bfloat16,
     device_map="auto"
 )
 
@@ -78,8 +78,8 @@ def tokenize_function(examples):
     tokenized = tokenizer(
         examples["text"],
         truncation=True,
-        max_length=512,
         padding=True,
+        max_length=128,
         return_tensors=None
     )
 
@@ -103,7 +103,7 @@ eval_dataset = train_test_split["test"]
 data_collator = DataCollatorForLanguageModeling(
     tokenizer=tokenizer,
     mlm=False,  # 不使用掩码语言建模
-    pad_to_multiple_of=8    # 优化GPU内存对齐
+    pad_to_multiple_of=16    # 优化GPU内存对齐
 )
 
 # 7. 训练参数配置
@@ -117,20 +117,21 @@ training_args = TrainingArguments(
     gradient_accumulation_steps=4,
 
     # 优化器参数
-    learning_rate=1e-4,  # LoRA可以使用更高的学习率
+    learning_rate=5e-5,  # LoRA可以使用更高的学习率
     weight_decay=0.01,
     warmup_steps=10,
 
     # 训练调度
-    logging_steps=10,
-    eval_steps=100,
-    save_steps=500,
+    logging_steps=100,
+    eval_steps=1000,
+    save_steps=10000,
     eval_strategy="steps",
     save_strategy="steps",
 
     # 精度和性能
     fp16=False,
-    dataloader_pin_memory=False, # 启用内存固定加速数据传输（仅支持GPU）
+    bf16=True,
+    dataloader_pin_memory=True, # 启用内存固定加速数据传输（仅支持GPU）
     gradient_checkpointing=False,   # 使用梯度检查点节省显存（时间换空间）
 
     # 模型保存
@@ -140,7 +141,8 @@ training_args = TrainingArguments(
     save_total_limit=3,
 
     # 报告设置
-    report_to="none"
+    report_to="swanlab",
+    run_name="lora_finetune_qwen_try_1",
 )
 
 # 8. 创建Trainer实例
