@@ -49,6 +49,14 @@
       "image": "./blogs/24_Multi-Head_Attention_Mechanism/Multi-Head_Attention.webp"
     },
     {
+      "id": 39,
+      "path": "39_Comparisons_of_Various_Attention_Mechanisms",
+      "title": "Comparisons of Various Attention Mechanisms",
+      "date": "2026/2/2",
+      "category": "AI & RL",
+      "image": null
+    },
+    {
       "id": 9,
       "path": "9_Transformer_BERT_GPT",
       "title": "Introduction to Transformer, BERT, and GPT",
