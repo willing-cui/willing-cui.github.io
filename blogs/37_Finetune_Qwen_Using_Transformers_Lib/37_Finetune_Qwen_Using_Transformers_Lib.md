@@ -1,4 +1,4 @@
-## 0. 项目目标及可行性分析
+## 项目目标及可行性分析
 
 在个人电脑（32GB RAM + 8GB VRAM）上微调Qwen模型是可行的，但需要选择合适的微调方法和参数。我们选择<a href="https://huggingface.co/Qwen/Qwen3-0.6B" target="_blank" rel="noopener noreferrer">Qwen3-0.6B</a>模型。Qwen3-0.6B 是一个轻量级模型，微调时
 
@@ -10,7 +10,7 @@
 **全参数微调 (Full Fine-tuning)**
 
 - **适用场景**：显存充足，希望获得最佳微调效果。
-- **可行性**：在 8GB 显存上可以轻松运行，甚至能支持较大的批次大小（batch size）。
+- **可行性**：在 8GB 显存上可以运行，但仅能支持较小的批次大小（batch size）。
 
 **LoRA / QLoRA 微调**
 
@@ -25,6 +25,7 @@
 pip install datasets	# Hugging Face datasets
 pip install transformers
 pip install accelerate
+pip install peft accelerate bitsandbytes	# LoRA
 
 # 避免安装失败,先升级pip
 python.exe -m pip install --upgrade pip
@@ -36,11 +37,18 @@ nvcc --version	# 查看当前安装的cuda版本
 pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https://download.pytorch.org/whl/cu118
 ```
 
+### 更多参考
+
+<a href="https://huggingface.co/docs/transformers/index" target="_blank" rel="noopener noreferrer">Transformers Documentation</a>
+
+<a href="https://huggingface.co/docs/peft/index" target="_blank" rel="noopener noreferrer">PEFT Documentation</a>
+
 ## 方案1：全参数微调
 
 ### 代码
 
 ```python
+import transformers
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
@@ -52,18 +60,21 @@ from datasets import load_dataset
 import torch
 import os
 
+print(f"pytorch版本：{torch.__version__}")
+print(f"transformers版本：{transformers.__version__}")
+
 # 1. 加载模型和分词器
 model_name = "Qwen/Qwen3-0.6B"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
+# 确保有填充token
 tokenizer.pad_token = tokenizer.eos_token
 
-# 加载模型（默认精度）
+# 加载模型（全精度）
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
     torch_dtype="auto",
     device_map="auto"
 )
-
 
 # 2. 加载古诗数据集
 def load_poetry_dataset():
@@ -78,9 +89,7 @@ def load_poetry_dataset():
     formatted_dataset = dataset.map(format_instruction)
     return formatted_dataset
 
-
 dataset = load_poetry_dataset()
-
 
 # 3. 数据预处理和分词
 def tokenize_function(examples):
@@ -88,8 +97,8 @@ def tokenize_function(examples):
     tokenized = tokenizer(
         examples["text"],
         truncation=True,
+        max_length=512,
         padding=True,
-        max_length=128,  # 设置一个明确的最大长度
         return_tensors=None  # 确保返回的是列表而不是张量，以便后续批处理
     )
 
@@ -101,8 +110,7 @@ def tokenize_function(examples):
 # 应用分词函数
 tokenized_dataset = dataset.map(
     tokenize_function,
-    batched=True,
-    remove_columns=dataset["train"].column_names
+    batched=True
 )
 
 # 分割训练集和验证集
@@ -114,36 +122,35 @@ eval_dataset = train_test_split["test"]
 data_collator = DataCollatorForLanguageModeling(
     tokenizer=tokenizer,
     mlm=False,  # 不使用掩码语言建模
-    pad_to_multiple_of=8
+    pad_to_multiple_of=8    # 优化GPU内存对齐
 )
 
 # 5. 训练参数配置
 training_args = TrainingArguments(
     output_dir="./qwen3-0.6B-poetry-finetuned",
-    # overwrite_output_dir=True,
 
     # 训练参数
     num_train_epochs=5,
-    per_device_train_batch_size=1,  # 根据显存调整
+    per_device_train_batch_size=4,  # 根据显存调整
     per_device_eval_batch_size=4,
-    gradient_accumulation_steps=16,  # 有效批次大小 = 1 * 16 = 16
+    gradient_accumulation_steps=4,  # 有效批次大小 = 4 * 4 = 16
 
     # 优化器参数
     learning_rate=5e-6,
     weight_decay=0.01,
-    warmup_steps=100,
+    warmup_steps=10,
 
     # 训练调度
     logging_steps=10,
-    eval_steps=200,
-    save_steps=600,
+    eval_steps=100,
+    save_steps=500,
     eval_strategy="steps",
     save_strategy="steps",
 
     # 精度和性能
-    fp16=False,  # 关闭混合精度训练（与模型加载精度不一致则为混合精度训练）
-    dataloader_pin_memory=True,  # 启用内存固定加速数据传输
-    gradient_checkpointing=True,  # 使用梯度检查点节省显存
+    fp16=False,  # 关闭混合精度训练
+    dataloader_pin_memory=False,  # 启用内存固定加速数据传输（仅支持GPU）
+    gradient_checkpointing=False,  # 使用梯度检查点节省显存（时间换空间）
 
     # 模型保存
     load_best_model_at_end=True,
@@ -161,8 +168,8 @@ trainer = Trainer(
     args=training_args,
     train_dataset=train_dataset,
     eval_dataset=eval_dataset,
-    processing_class=tokenizer,
     data_collator=data_collator,
+    processing_class=tokenizer,
 )
 
 # 7. 开始训练
@@ -184,11 +191,9 @@ print(f"验证损失: {train_result.metrics['eval_loss']}")
 
 ### 函数解析
 
-### 函数解析
-
   #### 1. AutoTokenizer.from_pretrained()
 
-  **作用**: 从预训练模型或本地路径加载分词器，负责将文本转换为模型可理解的数字编码。
+**作用**: 从预训练模型或本地路径加载分词器，负责将文本转换为模型可理解的数字编码。
 
   ##### 核心参数:
 
@@ -252,7 +257,7 @@ print(f"验证损失: {train_result.metrics['eval_loss']}")
 
   #### 2. AutoModelForCausalLM.from_pretrained()
 
-  **作用**: 加载用于因果语言建模的预训练模型，适用于GPT风格的生成式任务。
+**作用**: 加载用于因果语言建模的预训练模型，适用于GPT风格的生成式任务。
 
   ##### 模型加载参数:
 
@@ -335,9 +340,9 @@ print(f"验证损失: {train_result.metrics['eval_loss']}")
 
   #### 3. load_dataset()
 
-  **作用**: 从Hugging Face数据集中心或本地加载数据集。
+**作用**: 从Hugging Face数据集中心或本地加载数据集。
 
-  **详细参数解析**:
+**详细参数解析**:
 
   ##### **数据源参数**:
 
@@ -406,9 +411,9 @@ print(f"验证损失: {train_result.metrics['eval_loss']}")
 
   #### 4. **dataset.map()**
 
-  **作用**: 对数据集中的每个样本应用转换函数，支持批处理、多进程等高级功能。
+**作用**: 对数据集中的每个样本应用转换函数，支持批处理、多进程等高级功能。
 
-  **详细参数解析**:
+**详细参数解析**:
 
   ##### **核心参数**:
 
@@ -471,9 +476,9 @@ print(f"验证损失: {train_result.metrics['eval_loss']}")
 
   #### 5. **tokenizer() 调用**
 
-  **作用**: 将文本转换为模型可接受的输入格式，返回包含input_ids、attention_mask等的字典。
+**作用**: 将文本转换为模型可接受的输入格式，返回包含input_ids、attention_mask等的字典。
 
-  **详细参数解析**:
+**详细参数解析**:
 
   ##### **文本处理参数**:
 
@@ -555,9 +560,9 @@ print(f"验证损失: {train_result.metrics['eval_loss']}")
 
   #### 6. **dataset.train_test_split()**
 
-  **作用**: 将数据集分割为训练集和测试集（或验证集），支持随机分割、分层采样等。
+**作用**: 将数据集分割为训练集和测试集（或验证集），支持随机分割、分层采样等。
 
-  **详细参数解析**:
+**详细参数解析**:
 
   ##### **分割比例参数**:
 
@@ -613,9 +618,9 @@ print(f"验证损失: {train_result.metrics['eval_loss']}")
 
   #### 7. **DataCollatorForLanguageModeling()**
 
-  **作用**: 将多个样本打包成批次，准备语言模型训练数据，处理动态填充和标签生成。
+**作用**: 将多个样本打包成批次，准备语言模型训练数据，处理动态填充和标签生成。
 
-  **详细参数解析**:
+**详细参数解析**:
 
   ##### **分词器参数**:
 
@@ -675,9 +680,9 @@ print(f"验证损失: {train_result.metrics['eval_loss']}")
 
   #### 8. **TrainingArguments()**
 
-  **作用**: 定义训练过程的所有配置参数，包括优化、调度、日志、保存等。
+**作用**: 定义训练过程的所有配置参数，包括优化、调度、日志、保存等。
 
-  **详细参数解析**:
+**详细参数解析**:
 
   ##### **输出与保存参数**:
 
@@ -686,7 +691,7 @@ print(f"验证损失: {train_result.metrics['eval_loss']}")
     - 保存模型、日志、检查点的根目录
     - 必须指定
 
-  - **overwrite_output_dir** (bool, 默认False):
+  - *overwrite_output_dir* (bool, 默认False，**5.0.0版本该参数被移除**):
     - 是否覆盖输出目录
     - True: 清空现有目录
     - False: 如果目录存在且有内容会报错
@@ -867,9 +872,9 @@ print(f"验证损失: {train_result.metrics['eval_loss']}")
 
   #### 9. **Trainer()**
 
-  **作用**: 训练循环的高级封装，简化训练流程，提供标准化的训练、评估、预测接口。
+**作用**: 训练循环的高级封装，简化训练流程，提供标准化的训练、评估、预测接口。
 
-  **详细参数解析**:
+**详细参数解析**:
 
   ##### **核心组件参数**:
 
@@ -962,9 +967,9 @@ print(f"验证损失: {train_result.metrics['eval_loss']}")
 
   #### 10. **trainer.train()**
 
-  **作用**: 执行完整的模型训练过程，包括前向传播、损失计算、反向传播、参数更新、评估、保存等。
+**作用**: 执行完整的模型训练过程，包括前向传播、损失计算、反向传播、参数更新、评估、保存等。
 
-  **详细参数解析**:
+**详细参数解析**:
 
   ##### **训练控制参数**:
 
@@ -1064,9 +1069,9 @@ for epoch in range(args.num_train_epochs):
 
   #### 11. **trainer.save_model()**
 
-  **作用**: 保存训练后的模型、分词器、配置等所有必要文件，确保模型可以重新加载和使用。
+**作用**: 保存训练后的模型、分词器、配置等所有必要文件，确保模型可以重新加载和使用。
 
-  **详细参数解析**:
+**详细参数解析**:
 
   ##### **保存路径参数**:
 
@@ -1140,9 +1145,9 @@ for epoch in range(args.num_train_epochs):
 
   #### 12. **trainer.save_state()**
 
-  **作用**: 保存完整的训练状态，包括优化器、调度器、随机数生成器等，便于从检查点恢复训练。
+**作用**: 保存完整的训练状态，包括优化器、调度器、随机数生成器等，便于从检查点恢复训练。
 
-  **详细参数解析**:
+**详细参数解析**:
 
   ##### **保存内容**:
 
@@ -1241,3 +1246,408 @@ for epoch in range(args.num_train_epochs):
 - **FP16 范围**：约 `5.96e-8`到 `6.55e+4`
 
 在FP32下可能只是“大梯度”的问题，在FP16下会直接变为**数值溢出（NaN/inf）**，导致训练崩溃
+
+## 方案2：LoRA微调
+
+### 代码
+
+```python
+import transformers
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    Trainer,
+    TrainingArguments,
+    DataCollatorForLanguageModeling
+)
+from datasets import load_dataset
+import torch
+import os
+from peft import LoraConfig, get_peft_model, TaskType, prepare_model_for_kbit_training
+from peft import PeftModel
+
+print(f"pytorch版本：{torch.__version__}")
+print(f"transformers版本：{transformers.__version__}")
+
+# 1. 加载模型和分词器
+model_name = "Qwen/Qwen3-0.6B"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+# 确保有填充token
+tokenizer.pad_token = tokenizer.eos_token
+
+# 加载模型
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    torch_dtype="auto",
+    device_map="auto"
+)
+
+# 2. 准备模型用于LoRA训练
+model = prepare_model_for_kbit_training(model)
+
+# 3. 配置LoRA参数
+lora_config = LoraConfig(
+    r=8,  # LoRA秩
+    lora_alpha=32,  # LoRA alpha参数
+    target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],  # 目标模块
+    lora_dropout=0.1,  # Dropout率
+    bias="none",  # 不训练偏置
+    task_type=TaskType.CAUSAL_LM,  # 因果语言建模任务
+)
+
+# 应用LoRA配置
+model = get_peft_model(model, lora_config)
+
+# 打印可训练参数数量
+trainable_params = 0
+all_params = 0
+for name, param in model.named_parameters():
+    all_params += param.numel()
+    if param.requires_grad:
+        trainable_params += param.numel()
+
+print(f"可训练参数数量: {trainable_params:,}")
+print(f"总参数数量: {all_params:,}")
+print(f"可训练参数占比: {100 * trainable_params / all_params:.2f}%")
+
+
+# 4. 加载古诗数据集
+def load_poetry_dataset():
+    dataset = load_dataset("larryvrh/Chinese-Poems")
+
+    # 将数据集转换为指令格式
+    def format_instruction(example):
+        return {
+            "text": f"请创作一首古诗，主题关于{example['title']}：\n{example['content']}"
+        }
+
+    formatted_dataset = dataset.map(format_instruction)
+    return formatted_dataset
+
+dataset = load_poetry_dataset()
+
+# 5. 数据预处理和分词
+def tokenize_function(examples):
+    # 分词处理
+    tokenized = tokenizer(
+        examples["text"],
+        truncation=True,
+        max_length=512,
+        padding=True,
+        return_tensors=None
+    )
+
+    # 对于因果语言建模，labels就是input_ids
+    tokenized["labels"] = tokenized["input_ids"].copy()
+    return tokenized
+
+
+# 应用分词函数
+tokenized_dataset = dataset.map(
+    tokenize_function,
+    batched=True
+)
+
+# 分割训练集和验证集
+train_test_split = tokenized_dataset["train"].train_test_split(test_size=0.1)
+train_dataset = train_test_split["train"]
+eval_dataset = train_test_split["test"]
+
+# 6. 数据整理器
+data_collator = DataCollatorForLanguageModeling(
+    tokenizer=tokenizer,
+    mlm=False,  # 不使用掩码语言建模
+    pad_to_multiple_of=8    # 优化GPU内存对齐
+)
+
+# 7. 训练参数配置
+training_args = TrainingArguments(
+    output_dir="./qwen3-0.6B-poetry-lora",
+
+    # 训练参数
+    num_train_epochs=5,
+    per_device_train_batch_size=4,
+    per_device_eval_batch_size=4,
+    gradient_accumulation_steps=4,
+
+    # 优化器参数
+    learning_rate=1e-4,  # LoRA可以使用更高的学习率
+    weight_decay=0.01,
+    warmup_steps=10,
+
+    # 训练调度
+    logging_steps=10,
+    eval_steps=100,
+    save_steps=500,
+    eval_strategy="steps",
+    save_strategy="steps",
+
+    # 精度和性能
+    fp16=False,
+    dataloader_pin_memory=False, # 启用内存固定加速数据传输（仅支持GPU）
+    gradient_checkpointing=False,   # 使用梯度检查点节省显存（时间换空间）
+
+    # 模型保存
+    load_best_model_at_end=True,
+    metric_for_best_model="eval_loss",
+    greater_is_better=False,
+    save_total_limit=3,
+
+    # 报告设置
+    report_to="none"
+)
+
+# 8. 创建Trainer实例
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=train_dataset,
+    eval_dataset=eval_dataset,
+    data_collator=data_collator,
+    processing_class=tokenizer,  # 使用tokenizer参数
+)
+
+# 9. 开始训练
+print("开始LoRA微调训练...")
+print(f"训练样本数: {len(train_dataset)}")
+print(f"验证样本数: {len(eval_dataset)}")
+
+train_result = trainer.train()
+
+# 10. 保存模型
+# 保存LoRA适配器
+print("\n保存LoRA适配器...")
+model.save_pretrained("./qwen3-0.6B-poetry-lora/lora-adapter")
+
+# 保存训练状态
+trainer.save_state()
+
+# 可选的：合并模型并保存
+print("合并LoRA权重到基础模型...")
+model = model.merge_and_unload()
+model.save_pretrained("./qwen3-0.6B-poetry-lora/merged-model")
+tokenizer.save_pretrained("./qwen3-0.6B-poetry-lora/merged-model")
+
+print("\n训练完成！")
+print(f"训练损失: {train_result.metrics.get('train_loss', 'N/A')}")
+print(f"验证损失: {train_result.metrics.get('eval_loss', 'N/A')}")
+```
+
+### 函数解析
+
+#### 1. **prepare_model_for_kbit_training()**
+
+**作用**: 准备量化模型以支持K位训练（如4bit/8bit），通过优化内存使用和确保梯度正确传播，使原本仅用于推理的量化模型能够进行训练。
+
+**详细参数解析**:
+
+##### **模型处理参数**:
+
+- **model** (`PreTrainedModel`):
+  - 必填参数，需要准备的预训练模型。
+  - 必须是已加载的Transformers库模型实例。
+  - 支持已通过`bitsandbytes`库加载的4bit/8bit量化模型，也支持非量化模型。
+
+##### **梯度检查点参数**:
+
+- **use_gradient_checkpointing** (`bool`, 默认`True`):
+  - 是否启用梯度检查点（Gradient Checkpointing）。
+  - 以增加约20%的前向传播计算时间为代价，显著节省训练时的显存（通常可减少60-70%）。
+  - 对于大型模型或长序列训练，强烈建议启用。
+
+#### 2. **LoraConfig()**
+
+**作用**: 配置LoRA（Low-Rank Adaptation）微调方法的各项参数，控制低秩适配器的结构、目标与行为。
+
+**详细参数解析**:
+
+##### **核心秩参数**:
+
+- **r** (`int`, 默认`8`):
+  - LoRA低秩矩阵的秩（rank）。
+  - 控制低秩适配矩阵`A`和`B`的内部维度。`r`越小，可训练参数越少，但模型容量和表现力可能下降。
+  - 常见值：`4`， `8`， `16`， `32`。
+
+- **lora_alpha** (`int`, 默认`8`):
+  - LoRA的缩放系数。
+  - 在将低秩适配矩阵`BA`加到原始权重`W0`上时，用于缩放适配器输出：`W = W0 + (lora_alpha / r) * BA`。
+  - 通常与`r`保持相同比例（如`1:1`, `2:1`），较大的`alpha`会使适配器对原始模型的影响更强。
+
+- **lora_dropout** (`float`, 默认`0.0`):
+  - 应用于LoRA适配器层的Dropout率。
+  - 用于防止过拟合，通常在数据量较小或任务较难时使用。
+  - 取值范围通常为`0.0`到`0.5`。
+
+##### **目标模块参数**:
+
+- **target_modules** (`list[str]`, 可选):
+  - 应用LoRA适配器的目标模块名称列表。
+  - 需要根据模型架构具体指定，例如在LLaMA中常用`[“q_proj”, “k_proj”, “v_proj”, “o_proj”]`。
+  - 如果为`None`，某些PEFT实现会尝试自动推断，但明确指定更为可靠。
+
+- **modules_to_save** (`list[str]`, 可选):
+  - 需要完全训练（即不应用LoRA，进行全参数微调）的模块列表。
+  - 常用于分类头`“classifier”`、语言模型头`“lm_head”`或嵌入层`“embed_tokens”`，以使模型更好地适应新任务。
+
+##### **任务类型参数**:
+
+- **task_type** (`TaskType`, 必填):
+  - 指定微调任务类型的枚举值。
+  - 常用选项包括：
+    - `TaskType.CAUSAL_LM`: 因果语言模型（如文本生成）。
+    - `TaskType.SEQ_CLS`: 序列分类任务。
+    - `TaskType.SEQ_2_SEQ_LM`: 序列到序列语言建模（如翻译、摘要）。
+
+##### **偏置处理参数**:
+
+- **bias** (`str`, 默认`“none”`):
+  - 指定如何处理模型中的偏置（bias）参数。
+  - 可选值：
+    - `“none”`: 不训练任何偏置参数。
+    - `“all”`: 训练所有偏置参数（包括基础模型和适配器的）。
+    - `“lora_only”`: 只训练LoRA适配器引入的偏置。
+
+##### **其他配置参数**:
+
+- **layers_pattern** (`list[str]`, 可选):
+  - 用于通过层名称的正则表达式模式来匹配目标层的列表。
+  - 高级用法，通常不需要设置。
+
+- **layers_to_transform** (`list[int]`, 可选):
+  - 需要应用LoRA的层索引列表。
+  - 例如，`[0, 1, 2]`表示只对模型的前三层应用LoRA，可进一步减少参数量。
+
+- **rank_pattern** (`dict`, 可选):
+  - 为不同模块指定不同的秩（rank）的字典。
+  - 格式：`{“模块名模式”: rank值}`。例如：`{“q_proj”: 16, “v_proj”: 8}`，表示`q_proj`模块使用秩16，`v_proj`使用秩8。
+
+- **alpha_pattern** (`dict`, 可选):
+  - 为不同模块指定不同的缩放系数（alpha）的字典。
+  - 格式：`{“模块名模式”: alpha值}`。
+
+**其他可能配置**:
+- 初始化方法配置（如`init_lora_weights`）。
+- 正则化参数（如`lora_reg`）。
+- 特定模型架构的适配配置。
+
+#### 3. **get_peft_model()**
+
+**作用**: 将基础预训练模型包装为PEFT模型，根据提供的配置（如`LoraConfig`）注入参数高效的微调适配器，并冻结原始模型参数。
+
+**详细参数解析**:
+
+##### **模型参数**:
+
+- **model** (`PreTrainedModel`):
+  - 必填参数，基础预训练模型。
+  - 必须是Transformers库中的模型实例，架构需与PEFT库兼容。
+
+- **peft_config** (`PeftConfig`):
+  - PEFT配置对象，包含微调方法的详细设置。
+  - 可以是`LoraConfig`， `IA3Config`， `PromptTuningConfig`等。
+
+##### **模型处理参数**:
+
+- **adapter_name** (`str`, 默认`“default”`):
+  - 为此适配器指定的名称。
+  - 当需要在一个基础模型上添加多个独立适配器（多任务学习）时，每个适配器需有唯一名称。
+
+- **auto_mapping** (`dict`, 可选):
+  - 自定义的模型层名称映射字典，用于处理PEFT库未原生支持的模型架构。
+  - 高级用途，通常不需要设置。
+
+##### **返回对象特性**:
+
+- 返回一个`PeftModelForXxx`类的实例（如`PeftModelForCausalLM`），它是原始模型的包装器。
+- 原始模型的基础权重被冻结，不可训练。
+- 只有适配器引入的参数（如LoRA的A/B矩阵）是可训练的，参数量通常不足原模型的1%。
+- 包装后的模型支持与原始`PreTrainedModel`相同的核心接口，如`.forward()`, `.generate()`, `.save_pretrained()`。
+
+**其他可能配置**:
+- 适配器权重的初始化方法。
+- 是否继承原始模型的梯度检查点设置。
+- 多适配器管理功能（加载、切换、合并）。
+
+#### 4. **model.save_pretrained()** (PeftModel版本)
+
+**作用**: 保存PEFT模型（如LoRA微调后的模型）。此方法仅保存适配器的权重、配置文件及相关元数据，而非完整的基础模型，实现轻量化存储。
+
+**详细参数解析**:
+
+##### **保存路径参数**:
+
+- **save_directory** (`str`):
+  - 必填参数，适配器权重和配置的保存目录路径。
+
+##### **序列化与适配器选择参数**:
+
+- **safe_serialization** (`bool`, 默认`False`):
+  - 是否使用`safetensors`格式进行安全序列化。
+  - 若为`True`，保存`adapter_model.safetensors`，避免反序列化安全风险，且加载更快。
+  - 若为`False`，保存`adapter_model.bin`（标准`pickle`格式）。
+
+- **save_adapter** (`bool`, 默认`True`):
+  - 是否保存适配器权重。
+  - 如果设为`False`，则只保存适配器配置文件`adapter_config.json`。
+
+- **adapter_name** (`str`, 可选):
+  - 指定要保存的适配器名称。对于多适配器模型，用于保存特定适配器。
+  - 如果为`None`，则保存所有适配器。
+
+- **is_main_process** (`bool`, 默认`True`):
+  - 在分布式训练环境中，标识当前进程是否为主进程。
+  - 应确保只在主进程中调用保存，避免多进程写文件冲突。
+
+##### **保存内容**:
+
+**1. 适配器权重文件**:
+- 默认：`adapter_model.bin` 或 `adapter_model.safetensors`。
+- 仅包含LoRA等适配器引入的可训练参数，文件体积极小（通常几MB到几百MB）。
+
+**2. 适配器配置文件**:
+- `adapter_config.json`: 保存创建此适配器时使用的所有配置参数（如`r`, `lora_alpha`, `target_modules`等），确保能够准确重新加载。
+
+**3. 可选文件**:
+- `README.md`: 自动生成的说明文档，包含适配器基本信息。
+- 如果推送到Hugging Face Hub，可能包含`hub`相关配置文件。
+
+**重要说明**:
+
+- 此方法**不保存**基础模型的权重。要使用保存的适配器，需先加载**原始的基础模型**，再用`PeftModel.from_pretrained()`加载适配器。
+- 完整使用流程为：`基础模型 + 适配器目录 = 可用的PEFT模型`。
+
+#### 5. **model.merge_and_unload()**
+
+**作用**: 将PEFT模型（如LoRA）中的适配器权重永久地合并到基础模型的权重中，并返回一个标准的、可独立使用的Transformers模型，从而移除对PEFT库的依赖并提升推理速度。
+
+**详细参数解析**:
+
+##### **合并参数**:
+
+- **adapter_names** (`list[str]`, 可选):
+  - 指定要合并的适配器名称列表。对于多适配器模型，可指定一个或多个。
+  - 如果为`None`，则合并所有已加载的适配器。
+
+- **safe_merge** (`bool`, 默认`False`):
+  - 是否执行安全检查后再合并。
+  - 如果为`True`，会在合并前检查是否存在潜在的权重冲突（如重复模块），并在冲突时警告而非直接覆盖。
+
+- **progressbar** (`bool`, 默认`True`):
+  - 是否在控制台显示合并操作的进度条。对大型模型合并有帮助。
+
+##### **合并过程**:
+
+1.  **权重合并**: 对于每个目标模块，执行操作：`W_merged = W_base + (scale) * (lora_B @ lora_A)`。其中`scale`通常为`lora_alpha / r`。
+2.  **结构卸载**: 从模型中剥离所有LoRA适配器特有的层和属性，恢复模型原始结构。
+3.  **返回标准模型**: 返回一个普通的`PreTrainedModel`实例，其权重已包含适配器的改动。
+
+##### **合并后特性**:
+
+- 模型变为标准的Transformers模型，可直接使用`model.save_pretrained(save_directory)`保存为一个**完整的独立模型**。
+- 不再支持适配器相关的操作（如添加/切换适配器）。
+- 推理时无需额外计算适配器旁路，前向传播速度与原始基础模型完全相同。
+
+**其他可能配置**:
+- 可配置适配器权重的缩放因子（`scale`）。
+- 支持对多个适配器进行加权合并（`weight`参数）。
+- 可选择合并时的数值精度（如FP16, BF16）。

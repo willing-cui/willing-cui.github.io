@@ -133,7 +133,7 @@ def extract_md_to_txt(folder_path, output_file="output.txt"):
 
 def main():
     # 设置要遍历的文件夹路径
-    folder_path = "../34_Huggingface_Transformers_Lib/Code/transformers-main/docs/source/zh"
+    folder_path = "./docs"
 
     if not folder_path:
         folder_path = os.getcwd()
