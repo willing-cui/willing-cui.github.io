@@ -26,7 +26,6 @@ model = Qwen3VLForConditionalGeneration.from_pretrained(
 )
 
 # 3. 准备输入：图片和问题
-# 假设你有一张图片保存在本地，路径为 "path/to/your/image.jpg"
 image_path = "./test.jpg"
 question = "详细描述这张图片的内容。"
 
