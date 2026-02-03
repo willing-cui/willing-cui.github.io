@@ -44,8 +44,10 @@ inputs = processor.apply_chat_template(
     messages,
     tokenize=True,
     add_generation_prompt=True,
+    return_dict=True,
     return_tensors="pt"
-).to(model.device)
+)
+inputs = inputs.to(model.device)
 
 # 生成参数
 generated_ids = model.generate(
