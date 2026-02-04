@@ -1,16 +1,1 @@
-images/earth/backup/*
-images/gallery/_Camera/*
-blogs/32_Building_a_Transformer_from_Scratch/Transformer_from_Scratch/.idea
-blogs/32_Building_a_Transformer_from_Scratch/Transformer_from_Scratch/.venv
-blogs/32_Building_a_Transformer_from_Scratch/Transformer_from_Scratch/dataset
-blogs/33_Qwen_Series_Papers_Reading_Report/Qwen_Papers
-blogs/34_Huggingface_Transformers_Lib/Code/transformers-main
-blogs/34_Huggingface_Transformers_Lib/Code/Evaluate/.venv
-blogs/extract_texts/.idea
-blogs/extract_texts/.venv
-blogs/29_Robotics_Research_Production_Line/Code
-blogs/36_LingBot_VLA_Paper_Reading_Report/Paper
-blogs/37_Finetune_Qwen_Using_Transformers_Lib/Finetune_Qwen/.idea
-blogs/37_Finetune_Qwen_Using_Transformers_Lib/Finetune_Qwen/.venv
-blogs/40_Qwen3_VL_Quantization_and_Inference/Quantization_and_Inference/.idea
-blogs/40_Qwen3_VL_Quantization_and_Inference/Quantization_and_Inference/.venv
+
