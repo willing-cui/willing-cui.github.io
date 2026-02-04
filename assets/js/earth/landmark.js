@@ -162,11 +162,11 @@ function createHexagon(position) {
 
     hexagon.add(circleLine);
     hexagon.add(circlePlane);
-    
+
     // 存储材质引用，以便后续修改颜色
     hexagon.userData.lineMaterial = lineMaterial;
     hexagon.userData.planeMaterial = planeMaterial;
-    
+
     return hexagon;
 }
 
@@ -222,7 +222,7 @@ function createHoverTextCanvas(text, isGlowing, isSelected = false) {
             ctx.filter = `blur(${i}px)`;
             ctx.fillText(text, w / 2, h / 2);
         }
-        
+
         ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'; // 悬停时为白色
         for (let i = 4; i > 0; i--) {
             ctx.filter = `blur(${i}px)`;
@@ -263,66 +263,66 @@ function adjustTextPositions(textPositions) {
         // 计算原始方位角（相对于地球中心）
         originalAzimuth: Math.atan2(pos.position.y, pos.position.x)
     }));
-    
+
     const maxIterations = 1000;
     const maxDistanceFromOriginal = 0.15; // 严格控制最大偏移
-    
+
     // 由于文字是水平排列的，水平方向需要更大间距
     const minDistanceHorizontal = TEXT_WIDTH * 1.5 * 0.7;  // 水平方向最小距离
     const minDistanceVertical = TEXT_HEIGHT * 1.5 * 0.4;   // 垂直方向可以稍小一些
-    
+
     for (let iteration = 0; iteration < maxIterations; iteration++) {
         let totalOverlap = 0;
-        
+
         // 第一阶段：检测重叠并计算移动
         for (let i = 0; i < adjustedPositions.length; i++) {
             if (adjustedPositions[i].isFixed) continue;
-            
+
             const pos1 = adjustedPositions[i];
             let totalForce = new THREE.Vector3(0, 0, 0);
             let overlapCount = 0;
-            
+
             for (let j = 0; j < adjustedPositions.length; j++) {
                 if (i === j || adjustedPositions[j].isFixed) continue;
-                
+
                 const pos2 = adjustedPositions[j];
                 const distance = pos1.position.distanceTo(pos2.position);
-                
+
                 // 计算两个位置之间的方向向量
                 const direction = new THREE.Vector3()
                     .subVectors(pos1.position, pos2.position)
                     .normalize();
-                
+
                 // 计算在水平方向和垂直方向的分量
                 const dotProductHorizontal = Math.abs(direction.dot(new THREE.Vector3(1, 0, 0)));
                 const dotProductVertical = Math.abs(direction.dot(new THREE.Vector3(0, 1, 0)));
-                
+
                 // 判断主要重叠方向
                 const isHorizontalOverlap = dotProductHorizontal > dotProductVertical;
-                const requiredDistance = isHorizontalOverlap ? 
+                const requiredDistance = isHorizontalOverlap ?
                     minDistanceHorizontal : minDistanceVertical;
-                
+
                 if (distance < requiredDistance) {
                     overlapCount++;
-                    
+
                     // 根据原始相对位置调整排斥方向
                     const forceDirection = calculateAdjustedDirection(pos1, pos2, direction);
-                    
+
                     const overlapFactor = (requiredDistance - distance) / requiredDistance;
                     const forceWeight = isHorizontalOverlap ? 1.2 : 0.8; // 水平重叠权重更高
                     const force = forceDirection.multiplyScalar(overlapFactor * forceWeight * 0.005);
-                    
+
                     totalForce.add(force);
                 }
             }
-            
+
             pos1.overlapCount = overlapCount;
             totalOverlap += overlapCount;
-            
+
             // 应用排斥力
             if (totalForce.length() > 0.001) {
                 const newPosition = pos1.position.clone().add(totalForce).normalize().multiplyScalar(1.05);
-                
+
                 // 严格检查偏移范围
                 const distanceFromOriginal = newPosition.distanceTo(pos1.originalPosition);
                 if (distanceFromOriginal <= maxDistanceFromOriginal) {
@@ -337,71 +337,71 @@ function adjustTextPositions(textPositions) {
                 }
             }
         }
-        
+
         // 第二阶段：检查是否可以固定位置
         for (let i = 0; i < adjustedPositions.length; i++) {
             if (adjustedPositions[i].isFixed) continue;
-            
+
             const pos = adjustedPositions[i];
             let canBeFixed = true;
-            
+
             for (let j = 0; j < adjustedPositions.length; j++) {
                 if (i === j) continue;
-                
+
                 const otherPos = adjustedPositions[j];
                 const distance = pos.position.distanceTo(otherPos.position);
-                
+
                 // 同样考虑方向性的距离检查
                 const direction = new THREE.Vector3()
                     .subVectors(pos.position, otherPos.position)
                     .normalize();
-                
+
                 const dotProductHorizontal = Math.abs(direction.dot(new THREE.Vector3(1, 0, 0)));
                 const dotProductVertical = Math.abs(direction.dot(new THREE.Vector3(0, 1, 0)));
                 const isHorizontal = dotProductHorizontal > dotProductVertical;
                 const requiredDistance = isHorizontal ? minDistanceHorizontal : minDistanceVertical;
-                
+
                 if (distance < requiredDistance * 0.9) {
                     canBeFixed = false;
                     break;
                 }
             }
-            
+
             if (canBeFixed && pos.overlapCount === 0) {
                 pos.isFixed = true;
             }
         }
-        
+
         // 第三阶段：根据原始相对位置进行方位校正
         for (let i = 0; i < adjustedPositions.length; i++) {
             const pos = adjustedPositions[i];
-            
+
             // 计算当前方位角
             const currentAzimuth = Math.atan2(pos.position.y, pos.position.x);
-            
+
             // 计算方位角偏差
             let azimuthDiff = currentAzimuth - pos.originalAzimuth;
-            
+
             // 将偏差标准化到 -π 到 π 范围内
             if (azimuthDiff > Math.PI) azimuthDiff -= 2 * Math.PI;
             if (azimuthDiff < -Math.PI) azimuthDiff += 2 * Math.PI;
-            
+
             // 如果方位角偏差过大，进行校正
             if (Math.abs(azimuthDiff) > Math.PI / 12) { // 15度阈值
                 const correctionStrength = 0.1;
                 const correctionAngle = -azimuthDiff * correctionStrength;
-                
+
                 // 创建旋转矩阵来校正方位
                 const rotationMatrix = new THREE.Matrix4().makeRotationZ(correctionAngle);
                 pos.position.applyMatrix4(rotationMatrix).normalize().multiplyScalar(1.01);
             }
         }
-        
+
         // 第四阶段：持续向原始位置拉回，避免过度偏移
         for (let i = 0; i < adjustedPositions.length; i++) {
             const pos = adjustedPositions[i];
             const distanceFromOriginal = pos.position.distanceTo(pos.originalPosition);
-            
+
             // 根据当前偏移程度调整拉回力度
             if (distanceFromOriginal > maxDistanceFromOriginal * 0.5) {
                 const pullStrength = Math.min(0.1, (distanceFromOriginal - maxDistanceFromOriginal * 0.5) * 0.3);
@@ -411,14 +411,14 @@ function adjustTextPositions(textPositions) {
                 pos.position.add(pullDirection.multiplyScalar(pullStrength)).normalize().multiplyScalar(1.01);
             }
         }
-        
+
         // 检查终止条件
         const fixedCount = adjustedPositions.filter(p => p.isFixed).length;
         if (totalOverlap === 0 || fixedCount === adjustedPositions.length || iteration > 800) {
             break;
         }
     }
-    
+
     return adjustedPositions;
 }
 
@@ -427,21 +427,21 @@ function calculateAdjustedDirection(pos1, pos2, baseDirection) {
     // 计算原始相对位置
     const originalDiffX = pos1.originalPosition.x - pos2.originalPosition.x;
     const originalDiffY = pos1.originalPosition.y - pos2.originalPosition.y;
-    
+
     // 计算当前相对位置
     const currentDiffX = pos1.position.x - pos2.position.x;
     const currentDiffY = pos1.position.y - pos2.position.y;
-    
+
     // 如果原始相对位置与当前相对位置方向基本一致，使用基础方向
     const originalAngle = Math.atan2(originalDiffY, originalDiffX);
     const currentAngle = Math.atan2(currentDiffY, currentDiffX);
     const angleDiff = Math.abs(originalAngle - currentAngle);
-    
+
     // 如果角度差异在可接受范围内，使用基础方向
     if (angleDiff < Math.PI / 6) { // 30度阈值
         return baseDirection.clone();
     }
-    
+
     // 否则，根据原始相对位置调整方向
     // 优先保持垂直方向的关系
     if (Math.abs(originalDiffY) > Math.abs(originalDiffX) * 2) {
@@ -502,7 +502,7 @@ function createTxt(position, name) {
 
     // 存储原始缩放
     sprite.userData.originalScale = sprite.scale.clone();
-    
+
     // Store references for toggling
     textSprites.set(sprite, {
         normalTexture,
@@ -527,27 +527,27 @@ function setupTextClickHandler(renderer, camera, scene, controls) {
     const mouse = new THREE.Vector2();
     let hoveredSprite = null;
     let timer = null;
-    
+
     // 用于控制光标样式
     const rendererDom = renderer.domElement;
-    
+
     function updateMouse(event) {
         // Calculate mouse position in normalized device coordinates
         mouse.x = (event.clientX / rendererDom.clientWidth) * 2 - 1;
         mouse.y = -(event.clientY / rendererDom.clientHeight) * 2 + 1;
     }
-    
+
     function onMouseMove(event) {
         if (isCameraAnimating) return;
-        
+
         updateMouse(event);
-        
+
         // Update the raycaster
         raycaster.setFromCamera(mouse, camera);
 
         // Calculate objects intersecting the ray
         const intersects = raycaster.intersectObjects(Array.from(textSprites.keys()));
-        
+
         // 移除之前的悬停效果
         if (hoveredSprite && textSprites.has(hoveredSprite)) {
             const hoveredData = textSprites.get(hoveredSprite);
@@ -560,7 +560,7 @@ function setupTextClickHandler(renderer, camera, scene, controls) {
                     // 普通状态
                     hoveredSprite.scale.copy(hoveredData.originalScale);
                     hoveredData.material.map = hoveredData.normalTexture;
-                    
+
                     // 解除视角锁定
                     if (timer) clearTimeout(timer);
                     // 设置新的定时器
@@ -573,7 +573,7 @@ function setupTextClickHandler(renderer, camera, scene, controls) {
                 hoveredData.isHovering = false;
             }
         }
-        
+
         // 设置光标样式
         if (intersects.length > 0) {
             // 禁用 controls, 锁定视角
@@ -582,7 +582,7 @@ function setupTextClickHandler(renderer, camera, scene, controls) {
             rendererDom.style.cursor = 'pointer';
             hoveredSprite = intersects[0].object;
             const hoveredData = textSprites.get(hoveredSprite);
-            
+
             if (hoveredData && !hoveredData.isSelected) { // 选中状态不应用悬停效果
                 // 应用悬停效果
                 if (hoveredData.isGlowing) {
@@ -599,10 +599,10 @@ function setupTextClickHandler(renderer, camera, scene, controls) {
             hoveredSprite = null;
         }
     }
-    
+
     function onMouseLeave() {
         rendererDom.style.cursor = 'auto';
-        
+
         // 移除悬停效果
         if (hoveredSprite && textSprites.has(hoveredSprite)) {
             const hoveredData = textSprites.get(hoveredSprite);
@@ -620,13 +620,13 @@ function setupTextClickHandler(renderer, camera, scene, controls) {
         }
         hoveredSprite = null;
     }
-    
+
     function onClick(event) {
         console.log("检测到鼠标点击")
         if (isCameraAnimating) return;
-        
+
         updateMouse(event);
-        
+
         // Update the raycaster
         raycaster.setFromCamera(mouse, camera);
 
@@ -644,7 +644,7 @@ function setupTextClickHandler(renderer, camera, scene, controls) {
             return;
         }
     }
-    
+
     // 添加事件监听器
     rendererDom.addEventListener('mousemove', onMouseMove, false);
     rendererDom.addEventListener('mouseleave', onMouseLeave, false);
@@ -770,7 +770,7 @@ function updateLandmarkColor(landmark, isGold) {
             landmark.userData.lineMaterial.color.setHex(WHITE_COLOR);
             landmark.userData.planeMaterial.color.setHex(WHITE_COLOR);
         }
-        
+
         // 更新材质
         landmark.userData.lineMaterial.needsUpdate = true;
         landmark.userData.planeMaterial.needsUpdate = true;
@@ -814,12 +814,12 @@ function toggleGlow(sprite, camera, scene) {
                 data.material.map = data.normalTexture;
                 data.material.needsUpdate = true;
                 otherSprite.scale.copy(data.originalScale);
-                
+
                 // 恢复其他地标的颜色
                 updateLandmarkColor(landmarks.get(data.name), false);
             }
         });
-        
+
         // 查找对应的地标并设为金色
         let foundLandmark = null;
         scene.traverse((child) => {
@@ -827,11 +827,11 @@ function toggleGlow(sprite, camera, scene) {
                 foundLandmark = child;
             }
         });
-        
+
         if (foundLandmark) {
             updateLandmarkColor(foundLandmark, true);
         }
-        
+
         currentSelectedLandmark = sprite;
         currentSelectedLandmarkName = spriteData.name;
         cameraPointer = camera;
@@ -843,7 +843,7 @@ function toggleGlow(sprite, camera, scene) {
         spriteData.material.needsUpdate = true;
         sprite.scale.copy(spriteData.originalScale);
         landMarkClicked = false;
-        
+
         // 恢复地标颜色
         let foundLandmark = null;
         scene.traverse((child) => {
@@ -851,7 +851,7 @@ function toggleGlow(sprite, camera, scene) {
                 foundLandmark = child;
             }
         });
-        
+
         if (foundLandmark) {
             updateLandmarkColor(foundLandmark, false);
         }
@@ -874,19 +874,19 @@ function resetCurrentSelectedLandmark() {
     spriteData.material.needsUpdate = true;
     currentSelectedLandmark.scale.copy(spriteData.originalScale);
     landMarkClicked = false;
-    
+
     // 恢复地标颜色
     if (cameraPointer && cameraPointer.parent) { // scene is the parent of camera
         const worldPosition = new THREE.Vector3();
         currentSelectedLandmark.getWorldPosition(worldPosition);
-        
+
         let foundLandmark = null;
         cameraPointer.parent.traverse((child) => {
             if (child.userData.isLandmark && child.position.distanceTo(worldPosition) < 0.1) {
                 foundLandmark = child;
             }
         });
-        
+
         if (foundLandmark) {
             updateLandmarkColor(foundLandmark, false);
         }
@@ -903,39 +903,39 @@ function resetCurrentSelectedLandmark() {
 function createLandmark(group) {
     // 收集所有文本位置
     const textPositions = [];
-    
+
     for (let i = 0, length = areas.length; i < length; i++) {
         const name = areas[i].name;
         const position = createPosition(areas[i].position);
         const text_position = createPosition(areas[i].position);
-        
+
         textPositions.push({
             name: name,
             position: text_position,
             originalPosition: text_position.clone()
         });
     }
-    
+
     // 调整文本位置以避免重叠
     const adjustedPositions = adjustTextPositions(textPositions);
-    
+
     // 创建地标和文本
     for (let i = 0, length = areas.length; i < length; i++) {
         const name = areas[i].name;
         const position = createPosition(areas[i].position);
         const hexagon = createHexagon(position);
-        
+
         // 查找调整后的文本位置
         const adjustedPosition = adjustedPositions.find(p => p.name === name)?.position || createPosition(areas[i].text_position);
         const fontMesh = createTxt(adjustedPosition, name);
-        
+
         // 标记为地标
         hexagon.userData.isLandmark = true;
         hexagon.userData.name = name;
-        
+
         // 存储地标引用
         landmarks.set(name, hexagon);
-        
+
         group.add(hexagon);
         group.add(fontMesh);
     }
