@@ -121,13 +121,18 @@ function initLoadingProgress() {
 }
 
 // 导出的函数，用于在其他代码中更新加载进度
-export function updateLoadingProgress(progress, text = null) {
+export function updateLoadingProgress(progress, text = null, step = null) {
     if (!loadingProgress) {
         console.warn('Loading progress not initialized yet');
         return;
     }
 
-    if (progress === 100) {
+    if (step) {
+        progress = loadingProgress.progress;
+        progress += step;
+    }
+
+    if (progress >= 100) {
         loadingProgress.finish();
     } else if (text) {
         loadingProgress.setProgress(progress, text);

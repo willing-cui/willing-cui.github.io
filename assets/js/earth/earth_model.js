@@ -16,7 +16,9 @@ import {
     bumpMap,
 } from "three/tsl";
 import { moonModel } from "./moon_model.js";
-import {createLandmark} from "./landmark.js"
+import { createLandmark } from "./landmark.js"
+import { updateLoadingProgress } from './earth_progress_bar.js';
+
 
 const earth_imgs = [
     "earth_january_8k.webp",
@@ -45,7 +47,23 @@ const roughnessLow = uniform(0.25);
 const roughnessHigh = uniform(0.5);
 
 // 贴图，加载器
-const textureLoader = new THREE.TextureLoader().setPath("../images/earth/");
+const earthLoadingManager = new THREE.LoadingManager();
+earthLoadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
+    console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' items.');
+    // You can update a progress bar here, e.g.:
+    // updateProgressBar(progress);
+    updateLoadingProgress(null, "Loading Texture", 10)
+};
+
+earthLoadingManager.onLoad = function () {
+    console.log('Earth model texture loading complete!');
+};
+
+earthLoadingManager.onError = function (url) {
+    console.log('There was an error loading ' + url);
+};
+
+const textureLoader = new THREE.TextureLoader(earthLoadingManager).setPath("../images/earth/");
 
 const earthGroup = (sunModel) => {
     const group = new THREE.Group();

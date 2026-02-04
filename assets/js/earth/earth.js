@@ -13,9 +13,10 @@ import {
 import { loadPhotos } from "./load_gallery.js"
 import { updateLoadingProgress, getLoadingProgress } from './earth_progress_bar.js';
 
-const progress = getLoadingProgress();
+getLoadingProgress();
 
 updateLoadingProgress(10, "Loading Scene");
+
 // Canvas 容器
 const container = document.getElementById("gallery_container");
 
@@ -23,26 +24,20 @@ const container = document.getElementById("gallery_container");
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000); // 渲染场景背景
 
-updateLoadingProgress(20, "Loading Sun Light");
-
 // 太阳
 const sun = sunModel();
 // 太阳光
 scene.add(sun.sunLight);
 
-updateLoadingProgress(70, "Loading Earth");
+updateLoadingProgress(30, "Loading Scene");
 
 // 地球
 const earth = earthGroup(sun);
 scene.add(earth.group);
 
-updateLoadingProgress(80, "Loading Star Field");
-
 // 星空
 const stars = getStarfield({ numStars: 5000 });
 scene.add(stars);
-
-updateLoadingProgress(90, "Finishing");
 
 // 相机
 const camera = new THREE.PerspectiveCamera(25, window.innerWidth / window.innerHeight, 0.1, 100);
