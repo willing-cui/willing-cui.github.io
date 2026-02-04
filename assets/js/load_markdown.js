@@ -79,7 +79,9 @@ function loadMd(name, id = null) {
 
                 if (initialLoad) {
                     $("#blogContent").append(
-                        '<script id="MathJax-script" async src="./assets/js/tex-mml-chtml.js"></script>'
+                        // 使用本地文件加载时，插件会出现路径问题(就算下载整个项目)，导致无法解析\boldsymbol命令
+                        // '<script id="MathJax-script" async src="./assets/js/tex-mml-chtml.js"></script>'
+                        '<script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js" defer></script>'
                     );
                     initialLoad = false;
                 } else {
@@ -200,8 +202,3 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('初始化博客数据失败:', error);
     });
 });
-
-window.MathJax = {
-  loader: {load: ['[tex]/boldsymbol']},
-  tex: {packages: {'[+]': ['boldsymbol']}}
-};
