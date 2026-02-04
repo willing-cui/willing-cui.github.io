@@ -96,6 +96,14 @@
       "category": "AI & RL",
       "image": "./blogs/26_RoPE_Positional_Encoding/SuperMacro_Rope.webp"
     },
+	{
+      "id": 41,
+      "path": "41_M_RoPE_Positional_Encoding",
+      "title": "M-RoPE Positional Encoding",
+      "date": "2026/2/4",
+      "category": "AI & RL",
+      "image": "./blogs/41_M_RoPE_Positional_Encoding/M_Rope.webp"
+    },
     {
       "id": 10,
       "path": "10_Multimodal_Fusion",
@@ -205,6 +213,14 @@
       "path": "37_Finetune_Qwen_Using_Transformers_Lib",
       "title": "Finetune Qwen Using Transformers Lib",
       "date": "2026/2/1",
+      "category": "AI & RL",
+      "image": null
+    },
+	{
+      "id": 40,
+      "path": "40_Qwen3_VL_Quantization_and_Inference",
+      "title": "Qwen3 VL Quantization and Inference",
+      "date": "2026/2/3",
       "category": "AI & RL",
       "image": null
     },

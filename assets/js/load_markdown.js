@@ -200,3 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('初始化博客数据失败:', error);
     });
 });
+
+window.MathJax = {
+  loader: {load: ['[tex]/boldsymbol']},
+  tex: {packages: {'[+]': ['boldsymbol']}}
+};
