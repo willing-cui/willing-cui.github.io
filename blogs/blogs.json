@@ -233,6 +233,22 @@
       "image": "./blogs/35_Optimizer/Gradient.webp"
     },
     {
+      "id": 43,
+      "path": "43_Naflex_ViT_Design_Analysis",
+      "title": "Naflex ViT Design Analysis",
+      "date": "2026/2/5",
+      "category": "AI & RL",
+      "image": null
+    },
+    {
+      "id": 45,
+      "path": "45_Timm_Lib_Naflex_Deployment_Analysis",
+      "title": "Timm Lib Naflex Deployment Analysis",
+      "date": "2026/2/5",
+      "category": "AI & RL",
+      "image": null
+    },
+    {
       "id": 29,
       "path": "29_Robotics_Research_Production_Line",
       "title": "Robotics Research Production Line",
@@ -311,6 +327,22 @@
       "date": "2026/1/27",
       "category": "Other Notes",
       "image": "./blogs/33_Qwen_VL_Series_Papers_Reading_Report/Qwen.webp"
+    },
+    {
+      "id": 42,
+      "path": "42_SigLIP_2_Paper_Reading_Report",
+      "title": "SigLIP 2 Paper Reading Report",
+      "date": "2026/2/5",
+      "category": "Other Notes",
+      "image": "./blogs/42_SigLIP_2_Paper_Reading_Report/SigLIP2.webp"
+    },
+    {
+      "id": 44,
+      "path": "44_FlexiViT_NaViT_Papers_Reading_Report",
+      "title": "FlexiViT vs NaViT Comparison Report",
+      "date": "2026/2/5",
+      "category": "Other Notes",
+      "image": null
     },
     {
       "id": 36,
