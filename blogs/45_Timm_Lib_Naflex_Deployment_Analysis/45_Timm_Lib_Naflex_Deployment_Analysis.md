@@ -121,11 +121,9 @@ def batch_patchify(x, patch_size, pad=True):
               .reshape(B, nh*nw, ph*pw*C)	# [B, N, P*P*C]
 ```
 
-您说得对，这段解释确实不够清晰。让我重新详细分析这两个关键函数的实现原理和技术细节。
+下面详细分析这两个关键函数的实现原理和技术细节。
 
-## 3.1 动态Patch划分深度解析
-
-### 函数签名和输入处理
+### 输入处理
 
 ```python
 def batch_patchify(x, patch_size, pad=True):
