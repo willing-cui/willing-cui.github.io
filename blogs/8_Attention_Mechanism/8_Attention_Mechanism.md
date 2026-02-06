@@ -48,7 +48,12 @@ $$A=\text{softmax}(S_{scaled})$$
 
 $$\text{Output}=A×V$$
 
-根据注意力权重对值向量进行加权求和，得到最终的注意力输出。
+根据注意力权重对值向量进行加权求和，得到最终的注意力输出（网络后续仍有线性层、残差连接等机构）。
+
+<span class="image main">
+<img class="main img-in-blog" style="max-width: 80%" src="./blogs/8_Attention_Mechanism/Self-attention_Structure.webp" alt="Self-attention Structure" />
+<i>自注意力机制实现框图</i>
+</span>
 
 ## 二、主要类型与变体
 
