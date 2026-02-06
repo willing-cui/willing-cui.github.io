@@ -100,8 +100,6 @@ function initLazyLoadObserver() {
                         // 图片加载完成后重新计算瀑布流布局
                         img.onload = () => {
                             setTimeout(applyWaterfallLayout, 100);
-							// 增加强制刷新，防止图片位置偏差
-							setTimeout(applyWaterfallLayout, 1000);
                         };
                     }
                     observer.unobserve(img);
@@ -269,11 +267,11 @@ window.hideModal = (event) => {
 function createImageCard(dataUrl, name, time, isLazy = true) {
     const card = document.createElement('div');
     card.className = 'image-card';
-    
+
     // 在应用布局前保持卡片隐藏
     card.style.visibility = 'hidden';
     card.style.opacity = '0';
-    
+
     const largeImgUrl = dataUrl.replaceAll("glance", "check");
     const imgSrc = isLazy ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAD+klEQVR4nO2cT4gcRRyFyz/BBDWCSEKIoqKiIAgSAiEiBIIBk5MHFYIHjx7Uk3+uSjwlJ8Gck0NIJAQNKHoxkIABSRAERTwERRQ3y850v1e9izGalBTOwLCMM9093TP1a94H7zIM1V31TTVdNVXlnBBCCCGEEEIIIYQQQgghhBBClKLf7z9A8gxJTzIonBQP4FOSj7cpo59ARYOxZLHtGhcy6BkBwOdra2vbG79Ax+j1evcD+GIg5XTjFxg+puKFGi+8o/T/e6pEIWy88GEXbLzgjsO22k1C6iEhiSEhiSEhiSEhiSEhiSEhiSEhiWFSSJyKAfAGyaODvNmVGQFTQkIIt5I8BODa+kk5AH+R/CCEcJszjCkhAI5Nmy0FcNwZxowQAC+WncIG8JIziiUh31T4T+GSM4oJIcvLy3cBuFmhh9zs9XqbnUFMCMnz/KGq/7wBeMQZxISQlZWVu6v2kCzL7nEGMSFkUN7lCj3kW2cUM0IAHKzQQw46o5gREkK4heTJEkJOxe86o5gREgkh3A7gMIDrY3rFdQBH4necYUwJGZLn+cMk34qj8hiSb8fPXAcwKaTLUELSQkISQ0ISQ0ISQ0ISQ0ISQ0IqEkLYQPIxADu890+EEDa6BpGQkpDcPW43GIA/SX5J8kATUzYSMoWlpaU7SZ4oObH5VVEUW90MSMgEiqLYQvK7CtP+scf8XhTFk64mEvI/rK6ubgPwQxUZI8m898+4GkjIGLIse5DklZoyhlkj+byriISsI25LJvnbjDKGj6+/Sb7quiKE5K64GhHAZwAuxl2qAD4kub+NFYpZlj0F4GoTMkak3ADwumkheZ4/HQVMqewV7/0LTd0vgJ0t76t/36QQAK+NW7s7IR/N2lu898/GrcgtyhjmaFyf3Ea7TaVqwYP/zN+r+Vg4G0LYVOc+8zzfQ7KYg4zhvX4yaXSfhJB4gyQ/nrGi56uuxYqj68FIO8w55+Jas1nbrRJlC/be3wfg64Z+fd+XPcYDwMvjFkvMMZdi3eu2W2XKFBxHtCR/abiiP8fJvyn39srglXRRMoY/oB/XHzSzMCF5nu8lmbdU0avxTW3CS8ONRcsYya+jRzItREgcLM3hcVEAeG70ut77dxIQMC7xdXvX3IXM8iZVs6dcixt94rUBvJtAw0/KKoB9cxMSQrij5FLQpqX8M3IOVdIZHX+1KgTAvQAuLLrCNJTWhMSNMwB+WnQFaSxtCuktunI0mNaEKJQQdiASwrQiIUwrEsK0IiHsvhCd9856AfBH40IGB8svvHK0mRNtLafJEqhcMJZ+K4fxj5xlfnpOCwiC8UTOAHi0FRlCCCGEEEIIIYQQQgghhBBCCNc9/gW1WARKxMla2QAAAABJRU5ErkJggg==' : dataUrl;
     const dataSrc = isLazy ? dataUrl : null;
@@ -302,7 +300,7 @@ function createImageCard(dataUrl, name, time, isLazy = true) {
     } else {
         // 非懒加载图片加载完成后显示卡片
         const img = card.querySelector('img');
-        img.onload = function() {
+        img.onload = function () {
             requestAnimationFrame(() => {
                 card.style.visibility = 'visible';
                 card.style.opacity = '1';
@@ -325,7 +323,7 @@ function resetLoadState() {
         grid.style.position = '';
         grid.style.height = '';
     }
-    
+
     // 清除指示栏状态
     if (indicator) {
         const oldLoadMoreIndicator = indicator.querySelector('.loading-more');
@@ -344,12 +342,12 @@ function resetLoadState() {
 // 更新指示栏状态
 function updateIndicator() {
     if (!indicator) return;
-    
+
     const oldLoadMoreIndicator = indicator.querySelector('.loading-more');
     if (oldLoadMoreIndicator) {
         oldLoadMoreIndicator.remove();
     }
-    
+
     if (isLoading) {
         const loadMoreIndicator = document.createElement('div');
         loadMoreIndicator.className = 'loading-more';
@@ -412,7 +410,7 @@ async function loadPhotos(landmarkName) {
 
     // 更新指示栏
     updateIndicator();
-    
+
     // 初始加载第一批
     loadBatch(0, Math.min(BATCH_SIZE, allPhotos.length));
 }
@@ -426,7 +424,7 @@ function loadBatch(startIndex, endIndex) {
 
     // 计算卡片宽度
     calculateCardWidth();
-    
+
     // 使用文档片段提高性能
     const fragment = document.createDocumentFragment();
     const cards = [];
@@ -435,12 +433,12 @@ function loadBatch(startIndex, endIndex) {
         const photo = allPhotos[i];
         const isLazy = i >= 5; // 前5张立即加载，其余懒加载
         const card = createImageCard(photo.path, photo.name, photo.time, isLazy);
-        
+
         // 设置初始宽度以减少布局抖动
         if (cardWidth > 0) {
             card.style.width = cardWidth + 'px';
         }
-        
+
         fragment.appendChild(card);
         cards.push(card);
     }
@@ -453,7 +451,7 @@ function loadBatch(startIndex, endIndex) {
         // 等待下一帧以确保DOM已更新
         requestAnimationFrame(() => {
             applyWaterfallLayout();
-            
+
             // 延迟显示卡片，避免闪烁
             setTimeout(() => {
                 cards.forEach(card => {
@@ -461,7 +459,7 @@ function loadBatch(startIndex, endIndex) {
                     card.style.opacity = '1';
                 });
             }, 50);
-            
+
             // 图片加载完成后重新计算布局
             if (startIndex < 5) { // 前5张是立即加载的
                 setTimeout(() => {
@@ -469,6 +467,8 @@ function loadBatch(startIndex, endIndex) {
                     isLoading = false;
                     updateIndicator();
                 }, 200);
+                // 强制刷新，防止因图片加载慢导致卡片重叠
+                setTimeout(applyWaterfallLayout, 1000);
             } else {
                 isLoading = false;
                 updateIndicator();
