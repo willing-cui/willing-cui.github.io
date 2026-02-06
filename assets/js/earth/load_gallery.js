@@ -100,6 +100,8 @@ function initLazyLoadObserver() {
                         // 图片加载完成后重新计算瀑布流布局
                         img.onload = () => {
                             setTimeout(applyWaterfallLayout, 100);
+							// 增加强制刷新，防止图片位置偏差
+							setTimeout(applyWaterfallLayout, 1000);
                         };
                     }
                     observer.unobserve(img);
