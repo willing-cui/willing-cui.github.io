@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雨滴窗户效果</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        
+        #app {
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="loading">加载中...</div>
+    </div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.158.0/build/three.module.js"
+        }
+    }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        // 顶点着色器代码
+        const rainVertShader = `
+            out vec2 uvInterpolator;
+
+            void main() {
+                uvInterpolator = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `;
+
+        // 片段着色器代码
+        const rainFragShader = `
+            in vec2 uvInterpolator;
+            uniform float u_time;
+            uniform sampler2D u_texture;
+
+            // Generate a random float from a single input and seed.
+            float Random11(float inputValue, float seed) {
+                return fract(sin(inputValue * 345.456) * seed);
+            }
+
+            // Generate a random float from a 2d input and seed.
+            float Random21(vec2 inputValue, float seed) {
+                return fract(sin(dot(inputValue, vec2(123.456, 43.12))) * seed);
+            }
+
+            // Generate drops as distortions, that can be applied to UV coordinates
+            vec2 Drops(vec2 uv, float seed) {
+                // Randomly move everything
+                float shiftY = Random11(0.5, seed);
+                uv.y += shiftY;
+
+                // Split UV space into cells. Each cell will contain a drop.
+                float cellsResolution = 10.0;
+                uv *= cellsResolution;
+
+                // Move each row randomly.
+                float rowIndex = floor(uv.y);
+                float shiftX = Random11(rowIndex, seed);
+                uv.x += shiftX;
+
+                vec2 cellIndex = floor(uv);
+                vec2 cellUv = fract(uv);
+
+                vec2 cellCenter = vec2(0.5);
+                float distanceFromCenter = distance(cellUv, cellCenter);
+
+                // We don't want to show every drop. So randomly remove some of them.
+                float isDropShown = step(0.8, Random21(cellIndex, seed + 14244.324));
+
+                // Decrease each drop intensity with time. Then make it appear again.
+                float dropIntensity = 1.0 - fract(u_time * 0.1 + Random21(cellIndex, seed + 32132.432) * 2.0) * 2.0;
+                dropIntensity = sign(dropIntensity) * abs(dropIntensity * dropIntensity * dropIntensity * dropIntensity);
+                dropIntensity = clamp(dropIntensity, 0.0, 1.0);
+
+                // We only need results from inside a specific radius of a drop.
+                float isInsideDrop = 1.0 - step(0.1, distanceFromCenter);
+
+                vec2 vecToCenter = normalize(cellCenter - cellUv);
+
+                // Drop value is a vector to the center that increases with distance from it.
+                vec2 dropValue = vecToCenter * distanceFromCenter * distanceFromCenter * 40.0;
+
+                vec2 drop = dropValue * isInsideDrop * isDropShown * dropIntensity;
+                return drop;
+            }
+
+            void main() {
+                vec2 uv = uvInterpolator;
+
+                // Run the Drop function 10 times to create seemingly random pattern.
+                vec2 drops = vec2(0.0);
+                for(int i = 0; i < 10; i++) {
+                    drops += Drops(uv, 42424.43 + float(i) * 12313.432);
+                }
+
+                // Distort UV.
+                uv += drops;
+
+                // Sample the texture after distorting the UV space.
+                vec4 color = texture2D(u_texture, uv);
+
+                gl_FragColor = color;
+            }
+        `;
+
+        async function main() {
+            const app = document.querySelector('#app');
+            const loading = document.querySelector('.loading');
+            
+            // 创建场景
+            const scene = new THREE.Scene();
+
+            // 创建相机
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 7;
+
+            // 创建渲染器
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); // 限制最大像素比
+            app.appendChild(renderer.domElement);
+
+            // 创建背景纹理（使用渐变作为默认背景）
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024;
+            canvas.height = 1024;
+            const context = canvas.getContext('2d');
+            
+            // 创建渐变背景
+            const gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#2c3e50');
+            gradient.addColorStop(1, '#3498db');
+            context.fillStyle = gradient;
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 添加一些纹理细节
+            for (let i = 0; i < 100; i++) {
+                context.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.1})`;
+                context.fillRect(
+                    Math.random() * canvas.width,
+                    Math.random() * canvas.height,
+                    Math.random() * 50 + 10,
+                    Math.random() * 50 + 10
+                );
+            }
+
+            const texture = new THREE.CanvasTexture(canvas);
+
+            // 计算平面尺寸以保持纹理比例
+            const aspectRatio = texture.image.height / texture.image.width;
+            const planeHeight = 10;
+            const planeWidth = planeHeight / aspectRatio;
+
+            // 创建几何体
+            const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight, 1, 1);
+
+            // 创建着色器材质
+            const material = new THREE.ShaderMaterial({
+                vertexShader: rainVertShader,
+                fragmentShader: rainFragShader,
+                uniforms: {
+                    u_time: { value: 0 },
+                    u_texture: { value: texture },
+                },
+            });
+
+            // 创建平面网格
+            const plane = new THREE.Mesh(geometry, material);
+            scene.add(plane);
+
+            // 移除加载提示
+            loading.remove();
+
+            // 窗口大小调整处理
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // 动画循环
+            function animationFrame(time) {
+                material.uniforms.u_time.value = time / 1000;
+                renderer.render(scene, camera);
+                requestAnimationFrame(animationFrame);
+            }
+            requestAnimationFrame(animationFrame);
+        }
+
+        // 启动应用
+        main().catch(console.error);
+    </script>
+</body>
+</html>
