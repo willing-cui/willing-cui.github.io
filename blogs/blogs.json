@@ -233,6 +233,14 @@
       "image": "./blogs/35_Optimizer/Gradient.webp"
     },
     {
+      "id": 46,
+      "path": "46_Learning_Rate_Scheduler",
+      "title": "Learning Rate Scheduler",
+      "date": "2026/2/11",
+      "category": "AI & RL",
+      "image": "./blogs/46_Learning_Rate_Scheduler/Throttle.webp"
+    },
+    {
       "id": 43,
       "path": "43_Naflex_ViT_Design_Analysis",
       "title": "Naflex ViT Design Analysis",

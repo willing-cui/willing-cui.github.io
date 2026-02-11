@@ -20,3 +20,15 @@
    <i>Caption</i>
    </span> 
    ```
+
+6. 如需设置字体颜色（或同时加粗）
+
+   ```html
+   <!-- 同一行内 -->
+   <span style="color: red; font-weight: bold;">html插入与markdown语法冲突，如果需设置字体颜色的同时加粗，要在style字段一同设置</span>
+   
+   <!-- 另起一行 -->
+   <p style="color: red; font-weight: bold;">html插入与markdown语法冲突，如果需设置字体颜色的同时加粗，要在style字段一同设置</p>
+   ```
+
+   
