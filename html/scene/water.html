@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雨滴窗户效果</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        
+        #app {
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="loading">加载中...</div>
+    </div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.158.0/build/three.module.js"
+        }
+    }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        // 顶点着色器代码
+        const rainVertShader = `
+            out vec2 uvInterpolator;
+
+            void main() {
+                uvInterpolator = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `;
+
+        // 片段着色器代码 - 修复后的版本
+        const rainFragShader = `
+            in vec2 uvInterpolator;
+            uniform float u_time;
+            uniform sampler2D u_texture;
+
+            // 随机数生成函数
+            float hash(float n) {
+                return fract(sin(n) * 43758.5453);
+            }
+
+            float hash(vec2 p) {
+                return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+            }
+
+            // 噪声函数
+            float noise(vec2 p) {
+                vec2 i = floor(p);
+                vec2 f = fract(p);
+                f = f * f * (3.0 - 2.0 * f);
+                
+                float a = hash(i);
+                float b = hash(i + vec2(1.0, 0.0));
+                float c = hash(i + vec2(0.0, 1.0));
+                float d = hash(i + vec2(1.0, 1.0));
+                
+                return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+            }
+
+            // 改进的雨滴效果
+            vec2 rainDrops(vec2 uv, float time) {
+                vec2 result = uv;
+                
+                // 创建多个雨滴层
+                for (int i = 0; i < 5; i++) {
+                    float layer = float(i);
+                    float speed = 0.5 + layer * 0.2;
+                    float scale = 2.0 + layer * 1.5;
+                    
+                    vec2 dropUV = uv * scale;
+                    dropUV.y += time * speed;
+                    
+                    // 添加一些随机偏移
+                    dropUV.x += sin(layer * 123.456) * 0.3;
+                    
+                    // 生成雨滴图案
+                    float pattern = noise(dropUV);
+                    
+                    // 创建雨滴形状 - 使用圆形渐变
+                    vec2 center = vec2(0.5);
+                    vec2 dropPos = fract(dropUV);
+                    float dist = length(dropPos - center);
+                    
+                    // 雨滴强度
+                    float drop = smoothstep(0.3, 0.0, dist) * pattern;
+                    
+                    // 雨滴流动方向（向下）
+                    vec2 flow = vec2(0.0, -0.01 * drop);
+                    
+                    result += flow;
+                }
+                
+                return result;
+            }
+
+            void main() {
+                vec2 uv = uvInterpolator;
+                
+                // 应用雨滴扭曲效果
+                vec2 distortedUV = rainDrops(uv, u_time);
+                
+                // 添加一些扰动
+                distortedUV.x += sin(uv.y * 20.0 + u_time * 3.0) * 0.005;
+                distortedUV.y += cos(uv.x * 15.0 + u_time * 2.0) * 0.003;
+                
+                // 采样纹理
+                vec4 color = texture2D(u_texture, distortedUV);
+                
+                // 添加一些湿润效果
+                color.rgb *= 0.9 + 0.1 * sin(u_time * 2.0);
+                
+                gl_FragColor = color;
+            }
+        `;
+
+        async function main() {
+            const app = document.querySelector('#app');
+            const loading = document.querySelector('.loading');
+            
+            // 创建场景
+            const scene = new THREE.Scene();
+
+            // 创建相机
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 7;
+
+            // 创建渲染器
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+            app.appendChild(renderer.domElement);
+
+            // 创建更合适的背景纹理
+            const canvas = document.createElement('canvas');
+            canvas.width = 2048;
+            canvas.height = 2048;
+            const context = canvas.getContext('2d');
+            
+            // 创建更丰富的渐变背景
+            const gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#1a2a3a');
+            gradient.addColorStop(0.5, '#2c3e50');
+            gradient.addColorStop(1, '#3498db');
+            context.fillStyle = gradient;
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 添加建筑或景深效果
+            for (let i = 0; i < 200; i++) {
+                const alpha = Math.random() * 0.15;
+                const size = Math.random() * 100 + 20;
+                context.fillStyle = `rgba(40, 40, 60, ${alpha})`;
+                context.fillRect(
+                    Math.random() * canvas.width,
+                    Math.random() * canvas.height,
+                    size,
+                    size * (1 + Math.random())
+                );
+            }
+
+            // 添加高光点模拟灯光
+            for (let i = 0; i < 50; i++) {
+                const alpha = Math.random() * 0.3 + 0.1;
+                const size = Math.random() * 5 + 2;
+                context.fillStyle = `rgba(255, 255, 200, ${alpha})`;
+                context.beginPath();
+                context.arc(
+                    Math.random() * canvas.width,
+                    Math.random() * canvas.height,
+                    size,
+                    0,
+                    Math.PI * 2
+                );
+                context.fill();
+            }
+
+            const texture = new THREE.CanvasTexture(canvas);
+
+            // 计算平面尺寸以保持纹理比例
+            const aspectRatio = texture.image.height / texture.image.width;
+            const planeHeight = 10;
+            const planeWidth = planeHeight / aspectRatio;
+
+            // 创建几何体
+            const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight, 1, 1);
+
+            // 创建着色器材质
+            const material = new THREE.ShaderMaterial({
+                vertexShader: rainVertShader,
+                fragmentShader: rainFragShader,
+                uniforms: {
+                    u_time: { value: 0 },
+                    u_texture: { value: texture },
+                },
+            });
+
+            // 创建平面网格
+            const plane = new THREE.Mesh(geometry, material);
+            scene.add(plane);
+
+            // 移除加载提示
+            loading.remove();
+
+            // 窗口大小调整处理
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // 动画循环
+            function animationFrame(time) {
+                material.uniforms.u_time.value = time / 1000;
+                renderer.render(scene, camera);
+                requestAnimationFrame(animationFrame);
+            }
+            requestAnimationFrame(animationFrame);
+        }
+
+        // 启动应用
+        main().catch(console.error);
+    </script>
+</body>
+</html>
