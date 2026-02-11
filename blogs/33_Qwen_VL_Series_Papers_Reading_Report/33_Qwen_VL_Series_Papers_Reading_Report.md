@@ -17,7 +17,7 @@ Qwen-VL系列是阿里巴巴集团推出的视觉-语言模型（LVLM）家族�
   3. **指令微调（SFT）**：冻结视觉编码器，用350K多模态指令数据（含人工标注定位与多图像对话数据）训练LLM与适配器，生成交互式模型Qwen-VL-Chat。
 
   <span class="image main">
-  <img class="main img-in-blog" style="max-width: 50%" src="./blogs/33_Qwen_VL_Series_Papers_Reading_Report/Qwen_VL_Pipeline.webp" alt="Qwen-VL Training Pipeline" />
+  <img class="main img-in-blog" style="max-width: 90%" src="./blogs/33_Qwen_VL_Series_Papers_Reading_Report/Qwen_VL_Pipeline.webp" alt="Qwen-VL Training Pipeline" />
   <i>Qwen-VL 三段式训练 pipeline。From <a href="https://arxiv.org/pdf/2308.12966" >Qwen-VL: A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond</a></i>
   </span> 
 
