@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雨滴窗户效果</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        
+        #app {
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="loading">加载中...</div>
+    </div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.158.0/build/three.module.js"
+        }
+    }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        // 顶点着色器代码 - 增强版
+        const rainVertShader = `
+            out vec2 uvInterpolator;
+            out vec3 vNormal;
+            out vec3 vViewPosition;
+
+            void main() {
+                uvInterpolator = uv;
+                vNormal = normalize(normalMatrix * normal);
+                
+                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                vViewPosition = -mvPosition.xyz;
+                
+                gl_Position = projectionMatrix * mvPosition;
+            }
+        `;
+
+        // 片段着色器代码 - 增强版，添加水珠效果
+        const rainFragShader = `
+            in vec2 uvInterpolator;
+            in vec3 vNormal;
+            in vec3 vViewPosition;
+            
+            uniform float u_time;
+            uniform sampler2D u_texture;
+            uniform sampler2D u_normalMap;
+            uniform sampler2D u_roughnessMap;
+            uniform float u_ior;
+            uniform float u_roughness;
+            uniform float u_thickness;
+            uniform vec3 u_dropPositions[20]; // 水珠位置数组 (x, y, progress)
+            uniform float u_numDrops;
+
+            // Generate a random float from a single input and seed.
+            float Random11(float inputValue, float seed) {
+                return fract(sin(inputValue * 345.456) * seed);
+            }
+
+            // Generate a random float from a 2d input and seed.
+            float Random21(vec2 inputValue, float seed) {
+                return fract(sin(dot(inputValue, vec2(123.456, 43.12))) * seed);
+            }
+
+            // Generate drops as distortions, that can be applied to UV coordinates
+            vec2 Drops(vec2 uv, float seed) {
+                // Randomly move everything
+                float shiftY = Random11(0.5, seed);
+                uv.y += shiftY;
+
+                // Split UV space into cells. Each cell will contain a drop.
+                float cellsResolution = 10.0;
+                uv *= cellsResolution;
+
+                // Move each row randomly.
+                float rowIndex = floor(uv.y);
+                float shiftX = Random11(rowIndex, seed);
+                uv.x += shiftX;
+
+                vec2 cellIndex = floor(uv);
+                vec2 cellUv = fract(uv);
+
+                vec2 cellCenter = vec2(0.5);
+                float distanceFromCenter = distance(cellUv, cellCenter);
+
+                // We don't want to show every drop. So randomly remove some of them.
+                float isDropShown = step(0.8, Random21(cellIndex, seed + 14244.324));
+
+                // Decrease each drop intensity with time. Then make it appear again.
+                float dropIntensity = 1.0 - fract(u_time * 0.05 + Random21(cellIndex, seed + 32132.432) * 3.0) * 2.0;
+                dropIntensity = sign(dropIntensity) * abs(dropIntensity * dropIntensity * dropIntensity * dropIntensity);
+                dropIntensity = clamp(dropIntensity, 0.0, 1.0);
+
+                // We only need results from inside a specific radius of a drop.
+                float isInsideDrop = 1.0 - step(0.1, distanceFromCenter);
+
+                vec2 vecToCenter = normalize(cellCenter - cellUv);
+
+                // Drop value is a vector to the center that increases with distance from it.
+                vec2 dropValue = vecToCenter * distanceFromCenter * distanceFromCenter * 60.0;
+
+                vec2 drop = dropValue * isInsideDrop * isDropShown * dropIntensity;
+                return drop;
+            }
+
+            // 水珠扭曲效果
+            vec2 WaterDropsDistortion(vec2 uv) {
+                vec2 totalDistortion = vec2(0.0);
+                
+                for (int i = 0; i < 20; i++) {
+                    if (float(i) >= u_numDrops) break;
+                    
+                    vec3 dropData = u_dropPositions[i];
+                    float x = dropData.x;
+                    float y = dropData.y;
+                    float progress = dropData.z;
+                    
+                    // 跳过非活动水珠
+                    if (y < -1.0) continue;
+                    
+                    // 计算水珠在UV空间中的位置
+                    vec2 dropPos = vec2(x * 0.5 + 0.5, y * 0.5 + 0.5);
+                    float distanceToDrop = distance(uv, dropPos);
+                    
+                    // 水珠参数
+                    float dropWidth = 0.08 + progress * 0.02;
+                    float dropLength = 0.3 + progress * 0.1;
+                    
+                    // 水珠的形状（椭圆形）
+                    float dropShape = 0.2 - smoothstep(0.0, dropWidth, distanceToDrop);
+                    dropShape *= 1.0 - smoothstep(0.0, dropLength * 0.5, abs(uv.y - dropPos.y));
+                    
+                    // 水珠内部的扭曲效果
+                    if (dropShape > 0.01) {
+                        // 水珠边缘的扭曲更强
+                        float edgeFactor = 1.0 - abs(distanceToDrop - dropWidth * 0.5) / (dropWidth * 0.5);
+                        vec2 distortion = normalize(uv - dropPos) * dropShape * edgeFactor * 0.15;
+                        totalDistortion += distortion;
+                    }
+                }
+                
+                return totalDistortion;
+            }
+
+            // 添加法线贴图处理
+            vec3 getNormalFromMap(sampler2D normalMap, vec2 uv, vec3 normal, vec3 viewDir) {
+                vec3 tangentNormal = texture(normalMap, uv).xyz * 2.0 - 1.0;
+                
+                vec3 q1 = dFdx(viewDir);
+                vec3 q2 = dFdy(viewDir);
+                vec2 st1 = dFdx(uv);
+                vec2 st2 = dFdy(uv);
+
+                vec3 N = normalize(normal);
+                vec3 T = normalize(q1 * st2.t - q2 * st1.t);
+                vec3 B = -normalize(cross(N, T));
+                mat3 TBN = mat3(T, B, N);
+
+                return normalize(TBN * tangentNormal);
+            }
+
+            // 添加折射计算
+            vec3 calculateRefraction(vec3 viewDir, vec3 normal, float ior, float roughness, vec2 uv) {
+                float eta = 1.0 / ior;
+                vec3 refracted = refract(viewDir, normal, eta);
+                
+                // 基于粗糙度的模糊效果
+                vec3 color = vec3(0.0);
+                float samples = 9.0;
+                float blurAmount = roughness * 0.01;
+                
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        vec2 sampleUV = uv + refracted.xy * 0.1 + vec2(i, j) * blurAmount;
+                        color += texture(u_texture, sampleUV).rgb;
+                    }
+                }
+                color /= samples;
+                
+                return color;
+            }
+
+            void main() {
+                vec2 uv = uvInterpolator;
+                vec3 viewDir = normalize(vViewPosition);
+                vec3 worldNormal = normalize(vNormal);
+
+                // 应用水珠扭曲效果
+                vec2 waterDropDistortion = WaterDropsDistortion(uv);
+                uv += waterDropDistortion;
+
+                // Run the Drop function 10 times to create seemingly random pattern.
+                vec2 drops = vec2(0.0);
+                for(int i = 0; i < 10; i++) {
+                    drops += Drops(uv, 42424.43 + float(i) * 12313.432);
+                }
+
+                // Distort UV with rain drops
+                vec2 distortedUV = uv + drops * 0.15;
+
+                // 应用法线贴图
+                vec3 adjustedNormal = getNormalFromMap(u_normalMap, distortedUV * 3.0, worldNormal, viewDir);
+                
+                // 计算折射
+                vec3 refractedColor = calculateRefraction(viewDir, adjustedNormal, u_ior, u_roughness, distortedUV);
+                
+                // 混合原始颜色和折射颜色
+                float refractionStrength = length(drops) * 2.0 + length(waterDropDistortion) * 3.0;
+                refractionStrength = clamp(refractionStrength, 0.0, 1.0);
+                
+                vec4 originalColor = texture(u_texture, distortedUV);
+                vec3 finalColor = mix(originalColor.rgb, refractedColor, refractionStrength);
+
+                // 添加基于粗糙度的模糊
+                float blur = texture(u_roughnessMap, distortedUV * 3.0).r * u_roughness;
+                if (blur > 0.1) {
+                    vec3 blurColor = vec3(0.0);
+                    float samples = 4.0;
+                    for (int i = -1; i <= 1; i++) {
+                        for (int j = -1; j <= 1; j++) {
+                            if (i != 0 || j != 0) {
+                                blurColor += texture(u_texture, distortedUV + vec2(i, j) * 0.005 * blur).rgb;
+                            }
+                        }
+                    }
+                    blurColor /= samples;
+                    finalColor = mix(finalColor, blurColor, blur * 0.5);
+                }
+
+                gl_FragColor = vec4(finalColor, 1.0);
+            }
+        `;
+
+        async function main() {
+            const app = document.querySelector('#app');
+            const loading = document.querySelector('.loading');
+            
+            // 创建场景
+            const scene = new THREE.Scene();
+
+            // 创建相机
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 7;
+
+            // 创建渲染器
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+            app.appendChild(renderer.domElement);
+
+            // 创建背景纹理
+            const createBackgroundTexture = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 2048;
+                canvas.height = 2048;
+                const context = canvas.getContext('2d');
+                
+                // 创建渐变背景
+                const gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height);
+                gradient.addColorStop(0, '#2c3e50');
+                gradient.addColorStop(1, '#3498db');
+                context.fillStyle = gradient;
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // 添加建筑轮廓
+                context.fillStyle = '#34495e';
+                for (let i = 0; i < 20; i++) {
+                    const width = Math.random() * 100 + 50;
+                    const height = Math.random() * 300 + 100;
+                    context.fillRect(
+                        Math.random() * canvas.width,
+                        canvas.height - height,
+                        width,
+                        height
+                    );
+                }
+                
+                // 添加窗户灯光
+                context.fillStyle = '#f1c40f';
+                for (let i = 0; i < 50; i++) {
+                    context.fillRect(
+                        Math.random() * canvas.width,
+                        Math.random() * canvas.height * 0.1 + canvas.height * 0.9,
+                        10,
+                        15
+                    );
+                }
+
+                return new THREE.CanvasTexture(canvas);
+            };
+
+            const texture = createBackgroundTexture();
+
+            // 加载法线贴图和粗糙度贴图
+            const textureLoader = new THREE.TextureLoader();
+            
+            const normalMap = await new Promise((resolve) => {
+                textureLoader.load('https://i.ameo.link/be2.jpg', resolve);
+            });
+            normalMap.wrapS = normalMap.wrapT = THREE.RepeatWrapping;
+            normalMap.repeat.set(8, 8);
+
+            const roughnessMap = await new Promise((resolve) => {
+                textureLoader.load('https://i.ameo.link/be0.jpg', resolve);
+            });
+            roughnessMap.wrapS = roughnessMap.wrapT = THREE.RepeatWrapping;
+            roughnessMap.repeat.set(8, 8);
+
+            // 计算平面尺寸
+            const aspectRatio = texture.image.height / texture.image.width;
+            const planeHeight = 10;
+            const planeWidth = planeHeight / aspectRatio;
+
+            // 创建几何体
+            const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight, 64, 64);
+
+            // 水珠系统
+            const waterDrops = [];
+            const numDrops = 15;
+            
+            for (let i = 0; i < numDrops; i++) {
+                waterDrops.push({
+                    x: Math.random() * 2 - 1,
+                    y: Math.random() * 2 - 1,
+                    speed: Math.random() * 0.3 + 0.2,
+                    progress: Math.random(),
+                    width: Math.random() * 0.08 + 0.05,
+                    length: Math.random() * 0.3 + 0.2
+                });
+            }
+
+            // 创建着色器材质 - 添加水珠uniforms
+            const material = new THREE.ShaderMaterial({
+                vertexShader: rainVertShader,
+                fragmentShader: rainFragShader,
+                uniforms: {
+                    u_time: { value: 0 },
+                    u_texture: { value: texture },
+                    u_normalMap: { value: normalMap },
+                    u_roughnessMap: { value: roughnessMap },
+                    u_ior: { value: 1.6 },
+                    u_roughness: { value: 0.36 },
+                    u_thickness: { value: 0.6 },
+                    u_dropPositions: { value: new Array(20).fill(0).map(() => new THREE.Vector3()) },
+                    u_numDrops: { value: numDrops }
+                },
+                transparent: true,
+            });
+
+            // 创建平面网格
+            const plane = new THREE.Mesh(geometry, material);
+            scene.add(plane);
+
+            // 添加光照
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+
+            // 移除加载提示
+            loading.remove();
+
+            // 窗口大小调整处理
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // 添加鼠标交互
+            let mouseX = 0, mouseY = 0;
+            window.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+                mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            });
+
+            let lastTime = 0;
+            
+            // 动画循环
+            function animationFrame(time) {
+                const timeInSeconds = time / 1000;
+                const deltaTime = lastTime ? (time - lastTime) / 1000 : 0;
+                lastTime = time;
+                
+                // 更新水珠位置
+                waterDrops.forEach((drop, index) => {
+                    drop.y -= drop.speed * deltaTime;
+                    drop.progress += deltaTime * 0.5;
+                    
+                    // 如果水珠滑出屏幕底部，重置到顶部
+                    if (drop.y < -1.2) {
+                        drop.y = 1.2;
+                        drop.x = Math.random() * 2 - 1;
+                        drop.progress = 0;
+                    }
+                    
+                    // 更新uniforms中的水珠位置
+                    if (index < 20) {
+                        material.uniforms.u_dropPositions.value[index].set(
+                            drop.x,
+                            drop.y,
+                            drop.progress
+                        );
+                    }
+                });
+                
+                // 更新uniforms
+                material.uniforms.u_time.value = timeInSeconds;
+                material.uniforms.u_dropPositions.needsUpdate = true;
+                
+                // 轻微相机移动
+                camera.position.x = mouseX * 0.5;
+                camera.position.y = mouseY * 0.3;
+                camera.lookAt(0, 0, 0);
+
+                renderer.render(scene, camera);
+                requestAnimationFrame(animationFrame);
+            }
+            requestAnimationFrame(animationFrame);
+        }
+
+        // 启动应用
+        main().catch(console.error);
+    </script>
+</body>
+</html>
