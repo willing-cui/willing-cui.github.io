@@ -83,6 +83,8 @@ EvaBlock (改进的Transformer块)
 
 - `Patch_dim = patch_h * patch_w * in_chans`
 
+如果需要保证对patch划分模式的个性化配置，可以采用**预分块输入**，而不是将分块工作交由模型自动进行。
+
 #### 1.3.2 空间结构处理
 
 **卷积路径后续处理**:
@@ -98,6 +100,176 @@ if self.flatten:
 
 - NaFlex模式通过 `patch_coord`参数显式提供每个patch的坐标 `[B, N, 2]`
 - 坐标值表示每个patch在原始图像中的`(y, x)`位置
+
+#### 1.3.3 Naflex架构如何处理不同尺寸的patch
+
+1. 在`NaflexEmbeds`类的`forward`函数中
+
+   ```python
+   def forward(
+           self,
+           x: torch.Tensor,
+           patch_coord: Optional[torch.Tensor] = None,
+           patch_valid: Optional[torch.Tensor] = None,
+   ) -> Tuple[torch.Tensor, Optional[Tuple[int, int]]]:
+       """Forward pass for patch embedding with position encoding.
+   
+       Args:
+           x: Input tensor. Supported formats:
+               - [B, C, H, W] for conv mode
+               - [B, N, P*P*C] for pre-patchified linear mode (normal)
+               - [B, N, Ph, Pw, C] for pre-patchified linear mode (variable patch size)
+           patch_coord: Optional patch coordinates [B, N, 2] for NaFlex mode.
+           patch_valid: Optional validity mask for patches [B, N] for NaFlex mode.
+   
+       Returns:
+           Tuple of (embedded_tensor, grid_size) where:
+               - embedded_tensor: [B, num_prefix_tokens + N, embed_dim]
+               - grid_size: (H, W) tuple for standard mode, None for NaFlex mode
+       """
+   ```
+
+   我们得知，如果需要进行自定义的预分块，输入数据`x`的形状需满足`[B, N, Ph, Pw, C]`，`forward`函数对patch尺寸的处理在下面的几行代码中。
+
+   ```python
+   # Handle variable patch size projection
+   if self.enable_patch_interpolator and x.ndim == 5:
+       _assert(self.norm_input is None, 'input norm not supported with patch resizing')
+   
+       # Apply projection with interpolation
+       x = self.patch_interpolator(
+           x,
+           self.proj.weight,
+           self.proj.bias,
+           patch_size=tuple(x.shape[2:4]),  # patch size from [B, N, Ph, Pw, C] shape
+           is_linear=True,
+       )
+   ```
+
+   其中关键的函数是`self.patch_interpolator`，它对应于`PatchEmbedInterpolator`类的`forward`函数。
+
+   ```python
+   def forward(
+           self,
+           patches: torch.Tensor,
+           proj_weight: torch.Tensor,
+           proj_bias: Optional[torch.Tensor] = None,
+           patch_size: Optional[Tuple[int, int]] = None,
+           is_linear: bool = True,
+   ) -> torch.Tensor:
+       """Apply patch embedding with dynamic weight resampling.
+   
+       Args:
+           patches: Input patches
+               - For linear mode with resampling: [B, N, Ph, Pw, C]
+               - For linear mode without resampling: [B, N, Ph*Pw*C]
+               - For conv mode: [B, C, H, W]
+           proj_weight: Original projection weight
+           proj_bias: Optional projection bias
+           patch_size: Current patch size (if None, uses base_patch_size)
+           is_linear: Whether using linear (True) or conv2d (False) projection
+   
+       Returns:
+           Embedded patches
+       """
+   ```
+
+   需要注意的是，默认情况下我们使用的映射模式为`'linear'`，这在`NaflexViTCfg`类中有定义。
+
+   ```python
+   # Embedding configuration
+   embed_proj_type: str = 'linear'  # Type of embedding layer ('conv' or 'linear')
+   ```
+
+   因此，自由patch尺寸的设置会由`PatchEmbedInterpolator.foward`函数中下面的代码片处理。
+
+   ```python
+   if is_linear:
+       if patch_size != self.base_patch_size:
+           # Need to resample - expects unflattened patches
+           assert patches.ndim == 5, "Patches must be [B, N, Ph, Pw, C] for resampling"
+           B, N, Ph, Pw, C = patches.shape
+   
+           # Resample the weight
+           weight_resampled = self.resample_linear_weight(proj_weight, patch_size)
+   
+           # Flatten patches and apply linear projection (注意，此处每个patch已经被展平成1维)
+           patches_flat = patches.reshape(B, N, -1)
+           output = torch.nn.functional.linear(patches_flat, weight_resampled, proj_bias)
+   ```
+
+   特别需要关注的是`weight_resampled`这个变量，这是给patch尺寸做映射的权重，它会根据`patch_size`实时进行调整。
+
+   ```python
+   def resample_linear_weight(
+           self,
+           weight: torch.Tensor,
+           target_patch_size: Tuple[int, int],
+   ) -> torch.Tensor:
+       """Resample linear patch embedding weights for a new patch size.
+   
+       Args:
+           weight: Linear weight tensor of shape [embed_dim, patch_h * patch_w * in_chans]
+           target_patch_size: Target (patch_h, patch_w) to resample to
+   
+       Returns:
+           Resampled weight tensor
+       """
+       if target_patch_size == self.base_patch_size:
+           return weight
+   
+       embed_dim = weight.shape[0]
+       base_ph, base_pw = self.base_patch_size
+       target_ph, target_pw = target_patch_size
+   
+       # Reshape linear weight to conv2d format
+       # [embed_dim, ph*pw*C] -> [embed_dim, C, ph, pw]
+       weight_conv = weight.reshape(embed_dim, base_ph, base_pw, self.in_chans)
+       weight_conv = weight_conv.permute(0, 3, 1, 2)
+   
+       # Resample using existing function
+       weight_conv_resampled = resample_patch_embed(
+           weight_conv,
+           new_size=[target_ph, target_pw],
+           interpolation=self.interpolation,
+           antialias=self.antialias,
+           verbose=False,
+       )
+   
+       # Reshape back to linear format
+       # [embed_dim, C, ph, pw] -> [embed_dim, ph*pw*C]
+       weight_resampled = weight_conv_resampled.permute(0, 2, 3, 1)
+       weight_resampled = weight_resampled.reshape(embed_dim, -1)
+   
+       return weight_resampled
+   ```
+
+   其中的关键步骤包括
+
+   **张量形状转换**
+
+   ```python
+   # 原始形状: [embed_dim, base_ph * base_pw * in_chans]
+   weight_conv = weight.reshape(embed_dim, base_ph, base_pw, self.in_chans)
+   weight_conv = weight_conv.permute(0, 3, 1, 2)
+   # 转换后: [embed_dim, in_chans, base_ph, base_pw]
+   ```
+
+   - 将展平的线性权重重新解释为空间网格形式
+
+   - `permute`操作调整维度顺序，符合卷积权重的标准格式 `[out_channels, in_channels, height, width]`
+
+   **空间重采样**
+
+   ```python
+   weight_conv_resampled = resample_patch_embed(...)
+   ```
+
+   调用`resample_patch_embed`函数进行实际的重采样：
+
+   - 使用双线性插值等方法（由`self.interpolation`指定），该实现中使用了双三次插值`'bicubic'`
+   - 可能应用抗锯齿（由`self.antialias`控制）
+   - 将权重从`[base_ph, base_pw]`缩放到`[target_ph, target_pw]`
 
 #### 1.3.3 位置编码添加
 
