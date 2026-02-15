@@ -10,7 +10,7 @@ var nameList = [];
 /**
  * 从JSON文件加载博客数据
  */
-async function loadBlogData() {
+async function loadBlogData(currentLanguage) {
     try {
         const response = await fetch('./blogs/blogs.json');
         if (!response.ok) {
@@ -18,22 +18,31 @@ async function loadBlogData() {
         }
         blogData = await response.json();
         blogData.blogs.sort((a, b) => a.id - b.id);
-        
+
         // 生成pathList和nameList
         pathList = [];
         nameList = [];
-        
-        blogData.blogs.forEach(blog => {
-            // 读取路径
-            const path = blog.path;
-            pathList.push(path);
-            nameList.push(blog.title);
-        });
-        
+
+        if (currentLanguage === 'zh') {
+            blogData.blogs.forEach(blog => {
+                // 读取路径
+                const path = blog.path;
+                pathList.push(path);
+                nameList.push(blog.title_zh);
+            });
+        } else if (currentLanguage === 'en') {
+            blogData.blogs.forEach(blog => {
+                // 读取路径
+                const path = blog.path;
+                pathList.push(path);
+                nameList.push(blog.title_en);
+            });
+        }
+
         console.log('成功加载博客数据:', blogData.blogs.length, '篇文章');
         console.log(pathList)
         console.log(nameList)
-        
+
     } catch (error) {
         console.error('加载博客数据失败:', error);
         // 使用默认数据作为后备
@@ -182,17 +191,30 @@ function highlightCurrentSection() {
         });
 }
 
+/**
+ * 获取当前语言
+ */
+function getCurrentLanguage() {
+    const savedLang = localStorage.getItem('preferred-language');
+    const browserLang = navigator.language.startsWith('zh') ? 'zh' : 'en';
+    return savedLang || browserLang || 'en';
+}
+
+
 // 页面加载时初始化博客数据
 document.addEventListener('DOMContentLoaded', () => {
+
+    const currentLanguage = getCurrentLanguage()
+
     // 加载博客数据
-    loadBlogData().then(() => {
+    loadBlogData(currentLanguage).then(() => {
         console.log('博客数据加载完成');
-        
+
         // 检查URL参数，如果有博客ID则自动加载
         const urlParams = new URLSearchParams(window.location.search);
         const part = urlParams.get('part');
         const id = urlParams.get('id');
-        
+
         if (part === 'blogs' && id) {
             setTimeout(() => {
                 loadMd(null, parseInt(id));

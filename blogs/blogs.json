@@ -3,7 +3,8 @@
     {
       "id": 3,
       "path": "3_RL_Multi-Armed_Bandit",
-      "title": "Multi-Armed Bandit Problem (RL)",
+      "title_en": "Multi-Armed Bandit Problem (RL)",
+      "title_zh": "多臂老虎机问题（强化学习）",
       "date": "2025/4/10",
       "category": "AI & RL",
       "image": "./blogs/3_RL_Multi-Armed_Bandit/Simulation_Results_2.webp"
@@ -11,7 +12,8 @@
     {
       "id": 6,
       "path": "6_ResNet",
-      "title": "Introduction to ResNet",
+      "title_en": "Introduction to ResNet",
+      "title_zh": "ResNet 简介",
       "date": "2025/12/31",
       "category": "AI & RL",
       "image": "./blogs/6_ResNet/ResBlock.webp"
@@ -19,7 +21,8 @@
     {
       "id": 7,
       "path": "7_Normalization_in_Deep_Learning",
-      "title": "Normalization in Deep Learning",
+      "title_en": "Normalization in Deep Learning",
+      "title_zh": "深度学习中的归一化技术",
       "date": "2026/1/2",
       "category": "AI & RL",
       "image": null
@@ -27,7 +30,8 @@
     {
       "id": 8,
       "path": "8_Attention_Mechanism",
-      "title": "Attention Mechanism",
+      "title_en": "Attention Mechanism",
+      "title_zh": "注意力机制",
       "date": "2026/1/2",
       "category": "AI & RL",
       "image": "./blogs/8_Attention_Mechanism/Attention_Mechanism.webp"
@@ -35,7 +39,8 @@
     {
       "id": 21,
       "path": "21_Cross-Attention_Mechanism",
-      "title": "Cross-Attention Mechanism",
+      "title_en": "Cross-Attention Mechanism",
+      "title_zh": "交叉注意力机制",
       "date": "2026/1/13",
       "category": "AI & RL",
       "image": "./blogs/8_Attention_Mechanism/Attention_Mechanism.webp"
@@ -43,7 +48,8 @@
     {
       "id": 24,
       "path": "24_Multi-Head_Attention_Mechanism",
-      "title": "Multi-Head Attention Mechanism",
+      "title_en": "Multi-Head Attention Mechanism",
+      "title_zh": "多头注意力机制",
       "date": "2026/1/16",
       "category": "AI & RL",
       "image": "./blogs/24_Multi-Head_Attention_Mechanism/Multi-Head_Attention.webp"
@@ -51,7 +57,8 @@
     {
       "id": 39,
       "path": "39_Comparisons_of_Various_Attention_Mechanisms",
-      "title": "Comparisons of Various Attention Mechanisms",
+      "title_en": "Comparisons of Various Attention Mechanisms",
+      "title_zh": "各类注意力机制对比",
       "date": "2026/2/2",
       "category": "AI & RL",
       "image": null
@@ -59,7 +66,8 @@
     {
       "id": 9,
       "path": "9_Transformer_BERT_GPT",
-      "title": "Introduction to Transformer, BERT, and GPT",
+      "title_en": "Introduction to Transformer, BERT, and GPT",
+      "title_zh": "Transformer、BERT 和 GPT 简介",
       "date": "2026/1/2",
       "category": "AI & RL",
       "image": "./blogs/9_Transformer_BERT_GPT/Transformer_Structure.webp"
@@ -67,7 +75,8 @@
     {
       "id": 32,
       "path": "32_Building_a_Transformer_from_Scratch",
-      "title": "Building a Transformer from Scratch",
+      "title_en": "Building a Transformer from Scratch",
+      "title_zh": "从零构建 Transformer",
       "date": "2026/1/26",
       "category": "AI & RL",
       "image": "./blogs/32_Building_a_Transformer_from_Scratch/Building_a_Transformer.webp"
@@ -75,7 +84,8 @@
     {
       "id": 28,
       "path": "28_Mixture_of_Experts",
-      "title": "Mixture of Experts",
+      "title_en": "Mixture of Experts",
+      "title_zh": "专家混合模型",
       "date": "2026/1/21",
       "category": "AI & RL",
       "image": "./blogs/28_Mixture_of_Experts/DeepSeek_MoE.webp"
@@ -83,7 +93,8 @@
     {
       "id": 5,
       "path": "5_Sinusoidal_Positional_Encoding",
-      "title": "Sinusoidal Positional Encoding",
+      "title_en": "Sinusoidal Positional Encoding",
+      "title_zh": "正弦位置编码",
       "date": "2025/10/18",
       "category": "AI & RL",
       "image": null
@@ -91,15 +102,17 @@
     {
       "id": 26,
       "path": "26_RoPE_Positional_Encoding",
-      "title": "RoPE Positional Encoding",
+      "title_en": "RoPE Positional Encoding",
+      "title_zh": "RoPE 旋转位置编码",
       "date": "2026/1/20",
       "category": "AI & RL",
       "image": "./blogs/26_RoPE_Positional_Encoding/SuperMacro_Rope.webp"
     },
-	{
+    {
       "id": 41,
       "path": "41_M_RoPE_Positional_Encoding",
-      "title": "M-RoPE Positional Encoding",
+      "title_en": "M-RoPE Positional Encoding",
+      "title_zh": "M-RoPE 位置编码",
       "date": "2026/2/4",
       "category": "AI & RL",
       "image": "./blogs/41_M_RoPE_Positional_Encoding/M_RoPE.webp"
@@ -107,7 +120,8 @@
     {
       "id": 10,
       "path": "10_Multimodal_Fusion",
-      "title": "Multimodal Fusion",
+      "title_en": "Multimodal Fusion",
+      "title_zh": "多模态融合",
       "date": "2026/1/5",
       "category": "AI & RL",
       "image": null
@@ -115,7 +129,8 @@
     {
       "id": 11,
       "path": "11_WWH_When_Attention_Mechanism_Fail",
-      "title": "What, Why, and How: When Attention Mechanisms Fail",
+      "title_en": "What, Why, and How: When Attention Mechanisms Fail",
+      "title_zh": "什么、为什么、如何：当注意力机制失效时",
       "date": "2026/1/5",
       "category": "AI & RL",
       "image": null
@@ -123,7 +138,8 @@
     {
       "id": 13,
       "path": "13_Transformer_for_Classification_Tasks",
-      "title": "Transformer for Classification Tasks",
+      "title_en": "Transformer for Classification Tasks",
+      "title_zh": "用于分类任务的 Transformer",
       "date": "2026/1/6",
       "category": "AI & RL",
       "image": null
@@ -131,7 +147,8 @@
     {
       "id": 14,
       "path": "14_Activation_Functions",
-      "title": "Activation Functions",
+      "title_en": "Activation Functions",
+      "title_zh": "激活函数",
       "date": "2026/1/7",
       "category": "AI & RL",
       "image": "./blogs/14_Activation_Functions/activation_func.webp"
@@ -139,7 +156,8 @@
     {
       "id": 22,
       "path": "22_Dropout_Function",
-      "title": "Dropout Function",
+      "title_en": "Dropout Function",
+      "title_zh": "Dropout 函数",
       "date": "2026/1/14",
       "category": "AI & RL",
       "image": null
@@ -147,7 +165,8 @@
     {
       "id": 16,
       "path": "16_Feature_Alignment",
-      "title": "Feature Alignment",
+      "title_en": "Feature Alignment",
+      "title_zh": "特征对齐",
       "date": "2026/1/9",
       "category": "AI & RL",
       "image": null
@@ -155,7 +174,8 @@
     {
       "id": 38,
       "path": "38_Feature_Fusion_and_Feature_Alignment",
-      "title": "Feature Fusion and Feature Alignment",
+      "title_en": "Feature Fusion and Feature Alignment",
+      "title_zh": "特征融合与特征对齐",
       "date": "2026/2/2",
       "category": "AI & RL",
       "image": "./blogs/38_Feature_Fusion_and_Feature_Alignment/Alignment_and_Fusion.webp"
@@ -163,7 +183,8 @@
     {
       "id": 23,
       "path": "23_Two-Layer_MLP_Can_Approximate_Any_Function",
-      "title": "Two-Layer MLP Can Approximate Any Function?",
+      "title_en": "Two-Layer MLP Can Approximate Any Function?",
+      "title_zh": "两层 MLP 能否逼近任意函数？",
       "date": "2026/1/15",
       "category": "AI & RL",
       "image": null
@@ -171,7 +192,8 @@
     {
       "id": 25,
       "path": "25_Training_Stability",
-      "title": "Stable Model Training: Reducing Validation Variance",
+      "title_en": "Stable Model Training: Reducing Validation Variance",
+      "title_zh": "稳定模型训练：减少验证方差",
       "date": "2026/1/16",
       "category": "AI & RL",
       "image": "./blogs/25_Training_Stability/stability.webp"
@@ -179,7 +201,8 @@
     {
       "id": 27,
       "path": "27_Chinchilla_Scaling_Laws",
-      "title": "Chinchilla Scaling Laws",
+      "title_en": "Chinchilla Scaling Laws",
+      "title_zh": "Chinchilla 缩放定律",
       "date": "2026/1/20",
       "category": "AI & RL",
       "image": "./blogs/27_Chinchilla_Scaling_Laws/Chinchilla.webp"
@@ -187,7 +210,8 @@
     {
       "id": 30,
       "path": "30_Low_Rank_Adaptation",
-      "title": "Low-Rank Adaptation (LoRA)",
+      "title_en": "Low-Rank Adaptation (LoRA)",
+      "title_zh": "低秩适应（LoRA）",
       "date": "2026/1/21",
       "category": "AI & RL",
       "image": "./blogs/30_Low_Rank_Adaptation/LoRA.webp"
@@ -195,7 +219,8 @@
     {
       "id": 31,
       "path": "31_K_V_Cache",
-      "title": "K V Cache",
+      "title_en": "K V Cache",
+      "title_zh": "K V 缓存",
       "date": "2026/1/23",
       "category": "AI & RL",
       "image": null
@@ -203,7 +228,8 @@
     {
       "id": 34,
       "path": "34_Huggingface_Transformers_Lib",
-      "title": "Huggingface Transformers Lib",
+      "title_en": "Huggingface Transformers Lib",
+      "title_zh": "Huggingface Transformers 库",
       "date": "2026/1/27",
       "category": "AI & RL",
       "image": "./blogs/34_Huggingface_Transformers_Lib/Transformers.webp"
@@ -211,15 +237,17 @@
     {
       "id": 37,
       "path": "37_Finetune_Qwen_Using_Transformers_Lib",
-      "title": "Finetune Qwen Using Transformers Lib",
+      "title_en": "Finetune Qwen Using Transformers Lib",
+      "title_zh": "使用 Transformers 库微调 Qwen",
       "date": "2026/2/1",
       "category": "AI & RL",
       "image": null
     },
-	{
+    {
       "id": 40,
       "path": "40_Qwen3_VL_Quantization_and_Inference",
-      "title": "Qwen3 VL Quantization and Inference",
+      "title_en": "Qwen3 VL Quantization and Inference",
+      "title_zh": "Qwen3 VL 量化与推理",
       "date": "2026/2/3",
       "category": "AI & RL",
       "image": null
@@ -227,7 +255,8 @@
     {
       "id": 35,
       "path": "35_Optimizer",
-      "title": "Optimizer",
+      "title_en": "Optimizer",
+      "title_zh": "优化器",
       "date": "2026/1/28",
       "category": "AI & RL",
       "image": "./blogs/35_Optimizer/Gradient.webp"
@@ -235,7 +264,8 @@
     {
       "id": 46,
       "path": "46_Learning_Rate_Scheduler",
-      "title": "Learning Rate Scheduler",
+      "title_en": "Learning Rate Scheduler",
+      "title_zh": "学习率调度器",
       "date": "2026/2/11",
       "category": "AI & RL",
       "image": "./blogs/46_Learning_Rate_Scheduler/Throttle.webp"
@@ -243,7 +273,8 @@
     {
       "id": 43,
       "path": "43_Naflex_ViT_Design_Analysis",
-      "title": "Naflex ViT Design Analysis",
+      "title_en": "Naflex ViT Design Analysis",
+      "title_zh": "Naflex ViT 设计分析",
       "date": "2026/2/5",
       "category": "AI & RL",
       "image": null
@@ -251,7 +282,8 @@
     {
       "id": 45,
       "path": "45_Timm_Lib_Naflex_Deployment_Analysis",
-      "title": "Timm Lib Naflex Deployment Analysis",
+      "title_en": "Timm Lib Naflex Deployment Analysis",
+      "title_zh": "Timm 库 Naflex 部署分析",
       "date": "2026/2/5",
       "category": "AI & RL",
       "image": "./blogs/45_Timm_Lib_Naflex_Deployment_Analysis/Image_to_Patches.webp"
@@ -259,7 +291,8 @@
     {
       "id": 29,
       "path": "29_Robotics_Research_Production_Line",
-      "title": "Robotics Research Production Line",
+      "title_en": "Robotics Research Production Line",
+      "title_zh": "机器人研究生产线",
       "date": "2026/1/21",
       "category": "Embodied Intelligence",
       "image": "./blogs/29_Robotics_Research_Production_Line/Robotics_Research_Production_Line.webp"
@@ -267,7 +300,8 @@
     {
       "id": 4,
       "path": "4_WiFi_CSI",
-      "title": "Introduction to WiFi CSI",
+      "title_en": "Introduction to WiFi CSI",
+      "title_zh": "WiFi CSI 简介",
       "date": "2025/10/08",
       "category": "Wireless Communication",
       "image": null
@@ -275,7 +309,8 @@
     {
       "id": 18,
       "path": "18_Autocorrelation_Cross-correlation_Convolution",
-      "title": "Autocorrelation, Cross-correlation, and Convolution",
+      "title_en": "Autocorrelation, Cross-correlation, and Convolution",
+      "title_zh": "自相关、互相关与卷积",
       "date": "2026/1/12",
       "category": "Wireless Communication",
       "image": "./blogs/18_Autocorrelation_Cross-correlation_Convolution/Comparison_convolution_correlation.webp"
@@ -283,7 +318,8 @@
     {
       "id": 17,
       "path": "17_Autocorrelation_of_CSI",
-      "title": "Autocorrelation of CSI",
+      "title_en": "Autocorrelation of CSI",
+      "title_zh": "CSI 的自相关",
       "date": "2026/1/12",
       "category": "Wireless Communication",
       "image": null
@@ -291,7 +327,8 @@
     {
       "id": 1,
       "path": "1_一阶倒立摆的系统模型",
-      "title": "一阶倒立摆的系统模型",
+      "title_en": "System Model of A First-order Inverted Pendulum",
+      "title_zh": "一阶倒立摆的系统模型",
       "date": "2020/11/21",
       "category": "Control Theory",
       "image": "./blogs/1_一阶倒立摆的系统模型/cart_pole.gif"
@@ -299,7 +336,8 @@
     {
       "id": 2,
       "path": "2_对一阶倒立摆的LQR控制",
-      "title": "对一阶倒立摆的LQR控制",
+      "title_en": "LQR Control of A First-order Inverted Pendulum",
+      "title_zh": "对一阶倒立摆的LQR控制",
       "date": "2020/11/25",
       "category": "Control Theory",
       "image": "./blogs/2_对一阶倒立摆的LQR控制/LQR_control.webp"
@@ -307,7 +345,8 @@
     {
       "id": 12,
       "path": "12_SenseFi_Paper_Reading_Report",
-      "title": "SenseFi Paper Reading Report",
+      "title_en": "SenseFi Paper Reading Report",
+      "title_zh": "SenseFi 论文阅读报告",
       "date": "2026/1/6",
       "category": "Other Notes",
       "image": null
@@ -315,7 +354,8 @@
     {
       "id": 19,
       "path": "19_MVX-Net_Paper_Reading_Report",
-      "title": "MVX-Net Paper Reading Report",
+      "title_en": "MVX-Net Paper Reading Report",
+      "title_zh": "MVX-Net 论文阅读报告",
       "date": "2026/1/13",
       "category": "Other Notes",
       "image": null
@@ -323,7 +363,8 @@
     {
       "id": 20,
       "path": "20_DeepFusion_Paper_Reading_Report",
-      "title": "DeepFusion Paper Reading Report",
+      "title_en": "DeepFusion Paper Reading Report",
+      "title_zh": "DeepFusion 论文阅读报告",
       "date": "2026/1/13",
       "category": "Other Notes",
       "image": null
@@ -331,7 +372,8 @@
     {
       "id": 33,
       "path": "33_Qwen_VL_Series_Papers_Reading_Report",
-      "title": "Qwen-VL Series Paper Reading Report",
+      "title_en": "Qwen-VL Series Paper Reading Report",
+      "title_zh": "Qwen-VL 系列论文阅读报告",
       "date": "2026/1/27",
       "category": "Other Notes",
       "image": "./blogs/33_Qwen_VL_Series_Papers_Reading_Report/Qwen.webp"
@@ -339,7 +381,8 @@
     {
       "id": 42,
       "path": "42_SigLIP_2_Paper_Reading_Report",
-      "title": "SigLIP 2 Paper Reading Report",
+      "title_en": "SigLIP 2 Paper Reading Report",
+      "title_zh": "SigLIP 2 论文阅读报告",
       "date": "2026/2/5",
       "category": "Other Notes",
       "image": "./blogs/42_SigLIP_2_Paper_Reading_Report/SigLIP2.webp"
@@ -347,7 +390,8 @@
     {
       "id": 44,
       "path": "44_FlexiViT_NaViT_Papers_Reading_Report",
-      "title": "FlexiViT vs NaViT Comparison Report",
+      "title_en": "FlexiViT vs NaViT Comparison Report",
+      "title_zh": "FlexiViT 与 NaViT 对比报告",
       "date": "2026/2/5",
       "category": "Other Notes",
       "image": null
@@ -355,7 +399,8 @@
     {
       "id": 36,
       "path": "36_LingBot_VLA_Paper_Reading_Report",
-      "title": "LingBot-VLA Paper Reading Report",
+      "title_en": "LingBot-VLA Paper Reading Report",
+      "title_zh": "LingBot-VLA 论文阅读报告",
       "date": "2026/1/30",
       "category": "Other Notes",
       "image": "./blogs/36_LingBot_VLA_Paper_Reading_Report/LingBot_Diagram.webp"
@@ -363,7 +408,8 @@
     {
       "id": 15,
       "path": "15_Access_Repo_via_GitHub_SSH",
-      "title": "Access Repo via GitHub SSH",
+      "title_en": "Access Repo via GitHub SSH",
+      "title_zh": "通过 GitHub SSH 访问仓库",
       "date": "2026/1/8",
       "category": "Other Notes",
       "image": null

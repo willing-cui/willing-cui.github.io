@@ -86,7 +86,7 @@
 
     <div id="photo-list">
         <div class="photo-list-title">
-            <h1>Gallery</h1>
+            <h1 data-i18n="photo-list-title">Gallery</h1>
             <div href="#" style="cursor: pointer;" class="icon solid fa-circle-xmark" onclick="resetCurrentSelectedLandmark()"></div>
         </div>
         <div class="indicator-bar">
@@ -112,6 +112,57 @@
     <script type="module" rel="preload" src="../assets/js/earth/earth.js"></script>
     <script type="module" rel="preload" src="../assets/js/earth/earth_ui.js"></script>
     <script type="module" rel="preload" src="../assets/js/earth/landmark.js"></script>
+
+    <script src="../assets/js/jquery.min.js"></script>
+    <!-- 语言切换功能脚本 -->
+	<script>
+        $(function () {
+			// 根据当前语言加载内容
+			const lang = getCurrentLanguage();
+			
+			// 设置初始语言
+			setLanguage(lang);
+		})
+
+		// 语言资源文件
+		const translations = {
+			en: {
+				"photo-list-title": "Gallery",
+                "page_title": "Willing's Gallery"
+			},
+			zh: {
+				"photo-list-title": "摄影画廊",
+                "page_title": "Willing 的摄影画廊"
+			}
+		};
+
+		// 获取当前语言
+		function getCurrentLanguage() {
+			const savedLang = localStorage.getItem('preferred-language');
+			const browserLang = navigator.language.startsWith('zh') ? 'zh' : 'en';
+			return savedLang || browserLang || 'en';
+		}
+
+		// 设置语言
+		function setLanguage(lang) {
+			// 更新页面标题
+			document.title = translations[lang].page_title;
+			
+			// 更新所有带 data-i18n 属性的元素
+			document.querySelectorAll('[data-i18n]').forEach(element => {
+				const key = element.getAttribute('data-i18n');
+				if (translations[lang][key]) {
+					if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+						element.placeholder = translations[lang][key];
+					} else if (element.hasAttribute('title')) {
+						element.setAttribute('title', translations[lang][key]);
+					} else {
+						element.innerHTML = translations[lang][key];
+					}
+				}
+			});
+		}
+	</script>
 </body>
 
 </html>

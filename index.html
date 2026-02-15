@@ -31,8 +31,8 @@
 			</div>
 			<div class="content">
 				<div class="inner">
-					<h1>Hello~</h1>
-					<p>Welcome to my little corner of the internet! 🌟
+					<h1 data-i18n="greeting">Hello~</h1>
+					<p data-i18n="welcome_message">Welcome to my little corner of the internet!
 						<br> Your visit marks the <span id="busuanzi_value_site_pv"></span>th ripple in this space —
 						thank you for stopping by!
 					</p>
@@ -40,11 +40,11 @@
 			</div>
 			<nav>
 				<ul>
-					<li><a href="#intro">Intro</a></li>
-					<li><a href="#work" id="workButton">Works</a></li>
-					<li><a href="#skill" id="skillButton">Skills</a></li>
-					<li><a href="#blogs_index">Blogs</a></li>
-					<li><a href="#contact">Contact</a></li>
+					<li><a href="#intro" data-i18n="nav.intro">Intro</a></li>
+					<li><a href="#work" id="workButton" data-i18n="nav.work">Works</a></li>
+					<li><a href="#skill" id="skillButton" data-i18n="nav.skill">Skills</a></li>
+					<li><a href="#blogs_index" data-i18n="nav.blogs">Blogs</a></li>
+					<li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
 				</ul>
 			</nav>
 		</header>
@@ -95,8 +95,12 @@
 			<!-- 2. The list that expands -->
 			<ul class="expandable-list">
 				<li></li>
-				<li><a href="./html/stickies.html">Stickies</a></li>
-				<li><a href="./html/time.html">Time Calculator</a></li>
+				<li><a href="javascript:void(0)" onclick="toggleLanguage()" id="language-switch-btn">
+					<span class="icon solid fa-language" style="margin: 0px 10px 0px 0px;"></span>
+					<span id="language-switch-text">English</span>
+				</a></li>
+				<li><a href="./html/stickies.html" data-i18n="menu.stickies">Stickies</a></li>
+				<li><a href="./html/time.html" data-i18n="menu.time_calculator">Time Calculator</a></li>
 			</ul>
 		</div>
 			
@@ -113,15 +117,28 @@
 					console.error("Menu container element not found.");
 				}
 			}
+			
+			// 点击菜单项后关闭菜单
+			document.addEventListener('DOMContentLoaded', function() {
+				const menuItems = document.querySelectorAll('.expandable-list a');
+				menuItems.forEach(item => {
+					item.addEventListener('click', function() {
+						const container = document.getElementById('menuContainer');
+						if (container && container.classList.contains('expanded')) {
+							container.classList.remove('expanded');
+						}
+					});
+				});
+			});
 		</script>
 
 		<div id="catalogue">
-			<h3>Catalogue</h3>
+			<h3 data-i18n="catalogue.title">Catalogue</h3>
 			<div class="toc-links"></div>
 			<div class="shortcuts">
-				<a href="_" class="icon solid fa-circle-arrow-up"></a>
-				<a href="#blogs_index" class="icon solid fa-circle-plus"></a>
-				<a href="#" class="icon solid fa-circle-xmark"></a>
+				<a href="_" class="icon solid fa-circle-arrow-up" title="Back to Top"></a>
+				<a href="#blogs_index" class="icon solid fa-circle-plus" title="Blogs"></a>
+				<a href="#" class="icon solid fa-circle-xmark" title="Close"></a>
 			</div>
 		</div>
 
@@ -144,13 +161,39 @@
 
 	<script>
 		$(function () {
-			$('#introContent').load('html/intro.html');
-			$('#workContent').load('html/work.html');
-			$('#skillContent').load('html/skill.html');
-			$('#contactContent').load('html/contact.html');
-			// $('#blogsIndex').load('html/blogs_index.html');
-			$('#blogTemplate').load('html/blog.html');
+			// 根据当前语言加载内容
+			const lang = getCurrentLanguage();
+			loadContentForLanguage(lang);
+			
+			// 设置初始语言
+			setLanguage(lang);
+			
+			// 更新语言切换按钮文本
+			updateLanguageButtonText(lang);
 		})
+		
+		function loadContentForLanguage(lang) {
+			// 尝试加载语言特定的文件，如果不存在则加载默认文件
+			const files = ['intro', 'work', 'skill', 'contact'];
+			files.forEach(file => {
+				const url = `html/${file}_${lang}.html`;
+				$.ajax({
+					url: url,
+					method: 'GET',
+					success: function(data) {
+						$(`#${file}Content`).html(data);
+					},
+					error: function() {
+						// 如果语言特定文件不存在，加载默认文件
+                        console.log("特定语言文件不存在，加载默认文件")
+						$(`#${file}Content`).load(`html/${file}.html`);
+					}
+				});
+			});
+			
+			// 加载博客索引（如果没有语言特定版本，保持原样）
+			$('#blogTemplate').load('html/blog.html');
+		}
 	</script>
 
 	<script src="assets/js/dynamic_background.js"></script>
@@ -210,6 +253,109 @@
 			window.location.href = "#blog";
 			loadMd(null, getParams("id"));
 		}
+	</script>
+
+	<!-- 语言切换功能脚本 -->
+	<script>
+		// 语言资源文件
+		const translations = {
+			en: {
+				"greeting": "Hello~",
+				"welcome_message": "Welcome to my little corner of the internet! <br>Your visit marks the <span id='busuanzi_value_site_pv'></span>th ripple in this space — thank you for stopping by!",
+				"nav.intro": "Intro",
+				"nav.work": "Works",
+				"nav.skill": "Skills",
+				"nav.blogs": "Blogs",
+				"nav.contact": "Contact",
+				"menu.language_switch": "中文",
+				"menu.stickies": "Stickies",
+				"menu.time_calculator": "Time Calculator",
+				"catalogue.title": "Catalogue",
+				"page_title": "Willing's Personal Website"
+			},
+			zh: {
+				"greeting": "您好～",
+				"welcome_message": "海内存知己，天涯若比邻。<br>穿过数据洪流，您是第 <span id='busuanzi_value_site_pv'></span> 位在此停泊的旅人。愿这个数字小筑，能成为您思想漫游时的一盏闲灯。",
+				"nav.intro": "个人简介",
+				"nav.work": "作品项目",
+				"nav.skill": "技能特长",
+				"nav.blogs": "博客文章",
+				"nav.contact": "给我留言",
+				"menu.language_switch": "English",
+				"menu.stickies": "便利贴",
+				"menu.time_calculator": "时间计算器",
+				"catalogue.title": "目录",
+				"page_title": "Willing 的个人网站"
+			}
+		};
+
+		// 获取当前语言
+		function getCurrentLanguage() {
+			const savedLang = localStorage.getItem('preferred-language');
+			const browserLang = navigator.language.startsWith('zh') ? 'zh' : 'en';
+			return savedLang || browserLang || 'en';
+		}
+
+		// 设置语言
+		function setLanguage(lang) {
+			// 更新页面标题
+			document.title = translations[lang].page_title;
+			
+			// 更新所有带 data-i18n 属性的元素
+			document.querySelectorAll('[data-i18n]').forEach(element => {
+				const key = element.getAttribute('data-i18n');
+				if (translations[lang][key]) {
+					if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+						element.placeholder = translations[lang][key];
+					} else if (element.hasAttribute('title')) {
+						element.setAttribute('title', translations[lang][key]);
+					} else {
+						element.innerHTML = translations[lang][key];
+					}
+				}
+			});
+			
+			// 重新加载AJAX内容
+			loadContentForLanguage(lang);
+			
+			// 保存语言偏好
+			localStorage.setItem('preferred-language', lang);
+			
+			// 更新语言切换按钮文本
+			updateLanguageButtonText(lang);
+		}
+
+		// 更新语言切换按钮文本
+		function updateLanguageButtonText(lang) {
+			const switchText = document.getElementById('language-switch-text');
+			if (switchText) {
+				// 按钮显示相反的语言名称
+				switchText.textContent = lang === 'zh' ? 'English' : '中文';
+			}
+		}
+
+		// 切换语言, 添加博客重新加载
+        function toggleLanguage() {
+            const currentLang = getCurrentLanguage();
+            const newLang = currentLang === 'zh' ? 'en' : 'zh';
+            setLanguage(newLang);
+            
+            // 触发博客索引重新加载
+            if (window.reloadBlogIndexForLanguage) {
+                window.reloadBlogIndexForLanguage(newLang);
+            }
+            
+            // 触发自定义事件，供其他组件监听
+            window.dispatchEvent(new CustomEvent('languageChange', {
+                detail: { language: newLang }
+            }));
+        }
+
+		// 页面加载时初始化语言按钮
+		document.addEventListener('DOMContentLoaded', function() {
+			const lang = getCurrentLanguage();
+			updateLanguageButtonText(lang);
+		});
 	</script>
 
 </body>
