@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elegant Live Clock with Date Calculator</title>
+    <title data-i18n="page_title">Elegant Live Clock with Date Calculator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Add flatpickr for calendar date picker -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -35,7 +35,8 @@
     <div id="bg" style="z-index: -100;"></div>
     <!-- Close Button -->
     <a href="../index.html">
-        <div class="stickies_icon" style="background-image: url('../images/close-w.png');"></div>
+        <div class="stickies_icon" style="background-image: url('../images/close-w.png');" 
+             title="Close" data-i18n-title="close_title"></div>
     </a>
 
     <!-- Navigation Arrows -->
@@ -57,28 +58,28 @@
             <div class="pages-wrapper" id="pagesWrapper">
                 <!-- Page 1: Current Time -->
                 <div class="page" id="page1">
-                    <h2 class="page-title"><i class="fas fa-clock"></i> Current Time</h2>
-                    <p class="page-subtitle">Real-time display of current date and time</p>
+                    <h2 class="page-title"><i class="fas fa-clock"></i> <span data-i18n="current_time_title">Current Time</span></h2>
+                    <p class="page-subtitle" data-i18n="current_time_subtitle">Real-time display of current date and time</p>
 
                     <div class="clock-container">
                         <div class="time-section">
                             <div class="time-display" id="hours">00</div>
-                            <div class="time-label">Hours</div>
+                            <div class="time-label" data-i18n="hours_label">Hours</div>
                         </div>
 
                         <div class="time-section">
                             <div class="time-display" id="minutes">00</div>
-                            <div class="time-label">Minutes</div>
+                            <div class="time-label" data-i18n="minutes_label">Minutes</div>
                         </div>
 
                         <div class="time-section">
                             <div class="time-display" id="seconds">00</div>
-                            <div class="time-label">Seconds</div>
+                            <div class="time-label" data-i18n="seconds_label">Seconds</div>
                         </div>
 
                         <div class="time-section">
                             <div class="time-display" id="ampm">AM</div>
-                            <div class="time-label">Meridiem</div>
+                            <div class="time-label" data-i18n="meridiem_label">Meridiem</div>
                         </div>
                     </div>
 
@@ -91,43 +92,40 @@
 
                         <div class="additional-info">
                             <div class="info-box">
-                                <div class="info-title">Day of Year</div>
+                                <div class="info-title" data-i18n="day_of_year">Day of Year</div>
                                 <div class="info-value" id="dayofyear">001</div>
                             </div>
                             <div class="info-box">
-                                <div class="info-title">Week Number</div>
+                                <div class="info-title" data-i18n="week_number">Week Number</div>
                                 <div class="info-value" id="weeknumber">01</div>
                             </div>
                             <div class="info-box">
-                                <div class="info-title">Timezone</div>
+                                <div class="info-title" data-i18n="timezone">Timezone</div>
                                 <div class="info-value" id="timezone">UTC</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="navigation-hint">
-                        <i class="fas fa-arrow-right"></i> Swipe or click arrows to switch pages
+                        <i class="fas fa-arrow-right"></i> <span data-i18n="navigation_hint_right">Swipe or click arrows to switch pages</span>
                     </div>
                 </div>
 
                 <!-- Page 2: Date Calculator -->
                 <div class="page" id="page2">
-                    <h2 class="page-title"><i class="far fa-calendar-check"></i> Date Difference Calculator</h2>
-                    <p class="page-subtitle">Select a date to calculate time difference. Past dates show elapsed time,
-                        future dates show countdown.</p>
+                    <h2 class="page-title"><i class="far fa-calendar-check"></i> <span data-i18n="date_calculator_title">Date Difference Calculator</span></h2>
+                    <p class="page-subtitle" data-i18n="date_calculator_subtitle">Select a date to calculate time difference. Past dates show elapsed time, future dates show countdown.</p>
 
                     <div class="date-calculator hide-scrollbar">
                         <div class="date-input-section">
                             <div class="date-input-group">
-                                <label for="datePicker"><i class="fas fa-calendar-day"></i> Select a Past Date</label>
-                                <input type="text" id="datePicker" class="date-input"
-                                    placeholder="Click to select date...">
+                                <label for="datePicker"><i class="fas fa-calendar-day"></i> <span data-i18n="select_past_date">Select a Past Date</span></label>
+                                <input type="text" id="datePicker" class="date-input" placeholder="" data-i18n-placeholder="click_to_select_date">
                             </div>
 
                             <div class="date-input-group">
-                                <label for="timePicker"><i class="fas fa-clock"></i> Select Time (Optional)</label>
-                                <input type="text" id="timePicker" class="date-input"
-                                    placeholder="Click to select time...">
+                                <label for="timePicker"><i class="fas fa-clock"></i> <span data-i18n="select_time">Select Time (Optional)</span></label>
+                                <input type="text" id="timePicker" class="date-input" placeholder="" data-i18n-placeholder="click_to_select_time">
                             </div>
                         </div>
 
@@ -144,33 +142,33 @@
                         <div id="timeDifference" class="time-difference">
                             <div class="difference-box">
                                 <div class="time-display" id="yearsDiff">0</div>
-                                <div class="time-label">Years</div>
+                                <div class="time-label" data-i18n="years_label">Years</div>
                             </div>
                             <div class="difference-box">
                                 <div class="time-display" id="monthsDiff">0</div>
-                                <div class="time-label">Months</div>
+                                <div class="time-label" data-i18n="months_label">Months</div>
                             </div>
                             <div class="difference-box">
                                 <div class="time-display" id="daysDiff">0</div>
-                                <div class="time-label">Days</div>
+                                <div class="time-label" data-i18n="days_label">Days</div>
                             </div>
                             <div class="difference-box">
                                 <div class="time-display" id="hoursDiff">0</div>
-                                <div class="time-label">Hours</div>
+                                <div class="time-label" data-i18n="hours_label">Hours</div>
                             </div>
                             <div class="difference-box">
                                 <div class="time-display" id="minutesDiff">0</div>
-                                <div class="time-label">Minutes</div>
+                                <div class="time-label" data-i18n="minutes_label">Minutes</div>
                             </div>
                             <div class="difference-box">
                                 <div class="time-display" id="secondsDiff">0</div>
-                                <div class="time-label">Seconds</div>
+                                <div class="time-label" data-i18n="seconds_label">Seconds</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="navigation-hint">
-                        <i class="fas fa-arrow-left"></i> Swipe or click arrows to switch pages
+                        <i class="fas fa-arrow-left"></i> <span data-i18n="navigation_hint_left">Swipe or click arrows to switch pages</span>
                     </div>
                 </div>
             </div>
@@ -178,7 +176,7 @@
 
         <!-- Footer -->
         <footer id="footer">
-            <p class="copyright">&copy; 2025 Hongwei CUI (Willing). All Rights Reserved. 版权所有</p>
+            <p class="copyright">&copy; 2026 Hongwei CUI (Willing). All Rights Reserved. 版权所有</p>
             <a class="copyright" href="https://beian.miit.gov.cn/" target="_blank">鲁ICP备2025192750号-1</a>
             <img id="filing-icon" src="../images/备案图标.png" /><a class="copyright"
                 href="https://beian.mps.gov.cn/#/query/webSearch?code=37078302000937" rel="noreferrer"
@@ -196,7 +194,212 @@
                 }, 100);
             });
         })(jQuery);
+    </script>
+    
+    <script>
+        // 语言资源文件
+        const translations = {
+            en: {
+                "page_title": "Clock and Date Calculator",
+                "current_time_title": "Current Time",
+                "current_time_subtitle": "Real-time display of current date and time",
+                "date_calculator_title": "Date Difference Calculator",
+                "date_calculator_subtitle": "Select a date to calculate time difference. Past dates show elapsed time, future dates show countdown.",
+                "hours_label": "Hours",
+                "minutes_label": "Minutes",
+                "seconds_label": "Seconds",
+                "meridiem_label": "Meridiem",
+                "day_of_year": "Day of Year",
+                "week_number": "Week Number",
+                "timezone": "Timezone",
+                "select_past_date": "Select a Past Date",
+                "select_time": "Select Time (Optional)",
+                "click_to_select_date": "Click to select date...",
+                "click_to_select_time": "Click to select time...",
+                "years_label": "Years",
+                "months_label": "Months",
+                "days_label": "Days",
+                "navigation_hint_right": "Swipe or click arrows to switch pages",
+                "navigation_hint_left": "Swipe or click arrows to switch pages",
+                "close_title": "Close",
+                
+                // 星期和月份名称
+                "sunday": "Sunday",
+                "monday": "Monday",
+                "tuesday": "Tuesday",
+                "wednesday": "Wednesday",
+                "thursday": "Thursday",
+                "friday": "Friday",
+                "saturday": "Saturday",
+                "january": "January",
+                "february": "February",
+                "march": "March",
+                "april": "April",
+                "may": "May",
+                "june": "June",
+                "july": "July",
+                "august": "August",
+                "september": "September",
+                "october": "October",
+                "november": "November",
+                "december": "December"
+            },
+            zh: {
+                "page_title": "时钟与日期计算器",
+                "current_time_title": "当前时间",
+                "current_time_subtitle": "实时显示当前日期和时间",
+                "date_calculator_title": "日期差计算器",
+                "date_calculator_subtitle": "选择一个日期来计算时间差。过去日期显示已过时间，未来日期显示倒计时。",
+                "hours_label": "小时",
+                "minutes_label": "分钟",
+                "seconds_label": "秒",
+                "meridiem_label": "上下午",
+                "day_of_year": "一年中的第几天",
+                "week_number": "周数",
+                "timezone": "时区",
+                "select_past_date": "选择过去日期",
+                "select_time": "选择时间（可选）",
+                "click_to_select_date": "点击选择日期...",
+                "click_to_select_time": "点击选择时间...",
+                "years_label": "年",
+                "months_label": "月",
+                "days_label": "天",
+                "navigation_hint_right": "滑动或点击箭头切换页面",
+                "navigation_hint_left": "滑动或点击箭头切换页面",
+                "close_title": "关闭",
+                
+                // 星期和月份名称
+                "sunday": "星期日",
+                "monday": "星期一",
+                "tuesday": "星期二",
+                "wednesday": "星期三",
+                "thursday": "星期四",
+                "friday": "星期五",
+                "saturday": "星期六",
+                "january": "一月",
+                "february": "二月",
+                "march": "三月",
+                "april": "四月",
+                "may": "五月",
+                "june": "六月",
+                "july": "七月",
+                "august": "八月",
+                "september": "九月",
+                "october": "十月",
+                "november": "十一月",
+                "december": "十二月"
+            }
+        };
 
+        // 全局变量
+        let selectedDateTime = null;
+        let datePicker = null;
+        let timePicker = null;
+
+        // 获取当前语言
+        function getCurrentLanguage() {
+            const savedLang = localStorage.getItem('preferred-language');
+            const browserLang = navigator.language.startsWith('zh') ? 'zh' : 'en';
+            return savedLang || browserLang || 'en';
+        }
+
+        // 设置语言
+        function setLanguage(lang) {
+            // 更新页面标题
+            document.title = translations[lang].page_title;
+            
+            // 更新所有带 data-i18n 属性的元素
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        element.placeholder = translations[lang][key];
+                    } else if (element.hasAttribute('title')) {
+                        element.setAttribute('title', translations[lang][key]);
+                    } else {
+                        element.textContent = translations[lang][key];
+                    }
+                }
+            });
+            
+            // 更新所有带 data-i18n-placeholder 属性的元素
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                if (translations[lang][key]) {
+                    element.placeholder = translations[lang][key];
+                }
+            });
+            
+            // 更新所有带 data-i18n-title 属性的元素
+            document.querySelectorAll('[data-i18n-title]').forEach(element => {
+                const key = element.getAttribute('data-i18n-title');
+                if (translations[lang][key]) {
+                    element.setAttribute('title', translations[lang][key]);
+                }
+            });
+            
+            // 更新页面语言属性
+            document.documentElement.lang = lang;
+            
+            // 重新加载时间显示
+            updateClock();
+            
+            // 重新配置日期选择器（保留事件监听器）
+            updateDatePickerLanguage(lang);
+        }
+
+        // 更新日期选择器语言（不重新初始化，只更新配置）
+        function updateDatePickerLanguage(lang) {
+            if (datePicker) {
+                datePicker.set('locale', lang === 'zh' ? 'zh' : 'en');
+            }
+            if (timePicker) {
+                timePicker.set('locale', lang === 'zh' ? 'zh' : 'en');
+            }
+        }
+
+        // Function to update selected date and time
+        function updateSelectedDateTime() {
+            const date = datePicker.selectedDates[0];
+            const time = timePicker.selectedDates[0];
+
+            if (date) {
+                selectedDateTime = new Date(date);
+
+                // If time is selected, combine with date
+                if (time) {
+                    selectedDateTime.setHours(time.getHours(), time.getMinutes(), time.getSeconds());
+                } else {
+                    // Default to start of day if no time selected
+                    selectedDateTime.setHours(0, 0, 0, 0);
+                }
+
+                // Show selected date display
+                document.getElementById('selectedDateDisplay').style.display = 'block';
+
+                // Calculate immediately
+                calculateTimeDifference();
+            }
+        }
+
+        // 添加storage事件监听器
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'preferred-language') {
+                setLanguage(e.newValue || 'en');
+            }
+        });
+
+        // 页面加载时设置语言
+        $(function () {
+            // 根据当前语言加载内容
+            const lang = getCurrentLanguage();
+            
+            // 设置初始语言
+            setLanguage(lang);
+        });
+    </script>
+    
+    <script>
         // Swipe functionality
         let currentPage = 0;
         const pagesWrapper = document.getElementById('pagesWrapper');
@@ -351,60 +554,9 @@
         // Initialize arrows state
         updateArrows();
 
-        // Initialize date picker
-        let selectedDateTime = null;
-        let timeDifferenceInterval = null;
-
-        // Date picker configuration
-        const datePicker = flatpickr("#datePicker", {
-            enableTime: false,
-            dateFormat: "Y-m-d",
-            onChange: function (selectedDates, dateStr, instance) {
-                if (selectedDates.length > 0) {
-                    updateSelectedDateTime();
-                }
-            }
-        });
-
-        // Time picker configuration
-        const timePicker = flatpickr("#timePicker", {
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "H:i",
-            time_24hr: true,
-            onChange: function (selectedDates, dateStr, instance) {
-                if (selectedDates.length > 0) {
-                    updateSelectedDateTime();
-                }
-            }
-        });
-
-        // Function to update selected date and time
-        function updateSelectedDateTime() {
-            const date = datePicker.selectedDates[0];
-            const time = timePicker.selectedDates[0];
-
-            if (date) {
-                selectedDateTime = new Date(date);
-
-                // If time is selected, combine with date
-                if (time) {
-                    selectedDateTime.setHours(time.getHours(), time.getMinutes(), time.getSeconds());
-                } else {
-                    // Default to start of day if no time selected
-                    selectedDateTime.setHours(0, 0, 0, 0);
-                }
-
-                // Show selected date display
-                document.getElementById('selectedDateDisplay').style.display = 'block';
-
-                // Calculate immediately
-                calculateTimeDifference();
-            }
-        }
-
-        // Format date and time for display
+        // Format date and time for display with localization
         function formatDateTime(date) {
+            const lang = getCurrentLanguage();
             const options = {
                 weekday: 'long',
                 year: 'numeric',
@@ -414,7 +566,14 @@
                 minute: '2-digit',
                 second: '2-digit'
             };
-            return date.toLocaleDateString('en-US', options);
+            
+            if (lang === 'zh') {
+                options.locale = 'zh-CN';
+            } else {
+                options.locale = 'en-US';
+            }
+            
+            return date.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', options);
         }
 
         // Calculate time difference
@@ -529,33 +688,74 @@
         function updateSelectedDateDetails(isFuture = false, diffInDays) {
             if (!selectedDateTime) return;
 
+            const lang = getCurrentLanguage();
             const diffInWeeks = Math.floor(diffInDays / 7);
             const diffInMonths = Math.floor(diffInDays / 30.44);
 
             const details = document.getElementById('selectedDateDetails');
 
             if (isFuture) {
-                details.innerHTML = `
-                    <span>In ${diffInDays} days</span>
-                    <span>•</span>
-                    <span>In ${diffInWeeks} weeks</span>
-                    <span>•</span>
-                    <span>In ${diffInMonths} months</span>
-                `;
+                if (lang === 'zh') {
+                    details.innerHTML = `
+                        <span>${diffInDays} 天后</span>
+                        <span>•</span>
+                        <span>${diffInWeeks} 周后</span>
+                        <span>•</span>
+                        <span>${diffInMonths} 个月后</span>
+                    `;
+                } else {
+                    details.innerHTML = `
+                        <span>In ${diffInDays} days</span>
+                        <span>•</span>
+                        <span>In ${diffInWeeks} weeks</span>
+                        <span>•</span>
+                        <span>In ${diffInMonths} months</span>
+                    `;
+                }
             } else {
-                details.innerHTML = `
-                    <span>${diffInDays} days ago</span>
-                    <span>•</span>
-                    <span>${diffInWeeks} weeks ago</span>
-                    <span>•</span>
-                    <span>${diffInMonths} months ago</span>
-                `;
+                if (lang === 'zh') {
+                    details.innerHTML = `
+                        <span>${diffInDays} 天前</span>
+                        <span>•</span>
+                        <span>${diffInWeeks} 周前</span>
+                        <span>•</span>
+                        <span>${diffInMonths} 个月前</span>
+                    `;
+                } else {
+                    details.innerHTML = `
+                        <span>${diffInDays} days ago</span>
+                        <span>•</span>
+                        <span>${diffInWeeks} weeks ago</span>
+                        <span>•</span>
+                        <span>${diffInMonths} months ago</span>
+                    `;
+                }
             }
+        }
+
+        // 获取本地化的星期和月份名称
+        function getLocalizedDayName(dayIndex) {
+            const lang = getCurrentLanguage();
+            const dayNames = {
+                'en': ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
+                'zh': ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+            };
+            return translations[lang][dayNames[lang][dayIndex]] || dayNames['en'][dayIndex];
+        }
+
+        function getLocalizedMonthName(monthIndex) {
+            const lang = getCurrentLanguage();
+            const monthNames = {
+                'en': ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'],
+                'zh': ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+            };
+            return translations[lang][monthNames[lang][monthIndex]] || monthNames['en'][monthIndex];
         }
 
         // Update the clock and date
         function updateClock() {
             const now = new Date();
+            const lang = getCurrentLanguage();
 
             // Get time components
             let hours = now.getHours();
@@ -563,7 +763,15 @@
             const seconds = now.getSeconds().toString().padStart(2, '0');
 
             // Determine AM/PM
-            const ampm = hours >= 12 ? 'PM' : 'AM';
+            let ampm = hours >= 12 ? 'PM' : 'AM';
+            ampmElement = document.getElementById('ampm');
+            ampmElement.style.fontSize = '3.5rem';
+            ampmElement.style.margin = '0'
+            if (lang === 'zh') {
+                ampm = hours >= 12 ? '下午' : '上午';
+                ampmElement.style.fontSize = '2rem';
+                ampmElement.style.margin = '1rem 0 0.75rem 0'
+            }
 
             // Convert to 12-hour format
             hours = hours % 12 || 12;
@@ -573,7 +781,7 @@
             document.getElementById('hours').textContent = formattedHours;
             document.getElementById('minutes').textContent = minutes;
             document.getElementById('seconds').textContent = seconds;
-            document.getElementById('ampm').textContent = ampm;
+            ampmElement.textContent = ampm;
 
             // Add pulse animation to seconds
             const secondsElement = document.getElementById('seconds');
@@ -581,18 +789,20 @@
             void secondsElement.offsetWidth; // Trigger reflow
             secondsElement.classList.add('pulse');
 
-            // Date information
-            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-            const dayName = dayNames[now.getDay()];
-            const month = monthNames[now.getMonth()];
+            // Get localized date information
+            const dayName = getLocalizedDayName(now.getDay());
+            const month = getLocalizedMonthName(now.getMonth());
             const date = now.getDate();
             const year = now.getFullYear();
 
             // Update date displays
             document.getElementById('dayname').textContent = dayName;
-            document.getElementById('fulldate').textContent = `${month} ${date}, ${year}`;
+            
+            if (lang === 'zh') {
+                document.getElementById('fulldate').textContent = `${year}年 ${month} ${date}日`;
+            } else {
+                document.getElementById('fulldate').textContent = `${month} ${date}, ${year}`;
+            }
 
             // Calculate day of year
             const start = new Date(now.getFullYear(), 0, 0);
@@ -619,6 +829,33 @@
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function () {
+            // Initialize date picker
+            const lang = getCurrentLanguage();
+            
+            datePicker = flatpickr("#datePicker", {
+                enableTime: false,
+                dateFormat: "Y-m-d",
+                locale: lang === 'zh' ? 'zh' : 'en',
+                onChange: function (selectedDates, dateStr, instance) {
+                    if (selectedDates.length > 0) {
+                        updateSelectedDateTime();
+                    }
+                }
+            });
+
+            timePicker = flatpickr("#timePicker", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                locale: lang === 'zh' ? 'zh' : 'en',
+                onChange: function (selectedDates, dateStr, instance) {
+                    if (selectedDates.length > 0) {
+                        updateSelectedDateTime();
+                    }
+                }
+            });
+
             updateClock();
 
             // Update the clock every second
@@ -641,5 +878,4 @@
         });
     </script>
 </body>
-
 </html>

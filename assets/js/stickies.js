@@ -8,17 +8,132 @@
     });
 })(jQuery);
 
+// ===========================================
+// --- 语言资源文件（用于图表和动态内容） ---
+// ===========================================
+const dynamicTranslations = {
+    en: {
+        "last_updated": "Last updated",
+        "hot_search": "Hot Search",
+        "chart_title": "999.9 Gold Price (HKD/g)",
+        "y_axis_label": "Price (HKD/g)",
+        "no_data": "No data files found for this period.",
+        "failed_load": "Failed to load trending data.",
+        "ensure_file": "This feature is currently under maintenance and will be redeployed at a later date."
+    },
+    zh: {
+        "last_updated": "最后更新",
+        "hot_search": "热门搜索",
+        "chart_title": "999.9 黄金价格 (港元/克)",
+        "y_axis_label": "价格 (港元/克)",
+        "no_data": "该时间段内未找到数据文件。",
+        "failed_load": "加载话题数据失败。",
+        "ensure_file": "该功能目前处于维护升级阶段，后续将择机重新上线，敬请期待。"
+    }
+};
+
+// 获取当前语言 - 使用全局函数
+function getCurrentLanguage() {
+    // 如果全局已定义，使用全局函数
+    if (typeof window.getCurrentLanguage === 'function') {
+        return window.getCurrentLanguage();
+    }
+
+    // 否则使用本地逻辑
+    const savedLang = localStorage.getItem('preferred-language');
+    const browserLang = navigator.language.startsWith('zh') ? 'zh' : 'en';
+    return savedLang || browserLang || 'en';
+}
+
+// 获取翻译文本 - 优先使用全局translations，否则使用dynamicTranslations
+function getTranslation(key) {
+    const lang = getCurrentLanguage();
+
+    // 优先查找全局translations
+    if (window.translations && window.translations[lang] && window.translations[lang][key]) {
+        return window.translations[lang][key];
+    }
+
+    // 然后查找dynamicTranslations
+    if (dynamicTranslations[lang] && dynamicTranslations[lang][key]) {
+        return dynamicTranslations[lang][key];
+    }
+
+    // 返回key作为备选
+    return key;
+}
+
+// 更新动态内容语言
+function updateDynamicContentLanguage() {
+    const lang = getCurrentLanguage();
+
+    // 重新加载数据以更新语言相关的内容
+    reloadDataWithCurrentLanguage();
+}
+
+// 根据当前语言重新加载数据
+function reloadDataWithCurrentLanguage() {
+    // 重新加载趋势数据
+    if (typeof loadTrendingData === 'function') {
+        loadTrendingData();
+    }
+
+    // 重新加载金价图表（如果存在）
+    if (typeof updateChartLanguage === 'function' && goldPriceChart) {
+        updateChartLanguage();
+    }
+}
+
+// 更新图表语言
+function updateChartLanguage() {
+    if (!goldPriceChart) return;
+    const lang = getCurrentLanguage();
+
+    // 更新图表标题
+    if (goldPriceChart.data.datasets[0]) {
+        goldPriceChart.data.datasets[0].label = getTranslation('chart_title');
+    }
+
+    // 更新Y轴标签
+    if (goldPriceChart.options.scales.y && goldPriceChart.options.scales.y.title) {
+        goldPriceChart.options.scales.y.title.text = getTranslation('y_axis_label');
+    }
+
+    // 更新工具提示
+    if (goldPriceChart.options.plugins.tooltip) {
+        goldPriceChart.options.plugins.tooltip.callbacks = {
+            label: function (context) {
+                let label = context.dataset.label || '';
+                if (label) {
+                    label += ': ';
+                }
+                if (context.parsed.y !== null) {
+                    if (lang === 'zh') {
+                        label += context.parsed.y.toFixed(2) + ' 港元';
+                    } else {
+                        label += context.parsed.y.toFixed(2) + ' HKD';
+                    }
+                }
+                return label;
+            }
+        };
+    }
+
+    goldPriceChart.update();
+}
+
+// ===========================================
+// --- 原始代码部分（修改后） ---
+// ===========================================
 
 const notes = document.querySelectorAll('.frosted-note');
 const tabs = document.querySelectorAll('.note-tab');
 let maxZIndex = 2;
-console.log(notes)
 
 // ===========================================
 // --- 1. Utility Functions ---
 // ===========================================
 
-// Helper function to format a date object to YYYY-MM-DD
 function formatDate(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -26,30 +141,26 @@ function formatDate(date) {
     return `${year}-${month}-${day}`;
 }
 
-// Generates an array of file paths for the last 'days' count
 function getDateRangeFilePaths(days) {
     const filePaths = [];
     let date = new Date();
-    date.setDate(date.getDate()); // Start from yesterday to include today's data (if available)
+    date.setDate(date.getDate());
 
     for (let i = 0; i < days; i++) {
         const dateString = formatDate(date);
-        // Use the requested file name format
         filePaths.push(`../scripts/gold_prices/gold_prices_${dateString}.json`);
         date.setDate(date.getDate() - 1);
     }
-    return filePaths.reverse(); // Display trend oldest to newest
+    return filePaths.reverse();
 }
 
 // ===========================================
 // --- 2. Trending Data Logic (Note 1) ---
 // ===========================================
 
-// (Previous function to load trending data remains here)
 function getCurrentDateFilePath() {
     const today = new Date();
     const dateString = formatDate(today);
-    // Use .json extension for trending data
     return `../scripts/hot_words/all_${dateString}.json`;
 }
 
@@ -58,28 +169,24 @@ async function loadTrendingData() {
     const latestFilePath = getCurrentDateFilePath();
 
     try {
-        // Fetch the latest file
         const response = await fetch(latestFilePath);
-        // Check if the file exists and is OK (e.g., handles 404 for a missing file)
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}. File may not exist for today's date.`);
         }
 
         const text = await response.text();
-
-        // Parse line-delimited JSON and get the last (latest) record
         const records = text.trim().split('\n').filter(line => line.length > 0);
         const latestRecord = JSON.parse(records[records.length - 1]);
 
-        let html = `<h4>Last updated: ${new Date(latestRecord.time).toLocaleTimeString()}</h4>`;
+        let html = `<h4>${getTranslation('last_updated')}: ${new Date(latestRecord.time).toLocaleTimeString()}</h4>`;
 
         latestRecord.results.forEach(result => {
             if (result.success && result.data && result.data.length > 0) {
                 const platformTime = result.timestamp ? new Date(result.timestamp).toLocaleTimeString() : '';
                 html += `<div class="trending-platform">`;
-                html += `<h4>${result.platform} Hot Search ${platformTime ? `(${platformTime})` : ''}</h4>`;
+                html += `<h4>${result.platform} ${getTranslation('hot_search')} ${platformTime ? `(${platformTime})` : ''}</h4>`;
                 html += `<ol>`;
-                result.data.slice(0, 5).forEach(item => { // Show top 5
+                result.data.slice(0, 5).forEach(item => {
                     const hotValue = item.hot_value ? ` (${item.hot_value})` : '';
                     const keyword = item.keyword || 'N/A';
                     html += `<li><a href="${item.link}" target="_blank">${keyword}${hotValue}</a></li>`;
@@ -92,7 +199,7 @@ async function loadTrendingData() {
 
     } catch (error) {
         console.error('Error loading trending data:', error);
-        container.innerHTML = `<p style="color: red;">Failed to load trending data.</p><p>Please ensure the latest file, ${latestFilePath}, exists at the specified relative path.</p>`;
+        container.innerHTML = `<p style="color: red;">${getTranslation('failed_load')}</p><p>${getTranslation('ensure_file')}</p>`;
     }
 }
 
@@ -100,53 +207,43 @@ async function loadTrendingData() {
 // --- 3. Gold Price Chart Logic (Note 2) ---
 // ===========================================
 
-// Global variable to hold the Chart.js instance for proper updates/destruction
 let goldPriceChart = null;
 
-/**
- * Renders the chart using Chart.js
- * @param {Array<Object>} data - Array of { date, price } objects.
- */
 function renderChart(data) {
     const chartArea = document.getElementById('chart-area');
     const debugData = document.getElementById('chart-debug-data');
 
-    // 1. Clear previous content and Canvas
     chartArea.innerHTML = '';
     debugData.innerHTML = '';
 
     if (data.length === 0) {
-        chartArea.innerHTML = '<p style="text-align: center; margin-top: 50px;">No data files found for this period.</p>';
+        chartArea.innerHTML = `<p style="text-align: center; margin-top: 50px;">${getTranslation('no_data')}</p>`;
         debugData.innerHTML = '<p>No data found.</p>';
         return;
     }
 
-    // 2. Create the Canvas element
     const canvas = document.createElement('canvas');
     canvas.id = 'goldPriceCanvas';
     chartArea.appendChild(canvas);
 
-    // 3. Prepare Chart Data
     const labels = data.map(item => item.date);
     const prices = data.map(item => item.price);
 
-    // 4. Destroy existing chart instance if it exists
     if (goldPriceChart) {
         goldPriceChart.destroy();
     }
 
-    // 5. Render the Chart using Chart.js
     goldPriceChart = new Chart(canvas, {
         type: 'line',
         data: {
             labels: labels,
             datasets: [{
-                label: '999.9 Gold Price (HKD/g)',
+                label: getTranslation('chart_title'),
                 data: prices,
                 borderColor: 'rgb(255, 193, 7)',
                 backgroundColor: 'rgba(255, 193, 7, 0.2)',
-                tension: 0.2, // Makes the line slightly curved
-                fill: true, // Fill area under the line
+                tension: 0.2,
+                fill: true,
                 pointRadius: 3,
                 pointHoverRadius: 5
             }]
@@ -160,7 +257,6 @@ function renderChart(data) {
                     ticks: {
                         maxRotation: 45,
                         minRotation: 45,
-                        // Only show a few labels for longer periods
                         callback: function (value, index, values) {
                             if (data.length > 30) {
                                 return index % 5 === 0 ? labels[index] : '';
@@ -173,7 +269,7 @@ function renderChart(data) {
                     display: true,
                     title: {
                         display: true,
-                        text: 'Price (HKD/g)'
+                        text: getTranslation('y_axis_label')
                     },
                     beginAtZero: false
                 }
@@ -186,12 +282,17 @@ function renderChart(data) {
                 tooltip: {
                     callbacks: {
                         label: function (context) {
+                            const lang = getCurrentLanguage();
                             let label = context.dataset.label || '';
                             if (label) {
                                 label += ': ';
                             }
                             if (context.parsed.y !== null) {
-                                label += context.parsed.y.toFixed(2) + ' HKD';
+                                if (lang === 'zh') {
+                                    label += context.parsed.y.toFixed(2) + ' 港元';
+                                } else {
+                                    label += context.parsed.y.toFixed(2) + ' HKD';
+                                }
                             }
                             return label;
                         }
@@ -201,10 +302,14 @@ function renderChart(data) {
         }
     });
 
-    // 6. Generate debug list (for reference)
+    const lang = getCurrentLanguage();
     let html = '<ol>';
     data.forEach(item => {
-        html += `<li>${item.date}: ${item.price.toFixed(2)} HKD</li>`;
+        if (lang === 'zh') {
+            html += `<li>${item.date}: ${item.price.toFixed(2)} 港元</li>`;
+        } else {
+            html += `<li>${item.date}: ${item.price.toFixed(2)} HKD</li>`;
+        }
     });
     html += '</ol>';
     debugData.innerHTML = html;
@@ -214,7 +319,7 @@ async function fetchAndAggregateData(days) {
     const filePaths = getDateRangeFilePaths(days);
     const aggregatedData = [];
     const promises = filePaths.map(async filePath => {
-        const date = filePath.split('_').pop().split('.')[0]; // e.g., '2025-10-29'
+        const date = filePath.split('_').pop().split('.')[0];
         try {
             const response = await fetch(filePath);
             if (!response.ok) {
@@ -223,7 +328,6 @@ async function fetchAndAggregateData(days) {
 
             const text = await response.text();
             const records = text.trim().split('\n').filter(line => line.length > 0);
-            // Use the latest record in the file, if multiple are present
             const latestRecord = JSON.parse(records[records.length - 1]);
 
             const zhubaohuiResult = latestRecord.results.find(r => r.platform === '周大福');
@@ -232,7 +336,6 @@ async function fetchAndAggregateData(days) {
                 const sellingPriceItem = zhubaohuiResult.data.find(item => item.type === '999.9饰金卖出价');
 
                 if (sellingPriceItem) {
-                    // Extract numerical price per gram (e.g., "1176.63 HKD" -> 1176.63)
                     const priceString = sellingPriceItem.price_per_gram;
                     const price = parseFloat(priceString.split(' ')[0]);
 
@@ -243,30 +346,22 @@ async function fetchAndAggregateData(days) {
             }
 
         } catch (error) {
-            // console.warn(`Could not load data for ${date}: ${error.message}`);
-            // Silently skip missing/failing days, as this is expected for historical range
+            // Silently skip missing/failing days
         }
     });
 
     await Promise.all(promises);
-
-    // Sort by date before rendering
     aggregatedData.sort((a, b) => new Date(a.date) - new Date(b.date));
-    console.log(aggregatedData)
     renderChart(aggregatedData);
 }
 
-// Initial load and event setup for buttons
 function setupGoldPriceTracker() {
     const controls = document.getElementById('chart-controls');
-
-    // Default load 7 days
     fetchAndAggregateData(7);
 
     controls.addEventListener('click', function (event) {
         const button = event.target.closest('button');
         if (button && button.dataset.window) {
-            // Update active button state
             controls.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
 
@@ -277,7 +372,7 @@ function setupGoldPriceTracker() {
 }
 
 // ===========================================
-// --- 4. Tab Activation Logic (Existing) ---
+// --- 4. Tab Activation Logic ---
 // ===========================================
 
 function activateNote(noteId) {
@@ -299,7 +394,6 @@ function activateNote(noteId) {
     }
 }
 
-// --- Initialize: Set the default active note/tab ---
 const initialActiveNote = document.querySelector('.frosted-note.active');
 if (initialActiveNote) {
     const initialNoteId = initialActiveNote.dataset.note;
@@ -309,7 +403,6 @@ if (initialActiveNote) {
     }
 }
 
-// --- Event Listener for Tab/Note Clicks ---
 tabs.forEach(tab => {
     tab.addEventListener('click', function (event) {
         event.stopPropagation();
@@ -330,6 +423,30 @@ notes.forEach(note => {
 // ===========================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 加载数据
     loadTrendingData();
     setupGoldPriceTracker();
+
+    // 初始化完成后，如果全局有语言切换功能，添加监听器
+    if (typeof window.setLanguage === 'function') {
+        // 将更新函数暴露给全局，让HTML中的setLanguage可以调用
+        window.updateDynamicContentLanguage = updateDynamicContentLanguage;
+    }
 });
+
+// 添加语言切换监听器
+window.addEventListener('storage', function (e) {
+    if (e.key === 'preferred-language') {
+        // 如果有全局setLanguage函数，调用它
+        if (typeof window.setLanguage === 'function') {
+            window.setLanguage(e.newValue || 'en');
+        } else {
+            // 否则直接更新动态内容
+            updateDynamicContentLanguage();
+        }
+    }
+});
+
+// 将函数暴露到全局作用域
+window.getTranslation = getTranslation;
+window.updateDynamicContentLanguage = updateDynamicContentLanguage;
