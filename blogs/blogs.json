@@ -130,7 +130,7 @@
       "id": 11,
       "path": "11_WWH_When_Attention_Mechanism_Fail",
       "title_en": "What, Why, and How: When Attention Mechanisms Fail",
-      "title_zh": "什么、为什么、如何：当注意力机制失效时",
+      "title_zh": "是什么、为什么、怎么办: 关于注意力机制失效",
       "date": "2026/1/5",
       "category": "AI & RL",
       "image": null
@@ -211,7 +211,7 @@
       "id": 30,
       "path": "30_Low_Rank_Adaptation",
       "title_en": "Low-Rank Adaptation (LoRA)",
-      "title_zh": "低秩适应（LoRA）",
+      "title_zh": "低秩适应 (LoRA)",
       "date": "2026/1/21",
       "category": "AI & RL",
       "image": "./blogs/30_Low_Rank_Adaptation/LoRA.webp"
@@ -283,7 +283,7 @@
       "id": 45,
       "path": "45_Timm_Lib_Naflex_Deployment_Analysis",
       "title_en": "Timm Lib Naflex Deployment Analysis",
-      "title_zh": "Timm 库 Naflex 部署分析",
+      "title_zh": "Timm 库 Naflex 实现代码分析",
       "date": "2026/2/5",
       "category": "AI & RL",
       "image": "./blogs/45_Timm_Lib_Naflex_Deployment_Analysis/Image_to_Patches.webp"
@@ -292,7 +292,7 @@
       "id": 29,
       "path": "29_Robotics_Research_Production_Line",
       "title_en": "Robotics Research Production Line",
-      "title_zh": "机器人研究生产线",
+      "title_zh": "机器人研究工具管线",
       "date": "2026/1/21",
       "category": "Embodied Intelligence",
       "image": "./blogs/29_Robotics_Research_Production_Line/Robotics_Research_Production_Line.webp"
@@ -409,7 +409,7 @@
       "id": 15,
       "path": "15_Access_Repo_via_GitHub_SSH",
       "title_en": "Access Repo via GitHub SSH",
-      "title_zh": "通过 GitHub SSH 访问仓库",
+      "title_zh": "通过 GitHub SSH 访问代码仓库",
       "date": "2026/1/8",
       "category": "Other Notes",
       "image": null
