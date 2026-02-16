@@ -276,18 +276,18 @@
                 "thursday": "星期四",
                 "friday": "星期五",
                 "saturday": "星期六",
-                "january": "一月",
-                "february": "二月",
-                "march": "三月",
-                "april": "四月",
-                "may": "五月",
-                "june": "六月",
-                "july": "七月",
-                "august": "八月",
-                "september": "九月",
-                "october": "十月",
-                "november": "十一月",
-                "december": "十二月"
+                "january": "1月",
+                "february": "2月",
+                "march": "3月",
+                "april": "4月",
+                "may": "5月",
+                "june": "6月",
+                "july": "7月",
+                "august": "8月",
+                "september": "9月",
+                "october": "10月",
+                "november": "11月",
+                "december": "12月"
             }
         };
 
@@ -765,12 +765,9 @@
             // Determine AM/PM
             let ampm = hours >= 12 ? 'PM' : 'AM';
             ampmElement = document.getElementById('ampm');
-            ampmElement.style.fontSize = '3.5rem';
-            ampmElement.style.margin = '0'
             if (lang === 'zh') {
                 ampm = hours >= 12 ? '下午' : '上午';
-                ampmElement.style.fontSize = '2rem';
-                ampmElement.style.margin = '1rem 0 0.75rem 0'
+                ampmElement.style.fontWeight = 'lighter';
             }
 
             // Convert to 12-hour format
@@ -781,7 +778,7 @@
             document.getElementById('hours').textContent = formattedHours;
             document.getElementById('minutes').textContent = minutes;
             document.getElementById('seconds').textContent = seconds;
-            ampmElement.textContent = ampm;
+            document.getElementById('ampm').textContent = ampm;
 
             // Add pulse animation to seconds
             const secondsElement = document.getElementById('seconds');
