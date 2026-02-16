@@ -257,11 +257,18 @@
 
 	<!-- 语言切换功能脚本 -->
 	<script>
+        const counterElement = document.getElementById('busuanzi_value_site_pv')
+
+        // 如果元素为空，则填写占位符
+        if (!counterElement.innerHTML) {
+            counterElement.innerHTML = "<i style='margin: 0; padding: 0 0 0 0.2rem;' class='fa fa-spinner fa-spin'></i>"
+        }
+
 		// 语言资源文件
 		const translations = {
 			en: {
 				"greeting": "Hello~",
-				"welcome_message": "Welcome to my little corner of the internet! <br>Your visit marks the <span id='busuanzi_value_site_pv'></span>th ripple in this space — thank you for stopping by!",
+				"welcome_message": "Welcome to my little corner of the internet! <br>Your visit marks the " + counterElement.innerHTML + "th ripple in this space — thank you for stopping by!",
 				"nav.intro": "Intro",
 				"nav.work": "Works",
 				"nav.skill": "Skills",
@@ -275,7 +282,7 @@
 			},
 			zh: {
 				"greeting": "您好～",
-				"welcome_message": "海内存知己，天涯若比邻。<br>穿过数据洪流，您是第 <span id='busuanzi_value_site_pv'></span> 位在此停泊的旅人。愿这个数字小筑，能成为您思想漫游时的一盏闲灯。",
+				"welcome_message": "海内存知己，天涯若比邻。<br>穿过数据洪流，您是第 " + counterElement.innerHTML + "  位在此停泊的旅人。愿这个数字小筑，能成为您思想漫游时的一盏闲灯。",
 				"nav.intro": "个人简介",
 				"nav.work": "作品项目",
 				"nav.skill": "技能特长",
