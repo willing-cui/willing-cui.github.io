@@ -257,12 +257,6 @@
 
 	<!-- 语言切换功能脚本 -->
 	<script>
-        const counterElement = document.getElementById('busuanzi_value_site_pv')
-
-        // 如果元素为空，则填写占位符
-        if (!counterElement.innerHTML) {
-            counterElement.innerHTML = "<i style='margin: 0; padding: 0 0 0 0.2rem;' class='fa fa-spinner fa-spin'></i>"
-        }
 
 		// 语言资源文件
 		const translations = {
@@ -305,6 +299,9 @@
 
 		// 设置语言
 		function setLanguage(lang) {
+            // 获取访问人数变量
+            const visitorNum = document.getElementById('busuanzi_value_site_pv').innerText
+
 			// 更新页面标题
 			document.title = translations[lang].page_title;
 			
@@ -321,6 +318,13 @@
 					}
 				}
 			});
+
+            // 如果元素为空，则填写占位符
+            if (visitorNum) {
+                document.getElementById('busuanzi_value_site_pv').innerText = visitorNum
+            } else {
+                document.getElementById('busuanzi_value_site_pv').innerText = "--"
+            }
 			
 			// 重新加载AJAX内容
 			loadContentForLanguage(lang);
