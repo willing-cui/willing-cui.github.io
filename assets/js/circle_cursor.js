@@ -130,6 +130,6 @@ class CircleCursor {
 const customCursor = new CircleCursor({
     size: 20,
     color: 'rgba(255, 255, 255, 0.5)',
-    trailSize: 5,
+    trailSize: 0,
     trailDelay: 30
 });
