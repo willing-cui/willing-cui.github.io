@@ -289,6 +289,15 @@
       "image": "./blogs/45_Timm_Lib_Naflex_Deployment_Analysis/Image_to_Patches.webp"
     },
     {
+      "id": 47,
+      "path": "47_Text_to_Image_and_Image_to_Text",
+      "title_en": "A Comparison of Text-to-Image and Image-to-Text Models",
+      "title_zh": "“文生图”与“图生文”模型原理对比",
+      "date": "2026/2/19",
+      "category": "AI & RL",
+      "image": "./blogs/47_Text_to_Image_and_Image_to_Text/Text_to_Image_and_Image_to_Text.webp"
+    },
+    {
       "id": 29,
       "path": "29_Robotics_Research_Production_Line",
       "title_en": "Robotics Research Production Line",
