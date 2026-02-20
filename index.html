@@ -160,41 +160,42 @@
 	<script src="assets/js/blog_index_generator.js"></script>
 
 	<script>
-		$(function () {
-			// 根据当前语言加载内容
-			const lang = getCurrentLanguage();
-			loadContentForLanguage(lang);
-			
-			// 设置初始语言
-			setLanguage(lang);
-			
-			// 更新语言切换按钮文本
-			updateLanguageButtonText(lang);
-		})
-		
-		function loadContentForLanguage(lang) {
-			// 尝试加载语言特定的文件，如果不存在则加载默认文件
-			const files = ['intro', 'work', 'skill', 'contact'];
-			files.forEach(file => {
-				const url = `html/${file}_${lang}.html`;
-				$.ajax({
-					url: url,
-					method: 'GET',
-					success: function(data) {
-						$(`#${file}Content`).html(data);
-					},
-					error: function() {
-						// 如果语言特定文件不存在，加载默认文件
-                        console.log("特定语言文件不存在，加载默认文件")
-						$(`#${file}Content`).load(`html/${file}.html`);
-					}
-				});
-			});
-			
-			// 加载博客索引（如果没有语言特定版本，保持原样）
-			$('#blogTemplate').load('html/blog.html');
-		}
-	</script>
+        // 内容区域配置
+        const CONTENT_MAP = {
+            'intro': '#introContent',
+            'work': '#workContent',
+            'skill': '#skillContent',
+            'contact': '#contactContent',
+            'blog': '#blogTemplate'
+        };
+
+        // 主初始化函数
+        $(function () {
+            const lang = getCurrentLanguage();
+            initializePage(lang);
+        });
+        
+        // 页面初始化
+        function initializePage(lang) {
+            setLanguage(lang);
+            loadContent(lang);
+            updateLanguageButtonText(lang);
+        }
+        
+        // 加载所有内容
+        function loadContent(lang) {
+            Object.entries(CONTENT_MAP).forEach(([name, selector]) => {
+                $(selector).load(`html/${name}_${lang}.html`, function(response, status) {
+                    if (status === "error") {
+                        console.log(`未找到文件 html/${name}_${lang}.html`);
+                        // 回退到另一种语言
+                        // const fallbackLang = lang === 'zh' ? 'en' : 'zh';
+                        // $(selector).load(`html/${name}_${fallbackLang}.html`);
+                    }
+                });
+            });
+        }
+    </script>
 
 	<script src="assets/js/dynamic_background.js"></script>
 	<script src="assets/js/submit_message.js"></script>
@@ -230,7 +231,7 @@
 			window.location.port === '3000'              	// 常见开发服务器端口
 		);
 
-		console.log("Website is running locally? " + isLocal);
+		console.log("网站是否处于本地调试模式: " + isLocal);
 
 		if (!isLocal) {
 			const script = document.createElement('script');
@@ -328,8 +329,8 @@
                 document.getElementById('busuanzi_value_site_pv').innerText = "--"
             }
 			
-			// 重新加载AJAX内容
-			loadContentForLanguage(lang);
+			// 重新加载
+			loadContent(lang);
 			
 			// 保存语言偏好
 			localStorage.setItem('preferred-language', lang);

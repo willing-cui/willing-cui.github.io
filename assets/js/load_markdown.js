@@ -40,8 +40,8 @@ async function loadBlogData(currentLanguage) {
         }
 
         console.log('成功加载博客数据:', blogData.blogs.length, '篇文章');
-        console.log(pathList)
-        console.log(nameList)
+        // console.log(pathList)
+        // console.log(nameList)
 
     } catch (error) {
         console.error('加载博客数据失败:', error);
