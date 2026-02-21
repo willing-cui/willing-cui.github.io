@@ -336,6 +336,8 @@
                     $main._hide(true);
                     // Hide the catalogue.
                     hideCatalogue();
+                    // Show up the menu button.
+                    raiseMenu();
                 }
                 break;
 
