@@ -271,6 +271,24 @@
       "image": "./blogs/46_Learning_Rate_Scheduler/Throttle.webp"
     },
     {
+      "id": 48,
+      "path": "48_Batch_Size",
+      "title_en": "Batch Size",
+      "title_zh": "模型训练的批量大小",
+      "date": "2026/2/26",
+      "category": "AI & RL",
+      "image": null
+    },
+    {
+      "id": 49,
+      "path": "49_Epoch",
+      "title_en": "Epoch",
+      "title_zh": "模型训练的轮次",
+      "date": "2026/2/26",
+      "category": "AI & RL",
+      "image": null
+    },
+    {
       "id": 43,
       "path": "43_Naflex_ViT_Design_Analysis",
       "title_en": "Naflex ViT Design Analysis",
