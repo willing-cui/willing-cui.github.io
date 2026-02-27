@@ -62,27 +62,50 @@ html::-webkit-scrollbar-thumb {
     min-width: 50rem;
 }
 
-/* Bottom right text */
-
-.card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
+/* 轮播容器样式 */
+.carousel-container {
+    display: block;
 }
 
-.card {
+/* 主轮播区域 卡片容器*/
+.carousel-main {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: rgba(27, 31, 34, 0.4);
+}
+
+/* 轮播轨道 卡片将在这里动态创建*/
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    /* 确保卡片不换行 */
+    flex-wrap: nowrap;
+}
+
+/* Snapshots 卡片样式 (适配轮播) */
+.carousel-card {
+    width: 100%;
     background-color: rgba(27, 31, 34, 1);
     border-radius: 10px;
     overflow: hidden;
     position: relative;
     display: inline-block;
+    flex-shrink: 0;
 }
 
-.image.main.card-image {
+.carousel-card .image.main.card-image {
     z-index: 1000;
+    width: 100%;
+    height: 100%;
     margin: 0;
+}
+
+/* 图片容器 */
+.carousel-card img {
+    max-width: 100%;
+    max-height: 100%;
 }
 
 .card-text-block {
@@ -107,36 +130,232 @@ html::-webkit-scrollbar-thumb {
     z-index: 2000;
 }
 
+.carousel-card .card-text-block:hover {
+    opacity: 1;
+    background-color: rgba(19, 21, 25, 0.95);
+}
+
 @media screen and (max-width: 480px) {
     .card-text-block {
         max-width: 10rem;
     }
 }
 
-.card::before {
+/* 卡片互动效果 */
+.carousel-card::before {
     content: "";
     position: absolute;
     left: var(--x);
     top: var(--y);
     transform: translate(-50%, -50%);
-
     width: 100rem;
     height: 100rem;
-    background: radial-gradient(var(--clr), transparent, transparent);
+    background: radial-gradient(var(--clr, #fff), transparent, transparent);
     opacity: 0;
     transition: opacity 0.5s;
+    z-index: 1;
 }
 
-.card:hover::before {
-    opacity: 1;
+.carousel-card:hover::before {
+    opacity: 0.3;
 }
 
-.card::after {
+.carousel-card::after {
     content: "";
     position: absolute;
     inset: 2px;
-    border-radius: 8px;
+    border-radius: 10px;
     background-color: rgba(27, 31, 34, 0.75);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* 缩略图区域 */
+.carousel-thumbnails {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+    padding: 10px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) rgba(19, 21, 25, 0.1);
+}
+
+.carousel-thumbnails::-webkit-scrollbar {
+    height: 6px;
+}
+
+.carousel-thumbnails::-webkit-scrollbar-track {
+    background: rgba(19, 21, 25, 0.1);
+    border-radius: 3px;
+}
+
+.carousel-thumbnails::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.thumbnail {
+    width: 100px;
+    height: 70px;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    position: relative;
+    border: 2px solid transparent;
+    background-color: rgba(27, 31, 34, 0.5);
+}
+
+.thumbnail:hover {
+    opacity: 0.8;
+    transform: translateY(-2px);
+}
+
+.thumbnail.active {
+    opacity: 1;
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumbnail::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(var(--clr, #fff), transparent, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.thumbnail:hover::after {
+    opacity: 0.3;
+}
+
+/* 导航按钮 */
+.carousel-prev {
+    left: 2%;
+}
+
+.carousel-next {
+    right: 2%;
+}
+
+/* Navigation arrows */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 100;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+}
+
+.carousel-btn i {
+    font-size: 1rem;
+    color: #fff;
+}
+
+.carousel-btn.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.carousel-btn.disabled:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-50%);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 轮播指示器 */
+.carousel-indicators {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    z-index: 10000;
+}
+
+.indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.indicator.active {
+    background-color: rgba(255, 255, 255, 0.9);
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.indicator:hover {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+
+/* 自动播放控制 */
+.auto-play-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.auto-play-toggle {
+    transition: all 0.3s ease;
+    background-color: rgba(19, 21, 25, 0.3);
+    box-shadow: none;
+}
+
+.auto-play-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.auto-play-toggle i {
+    transition: color 0.3s ease;
+}
+
+.auto-play-toggle.active i {
+    color: #4CAF50;
+    margin-right: 2px;
+}
+
+.auto-play-toggle.active {
+    background-color: rgba(76, 175, 80, 0.1);
 }
 
 :root {
@@ -163,13 +382,15 @@ html::-webkit-scrollbar-thumb {
 
 .sort-btn {
     display: flex;
-    justify-content: center; /* 水平居中 */
-    align-items: center;     /* 垂直居中 */
+    justify-content: center;
+    /* 水平居中 */
+    align-items: center;
+    /* 垂直居中 */
     width: 2rem;
     height: 2rem;
     border-radius: 1rem;
     padding: 0.0rem 0 0.0rem 0.16rem;
-	font-size: 1rem;
+    font-size: 1rem;
     cursor: pointer;
     color: #666;
     box-shadow: none;
@@ -365,9 +586,9 @@ html::-webkit-scrollbar-thumb {
 }
 
 #blogTitle {
-	white-space: normal;
-	letter-spacing: normal;
-	text-transform: none;
+    white-space: normal;
+    letter-spacing: normal;
+    text-transform: none;
 }
 
 #blogContent p {
@@ -388,7 +609,7 @@ html::-webkit-scrollbar-thumb {
     white-space: normal;
     font-size: 1.5rem;
     text-transform: none;
-	letter-spacing: 0.086rem;
+    letter-spacing: 0.086rem;
 }
 
 #blogContent h4 {
@@ -396,7 +617,7 @@ html::-webkit-scrollbar-thumb {
     white-space: normal;
     font-size: 1.25rem;
     text-transform: none;
-	letter-spacing: 0.071rem;
+    letter-spacing: 0.071rem;
 }
 
 #blogContent h5 {
@@ -404,7 +625,7 @@ html::-webkit-scrollbar-thumb {
     white-space: normal;
     font-size: 1.1rem;
     text-transform: none;
-	letter-spacing: 0.05rem;
+    letter-spacing: 0.05rem;
 }
 
 #blogContent ul,

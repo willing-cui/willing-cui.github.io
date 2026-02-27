@@ -28,67 +28,40 @@
     项目快照
 </h3>
 
-<div class="card-container">
-    <div class="card" style="--clr: #fff;">
-        <span class="image main card-image"><img loading="lazy" src="images/mrc_board.webp"
-                alt="支持8路信号采样和加权信号组合的PCB。" /> </span>
-        <div class="card-text-block">
-            <div style="font-size: small">
-                支持8路信号采样和加权信号组合的PCB。
-            </div>
+<!-- 轮播容器 -->
+<div class="carousel-container">
+    <!-- 主轮播区域 -->
+    <div class="carousel-main">
+        <div class="carousel-track">
+            <!-- 卡片将在这里动态创建 -->
         </div>
+
+        <!-- 导航按钮 -->
+        <div class="carousel-btn carousel-prev">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+
+        <div class="carousel-btn carousel-next">
+            <i class="fas fa-chevron-right"></i>
+        </div>
+
+        <!-- 轮播指示器 -->
+        <div class="carousel-indicators"></div>
     </div>
 
-    <div class="card" style="--clr: #fff;">
-        <span class="image main card-image"><img loading="lazy" src="images/transceiver_box.webp"
-                alt="带外壳和安装支架的光学收发器。" /> </span>
-        <div class="card-text-block">
-            <div style="font-size: small">
-                带外壳和安装支架的光学收发器。
-            </div>
-        </div>
-    </div>
-
-    <div class="card" style="--clr: #fff;">
-        <span class="image main card-image"><img loading="lazy" src="images/omnidirectional_transceiver.webp"
-                alt="一个全向光学收发器。" />
-        </span>
-        <div class="card-text-block">
-            <div style="font-size: small">
-                一个全向光学收发器。
-            </div>
-        </div>
-    </div>
-
-    <div class="card" style="--clr: #fff;">
-        <span class="image main card-image"><img loading="lazy" src="images/omnidirectional_transceiver_boards.webp"
-                alt="全向光学收发器的PCB板。" /> </span>
-        <div class="card-text-block">
-            <div style="font-size: small">
-                全向光学收发器的PCB板。
-            </div>
-        </div>
-    </div>
-
-    <div class="card" style="--clr: #fff;">
-        <span class="image main card-image"><img loading="lazy" src="images/transceiver_kit.webp"
-                alt="一个定向光学收发器（正视图）。" /> </span>
-        <div class="card-text-block">
-            <div style="font-size: small">
-                一个定向光学收发器（正视图）。
-            </div>
-        </div>
-    </div>
-
-    <div class="card" style="--clr: #fff;">
-        <span class="image main card-image"><img loading="lazy" src="images/transceiver_kit_b.webp"
-                alt="一个定向光学收发器（后视图）。" /> </span>
-        <div class="card-text-block">
-            <div style="font-size: small">
-                一个定向光学收发器（后视图）。
-            </div>
-        </div>
-    </div>
+    <!-- 缩略图区域 -->
+    <div class="carousel-thumbnails"></div>
 </div>
 
-<hr />
+<!-- 自动播放控制区 - 放在缩略图后面 -->
+<div class="auto-play-control" style="justify-content: space-around;">
+    <div class="auto-play-toggle active button">
+        <i class="icon solid fa-pause"></i>
+        <span>自动播放</span>
+    </div>
+    
+    <a href="./files/portfolio.pdf" class="button primary icon solid fa-download" target="_blank"
+        rel="noopener noreferrer">
+        下载作品集
+    </a>
+</div>

@@ -28,67 +28,40 @@
     Project Snapshots
 </h3>
 
-<div class="card-container">
-    <div class="card" style="--clr: #fff;">
-        <span class="image main card-image"><img loading="lazy" src="images/mrc_board.webp"
-                alt="A PCB for signal sampling and weighted signal combination." /> </span>
-        <div class="card-text-block">
-            <div style="font-size: small">
-                A PCB for signal sampling and weighted signal combination.
-            </div>
+<!-- 轮播容器 -->
+<div class="carousel-container">
+    <!-- 主轮播区域 -->
+    <div class="carousel-main">
+        <div class="carousel-track">
+            <!-- 卡片将在这里动态创建 -->
         </div>
+
+        <!-- 导航按钮 -->
+        <div class="carousel-btn carousel-prev">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+
+        <div class="carousel-btn carousel-next">
+            <i class="fas fa-chevron-right"></i>
+        </div>
+
+        <!-- 轮播指示器 -->
+        <div class="carousel-indicators"></div>
     </div>
 
-    <div class="card" style="--clr: #fff;">
-        <span class="image main card-image"><img loading="lazy" src="images/transceiver_box.webp"
-                alt="An optical transceiver with housing and mounting bracket." /> </span>
-        <div class="card-text-block">
-            <div style="font-size: small">
-                An optical transceiver with housing and mounting bracket.
-            </div>
-        </div>
-    </div>
-
-    <div class="card" style="--clr: #fff;">
-        <span class="image main card-image"><img loading="lazy" src="images/omnidirectional_transceiver.webp"
-                alt="An omnidirectional optical transceiver." />
-        </span>
-        <div class="card-text-block">
-            <div style="font-size: small">
-                An omnidirectional optical transceiver.
-            </div>
-        </div>
-    </div>
-
-    <div class="card" style="--clr: #fff;">
-        <span class="image main card-image"><img loading="lazy" src="images/omnidirectional_transceiver_boards.webp"
-                alt="PCBs of the omnidirectional optical transceiver." /> </span>
-        <div class="card-text-block">
-            <div style="font-size: small">
-                PCBs of the omnidirectional optical transceiver.
-            </div>
-        </div>
-    </div>
-
-    <div class="card" style="--clr: #fff;">
-        <span class="image main card-image"><img loading="lazy" src="images/transceiver_kit.webp"
-                alt="An directional optical transceiver (front view)." /> </span>
-        <div class="card-text-block">
-            <div style="font-size: small">
-                An directional optical transceiver (front view).
-            </div>
-        </div>
-    </div>
-
-    <div class="card" style="--clr: #fff;">
-        <span class="image main card-image"><img loading="lazy" src="images/transceiver_kit_b.webp"
-                alt="An directional optical transceiver (back view)." /> </span>
-        <div class="card-text-block">
-            <div style="font-size: small">
-                An directional optical transceiver (back view).
-            </div>
-        </div>
-    </div>
+    <!-- 缩略图区域 -->
+    <div class="carousel-thumbnails"></div>
 </div>
 
-<hr />
+<!-- 自动播放控制区 - 放在缩略图后面 -->
+<div class="auto-play-control" style="justify-content: space-around;">
+    <div class="auto-play-toggle active button">
+        <i class="icon solid fa-pause"></i>
+        <span>Auto Play</span>
+    </div>
+    
+    <a href="./files/portfolio.pdf" class="button primary icon solid fa-download" target="_blank"
+        rel="noopener noreferrer">
+        My Portfolio
+    </a>
+</div>

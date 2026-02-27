@@ -191,9 +191,7 @@ function highlightCurrentSection() {
         });
 }
 
-/**
- * 获取当前语言
- */
+// 获取当前语言
 function getCurrentLanguage() {
     const savedLang = localStorage.getItem('preferred-language');
     const browserLang = navigator.language.startsWith('zh') ? 'zh' : 'en';
