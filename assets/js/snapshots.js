@@ -240,7 +240,6 @@ function goToSlide(index) {
 }
 
 // 更新轮播显示
-// 更新轮播显示
 function updateCarousel() {
     if (!carouselTrack || carouselTrack.children.length === 0) return;
 
@@ -263,15 +262,15 @@ function updateCarousel() {
         indicator.classList.toggle('active', index === currentIndex);
     });
 
-    // 确保当前缩略图在可视区域内
-    const activeThumbnail = document.querySelector('.thumbnail.active');
-    if (activeThumbnail) {
-        activeThumbnail.scrollIntoView({
-            behavior: 'smooth',
-            inline: 'center',
-            block: 'nearest'
-        });
-    }
+    // 确保当前缩略图在可视区域内，强制滑动窗口
+    // const activeThumbnail = document.querySelector('.thumbnail.active');
+    // if (activeThumbnail) {
+    //     activeThumbnail.scrollIntoView({
+    //         behavior: 'smooth',
+    //         inline: 'center',
+    //         block: 'nearest'
+    //     });
+    // }
 }
 
 // 添加窗口大小调整时的重新计算
