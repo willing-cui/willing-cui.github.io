@@ -61,6 +61,7 @@ const projects = [
 let currentIndex = 0;
 let autoPlayInterval = null;
 let isAutoPlaying = true;
+let currentLanguage = null;
 const intervalDuration = 5000; // 5秒
 
 // 获取当前语言
@@ -73,7 +74,7 @@ function getCurrentLanguage() {
 // 初始化轮播
 function initCarousel() {
 
-    const currentLanguage = getCurrentLanguage()
+    currentLanguage = getCurrentLanguage()
 
     console.log('Initializing carousel with', projects.length, 'projects');
 
@@ -337,7 +338,8 @@ function toggleAutoPlay() {
 
 function delayedInitCarousel() {
     // 如果已经初始化完成，避免重复初始化
-    if (carouselInitialized) {
+    if (carouselInitialized && currentLanguage == getCurrentLanguage()) {
+        console.log("Already initialized carousel")
         return
     }
     // 获取DOM元素
