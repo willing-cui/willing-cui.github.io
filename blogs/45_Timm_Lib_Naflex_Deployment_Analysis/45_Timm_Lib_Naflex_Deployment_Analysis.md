@@ -735,7 +735,7 @@ def batch_patchify(x, patch_size, pad=True):
 
 下面详细分析这两个关键函数的实现原理和技术细节。
 
-### 输入处理
+#### 输入处理
 
 ```python
 def batch_patchify(x, patch_size, pad=True):
@@ -744,7 +744,7 @@ def batch_patchify(x, patch_size, pad=True):
     # pad: 是否进行动态填充
 ```
 
-### 动态填充机制详解
+#### 动态填充机制详解
 
 ```python
 if pad and (H % ph != 0 or W % pw != 0):
@@ -766,7 +766,7 @@ if pad and (H % ph != 0 or W % pw != 0):
 - `pad_w = (16 - 400%16)%16 = (16 - 0)%16 = 0`
 - 填充后：H=304, W=400（可被16整除）
 
-### Patch划分的核心变换
+#### Patch划分的核心变换
 
 ```python
 nh, nw = H // ph, W // pw  # 计算patch网格尺寸
