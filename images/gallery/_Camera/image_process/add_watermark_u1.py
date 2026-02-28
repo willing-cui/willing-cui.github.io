@@ -626,6 +626,8 @@ def main():
         "D:/GitHub/willing-cui.github.io/images/gallery/_Camera/Qingyuan",
         "D:/GitHub/willing-cui.github.io/images/gallery/_Camera/Wuhan",
         "D:/GitHub/willing-cui.github.io/images/gallery/_Camera/Zhucheng",
+        "D:/GitHub/willing-cui.github.io/images/gallery/_Camera/Qingdao",
+        "D:/GitHub/willing-cui.github.io/images/gallery/_Camera/Jinan",
     ]
 
     # 2. 水印文件路径（必须是透明背景的PNG格式）

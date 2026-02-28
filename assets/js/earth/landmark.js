@@ -45,6 +45,12 @@ var areas = [
     }, {
         name: "Zhucheng",
         position: [119.4098, 35.9958],
+    }, {
+        name: "Qingdao",
+        position: [120.3830, 36.0662],
+    }, {
+        name: "Jinan",
+        position: [117.1201, 36.6518],
     }
 ];
 
