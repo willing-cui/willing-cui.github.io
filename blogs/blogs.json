@@ -289,6 +289,15 @@
       "image": null
     },
     {
+      "id": 50,
+      "path": "50_Fine-Tuning",
+      "title_en": "Fine-Tuning",
+      "title_zh": "模型微调",
+      "date": "2026/3/2",
+      "category": "AI & RL",
+      "image": "./blogs/50_Fine-Tuning/Fine-Tuning.webp"
+    },
+    {
       "id": 43,
       "path": "43_Naflex_ViT_Design_Analysis",
       "title_en": "Naflex ViT Design Analysis",
