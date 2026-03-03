@@ -324,6 +324,15 @@
       "category": "AI & RL",
       "image": "./blogs/47_Text_to_Image_and_Image_to_Text/Text_to_Image_and_Image_to_Text.webp"
     },
+	{
+      "id": 51,
+      "path": "51_Dual_Tower_Transformer",
+      "title_en": "Dual-Tower Architecture: Perception-Execution Collaborative Paradigm",
+      "title_zh": "双塔架构：感知-执行协同范式",
+      "date": "2026/3/3",
+      "category": "AI & RL",
+      "image": "./blogs/51_Dual_Tower_Transformer/Dual_Tower.webp"
+    },
     {
       "id": 29,
       "path": "29_Robotics_Research_Production_Line",
