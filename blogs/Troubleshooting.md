@@ -21,6 +21,16 @@
    </span> 
    ```
 
+   ```html
+   <span class="image main">
+   <img class="main img-in-blog" style="max-width: 50%" src="./blogs/folder_name/img_name.webp" alt="img_name" />
+   <i>Caption</i>
+   <i>Taken from 
+   <a href="https://图片来源" target="_blank" rel="noopener noreferrer">超链接名称</a>
+   </i>
+   </span> 
+   ```
+
 6. 如需设置字体颜色（或同时加粗）
 
    ```html

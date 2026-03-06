@@ -460,6 +460,15 @@
       "image": "./blogs/36_LingBot_VLA_Paper_Reading_Report/LingBot_Diagram.webp"
     },
     {
+      "id": 53,
+      "path": "53_Point_Transformer_V3_Paper_Reading_Report",
+      "title_en": "Point Transformer V3 Paper Reading Report",
+      "title_zh": "Point Transformer V3 论文阅读报告",
+      "date": "2026/3/6",
+      "category": "Other Notes",
+      "image": "./blogs/53_Point_Transformer_V3_Paper_Reading_Report/PT_V3.webp"
+    },
+    {
       "id": 15,
       "path": "15_Access_Repo_via_GitHub_SSH",
       "title_en": "Access Repo via GitHub SSH",
