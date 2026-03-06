@@ -1,5 +1,7 @@
 这篇题为“Point Transformer V3: Simpler, Faster, Stronger”的论文（Point Transformer V3，简称PTv3）提出了一种新型的点云处理骨干网络，其核心思想是通过强调可扩展性（scaling principle）来打破传统点云Transformer在精度和效率之间的权衡。以下是对其核心创新、系统架构和性能表现的详细分析。
 
+<a href="https://openaccess.thecvf.com/content/CVPR2024/papers/Wu_Point_Transformer_V3_Simpler_Faster_Stronger_CVPR_2024_paper.pdf" target="_blank" rel="noopener noreferrer">查看论文</a>，<a href="https://github.com/Pointcept/PointTransformerV3" target="_blank" rel="noopener noreferrer">查看开源代码</a>
+
 ## 一、 主要创新
 
 论文并非寻求注意力机制内部的结构创新，而是基于“模型性能更多地受规模（scale）影响，而非复杂设计”这一核心理念，对现有设计进行重构，优先考虑简洁性和效率，以释放模型的扩展潜力。具体创新点如下：
