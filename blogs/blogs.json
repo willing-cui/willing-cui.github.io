@@ -343,6 +343,15 @@
       "image": "./blogs/52_Vector_Dimension/Squeeze.webp"
     },
     {
+      "id": 54,
+      "path": "54_PPO",
+      "title_en": "Proximal Policy Optimization (PPO)",
+      "title_zh": "近端策略优化（PPO）",
+      "date": "2026/3/7",
+      "category": "AI & RL",
+      "image": null
+    },
+    {
       "id": 29,
       "path": "29_Robotics_Research_Production_Line",
       "title_en": "Robotics Research Production Line",
