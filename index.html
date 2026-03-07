@@ -86,7 +86,7 @@
 
 		<div class="expand-menu-container" id="menuContainer">
 			<!-- 1. The label acts as the clickable "More" button/icon -->
-			<!-- Added onclick handler to toggle the menu state --> 
+			<!-- Added onclick handler to toggle the menu state -->
 			<div id="menuIcon" class="menu-icon" title="Menu" onclick="toggleMenu()">
 				<!-- &#9776;  Hamburger icon -->
 				<span id="gallery" class="icon solid fa-list"></span>
@@ -96,14 +96,14 @@
 			<ul class="expandable-list">
 				<li></li>
 				<li><a href="javascript:void(0)" onclick="toggleLanguage()" id="language-switch-btn">
-					<span class="icon solid fa-language" style="margin: 0px 10px 0px 0px;"></span>
-					<span id="language-switch-text">English</span>
-				</a></li>
+						<span class="icon solid fa-language" style="margin: 0px 10px 0px 0px;"></span>
+						<span id="language-switch-text">English</span>
+					</a></li>
 				<li><a href="./html/stickies.html" data-i18n="menu.stickies">Stickies</a></li>
 				<li><a href="./html/time.html" data-i18n="menu.time_calculator">Time Calculator</a></li>
 			</ul>
 		</div>
-			
+
 		<script>
 			/**
 			 * Toggles the 'expanded' class on the main menu container.
@@ -117,12 +117,12 @@
 					console.error("Menu container element not found.");
 				}
 			}
-			
+
 			// 点击菜单项后关闭菜单
-			document.addEventListener('DOMContentLoaded', function() {
+			document.addEventListener('DOMContentLoaded', function () {
 				const menuItems = document.querySelectorAll('.expandable-list a');
 				menuItems.forEach(item => {
-					item.addEventListener('click', function() {
+					item.addEventListener('click', function () {
 						const container = document.getElementById('menuContainer');
 						if (container && container.classList.contains('expanded')) {
 							container.classList.remove('expanded');
@@ -146,7 +146,9 @@
 		<footer id="footer">
 			<p class="copyright">&copy; 2026 Hongwei CUI (Willing). All Rights Reserved. 版权所有</p>
 			<a class="copyright" href="https://beian.miit.gov.cn/" target="_blank">鲁ICP备2025192750号-1</a>
-			<img id="filing-icon" src="./images/备案图标.png"/><a class="copyright" href="https://beian.mps.gov.cn/#/query/webSearch?code=37078302000937" rel="noreferrer" target="_blank">鲁公网安备37078302000937号</a>
+			<img id="filing-icon" src="./images/备案图标.png" /><a class="copyright"
+				href="https://beian.mps.gov.cn/#/query/webSearch?code=37078302000937" rel="noreferrer"
+				target="_blank">鲁公网安备37078302000937号</a>
 		</footer>
 
 	</div>
@@ -160,42 +162,42 @@
 	<script src="assets/js/blog_index_generator.js"></script>
 
 	<script>
-        // 内容区域配置
-        const CONTENT_MAP = {
-            'intro': '#introContent',
-            'work': '#workContent',
-            'skill': '#skillContent',
-            'contact': '#contactContent',
-            'blog': '#blogTemplate'
-        };
+		// 内容区域配置
+		const CONTENT_MAP = {
+			'intro': '#introContent',
+			'work': '#workContent',
+			'skill': '#skillContent',
+			'contact': '#contactContent',
+			'blog': '#blogTemplate'
+		};
 
-        // 主初始化函数
-        $(function () {
-            const lang = getCurrentLanguage();
-            initializePage(lang);
-        });
-        
-        // 页面初始化
-        function initializePage(lang) {
-            setLanguage(lang);
-            loadContent(lang);
-            updateLanguageButtonText(lang);
-        }
-        
-        // 加载所有内容
-        function loadContent(lang) {
-            Object.entries(CONTENT_MAP).forEach(([name, selector]) => {
-                $(selector).load(`html/${name}_${lang}.html`, function(response, status) {
-                    if (status === "error") {
-                        console.log(`未找到文件 html/${name}_${lang}.html`);
-                        // 回退到另一种语言
-                        // const fallbackLang = lang === 'zh' ? 'en' : 'zh';
-                        // $(selector).load(`html/${name}_${fallbackLang}.html`);
-                    }
-                });
-            });
-        }
-    </script>
+		// 主初始化函数
+		$(function () {
+			const lang = getCurrentLanguage();
+			initializePage(lang);
+		});
+
+		// 页面初始化
+		function initializePage(lang) {
+			setLanguage(lang);
+			loadContent(lang);
+			updateLanguageButtonText(lang);
+		}
+
+		// 加载所有内容
+		function loadContent(lang) {
+			Object.entries(CONTENT_MAP).forEach(([name, selector]) => {
+				$(selector).load(`html/${name}_${lang}.html`, function (response, status) {
+					if (status === "error") {
+						console.log(`未找到文件 html/${name}_${lang}.html`);
+						// 回退到另一种语言
+						// const fallbackLang = lang === 'zh' ? 'en' : 'zh';
+						// $(selector).load(`html/${name}_${fallbackLang}.html`);
+					}
+				});
+			});
+		}
+	</script>
 
 	<script src="assets/js/dynamic_background.js"></script>
 	<script src="assets/js/submit_message.js"></script>
@@ -211,8 +213,8 @@
 	<script src="assets/js/highlight.min.js"></script>
 	<script>hljs.highlightAll();</script>
 	<script src="assets/js/load_markdown.js"></script>
-    <script src="assets/js/ripple_effect.js"></script>
-    <!-- <script src="assets/js/circle_cursor.js"></script> -->
+	<script src="assets/js/ripple_effect.js"></script>
+	<!-- <script src="assets/js/circle_cursor.js"></script> -->
 
 	<script>
 		MathJax = {
@@ -223,7 +225,7 @@
 		};
 	</script>
 
-
+	<!-- 网页访问计数功能脚本 -->
 	<script>
 		const isLocal = (
 			window.location.hostname === 'localhost' ||
@@ -234,11 +236,40 @@
 
 		console.log("网站是否处于本地调试模式: " + isLocal);
 
+		// 如果是生产环境，延迟加载不蒜子
 		if (!isLocal) {
+			// 使用 requestIdleCallback 在浏览器空闲时加载
+			if ('requestIdleCallback' in window) {
+				requestIdleCallback(() => {
+					loadBusuanziSafely();
+				}, { timeout: 3000 });
+			} else {
+				// 回退方案
+				setTimeout(loadBusuanziSafely, 3000);
+			}
+		}
+
+		function loadBusuanziSafely() {
 			const script = document.createElement('script');
 			script.src = 'assets/js/busuanzi.pure.mini.js';
-			script.async = true; // 异步加载
-			document.head.appendChild(script);
+			script.async = true;
+			script.crossOrigin = 'anonymous';
+
+			// 设置超时
+			const timeoutId = setTimeout(() => {
+				console.log('不蒜子加载超时');
+			}, 5000);
+
+			script.onload = function () {
+				clearTimeout(timeoutId);
+				// 不蒜子加载成功后，它会自动更新数字
+			};
+
+			script.onerror = function () {
+				clearTimeout(timeoutId);
+				console.log('不蒜子加载失败');
+				// TODO: 可以在这里触发本地计数逻辑
+			};
 		}
 	</script>
 
@@ -303,12 +334,12 @@
 
 		// 设置语言
 		function setLanguage(lang) {
-            // 获取访问人数变量
-            const visitorNum = document.getElementById('busuanzi_value_site_pv').innerText
+			// 获取访问人数变量
+			const visitorNum = document.getElementById('busuanzi_value_site_pv').innerText
 
 			// 更新页面标题
 			document.title = translations[lang].page_title;
-			
+
 			// 更新所有带 data-i18n 属性的元素
 			document.querySelectorAll('[data-i18n]').forEach(element => {
 				const key = element.getAttribute('data-i18n');
@@ -323,19 +354,19 @@
 				}
 			});
 
-            // 如果元素为空，则填写占位符
-            if (visitorNum) {
-                document.getElementById('busuanzi_value_site_pv').innerText = visitorNum
-            } else {
-                document.getElementById('busuanzi_value_site_pv').innerText = "--"
-            }
-			
+			// 如果元素为空，则填写占位符
+			if (visitorNum) {
+				document.getElementById('busuanzi_value_site_pv').innerText = visitorNum
+			} else {
+				document.getElementById('busuanzi_value_site_pv').innerText = "--"
+			}
+
 			// 重新加载
 			loadContent(lang);
-			
+
 			// 保存语言偏好
 			localStorage.setItem('preferred-language', lang);
-			
+
 			// 更新语言切换按钮文本
 			updateLanguageButtonText(lang);
 		}
@@ -350,24 +381,24 @@
 		}
 
 		// 切换语言, 添加博客重新加载
-        function toggleLanguage() {
-            const currentLang = getCurrentLanguage();
-            const newLang = currentLang === 'zh' ? 'en' : 'zh';
-            setLanguage(newLang);
-            
-            // 触发博客索引重新加载
-            if (window.reloadBlogIndexForLanguage) {
-                window.reloadBlogIndexForLanguage(newLang);
-            }
-            
-            // 触发自定义事件，供其他组件监听
-            window.dispatchEvent(new CustomEvent('languageChange', {
-                detail: { language: newLang }
-            }));
-        }
+		function toggleLanguage() {
+			const currentLang = getCurrentLanguage();
+			const newLang = currentLang === 'zh' ? 'en' : 'zh';
+			setLanguage(newLang);
+
+			// 触发博客索引重新加载
+			if (window.reloadBlogIndexForLanguage) {
+				window.reloadBlogIndexForLanguage(newLang);
+			}
+
+			// 触发自定义事件，供其他组件监听
+			window.dispatchEvent(new CustomEvent('languageChange', {
+				detail: { language: newLang }
+			}));
+		}
 
 		// 页面加载时初始化语言按钮
-		document.addEventListener('DOMContentLoaded', function() {
+		document.addEventListener('DOMContentLoaded', function () {
 			const lang = getCurrentLanguage();
 			updateLanguageButtonText(lang);
 		});
