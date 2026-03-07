@@ -258,6 +258,7 @@
 			// 设置超时
 			const timeoutId = setTimeout(() => {
 				console.log('不蒜子加载超时');
+				// TODO: 可以在这里触发本地计数逻辑或其他补救措施
 			}, 5000);
 
 			script.onload = function () {
@@ -268,7 +269,7 @@
 			script.onerror = function () {
 				clearTimeout(timeoutId);
 				console.log('不蒜子加载失败');
-				// TODO: 可以在这里触发本地计数逻辑
+				// TODO: 可以在这里触发本地计数逻辑或其他补救措施
 			};
 		}
 	</script>
@@ -358,7 +359,7 @@
 			if (visitorNum) {
 				document.getElementById('busuanzi_value_site_pv').innerText = visitorNum
 			} else {
-				document.getElementById('busuanzi_value_site_pv').innerText = "--"
+				document.getElementById('busuanzi_value_site_pv').innerText = "∞+1"
 			}
 
 			// 重新加载
