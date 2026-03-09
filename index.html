@@ -215,7 +215,7 @@
 	<script src="assets/js/load_markdown.js"></script>
 	<script src="assets/js/ripple_effect.js"></script>
 	<!-- <script src="assets/js/circle_cursor.js"></script> -->
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
 
 	<script>
 		MathJax = {
@@ -242,11 +242,11 @@
 			// 使用 requestIdleCallback 在浏览器空闲时加载
 			if ('requestIdleCallback' in window) {
 				requestIdleCallback(() => {
-					// loadBusuanziSafely();
+					loadBusuanziSafely();
 				}, { timeout: 3000 });
 			} else {
 				// 回退方案
-				// setTimeout(loadBusuanziSafely, 3000);
+				setTimeout(loadBusuanziSafely, 3000);
 			}
 		}
 
@@ -254,7 +254,6 @@
 			const script = document.createElement('script');
 			script.src = '//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js';
 			script.async = true;
-			script.crossOrigin = 'anonymous';
 
 			// 设置超时
 			const timeoutId = setTimeout(() => {
