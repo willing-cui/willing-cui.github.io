@@ -215,7 +215,6 @@
 	<script src="assets/js/load_markdown.js"></script>
 	<script src="assets/js/ripple_effect.js"></script>
 	<!-- <script src="assets/js/circle_cursor.js"></script> -->
-    <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
 
 	<script>
 		MathJax = {
@@ -227,6 +226,7 @@
 	</script>
 
 	<!-- 网页访问计数功能脚本 -->
+    <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
 	<script>
 		const isLocal = (
 			window.location.hostname === 'localhost' ||
@@ -237,28 +237,20 @@
 
 		console.log("网站是否处于本地调试模式: " + isLocal);
 
-		// 如果是生产环境，延迟加载不蒜子
+		// 如果是生产环境
 		if (!isLocal) {
-			// 使用 requestIdleCallback 在浏览器空闲时加载
-			if ('requestIdleCallback' in window) {
-				requestIdleCallback(() => {
-					loadBusuanziSafely();
-				}, { timeout: 3000 });
-			} else {
-				// 回退方案
-				setTimeout(loadBusuanziSafely, 3000);
-			}
+			loadBusuanziSafely();
 		}
 
 		function loadBusuanziSafely() {
 			const script = document.createElement('script');
 			script.src = '//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js';
 			script.async = true;
+            document.head.appendChild(script);
 
 			// 设置超时
 			const timeoutId = setTimeout(() => {
 				console.log('不蒜子加载超时');
-				// TODO: 可以在这里触发本地计数逻辑或其他补救措施
 			}, 5000);
 
 			script.onload = function () {
@@ -269,7 +261,6 @@
 			script.onerror = function () {
 				clearTimeout(timeoutId);
 				console.log('不蒜子加载失败');
-				// TODO: 可以在这里触发本地计数逻辑或其他补救措施
 			};
 		}
 	</script>
