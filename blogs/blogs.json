@@ -352,6 +352,15 @@
       "image": null
     },
     {
+      "id": 55,
+      "path": "55_Point_Transformer_V3_Deployment_Analysis",
+      "title_en": "Point Transformer V3 Deployment Analysis",
+      "title_zh": "Point Transformer V3 代码实现分析",
+      "date": "2026/3/10",
+      "category": "AI & RL",
+      "image": null
+    },
+    {
       "id": 29,
       "path": "29_Robotics_Research_Production_Line",
       "title_en": "Robotics Research Production Line",
