@@ -373,10 +373,14 @@ pip install timm
 git clone https://github.com/FindDefinition/cumm
 cd ./cumm
 pip install -e .
+# 如果运行过程中出现：Command '['ninja']' returned non-zero exit status 1.并且回溯报错内容是tensorview库中头文件找不到，可以参考 https://github.com/microsoft/TRELLIS/issues/254 解决。核心操作如下
+cp -r /虚拟环境安装位置/lib/python3.11/site-packages/cumm/include/tensorview /虚拟环境安装位置/lib/python3.11/dist-packages/include/
 
-git clone https://github.com/traveller59/spconv
-cd ./spconv
-pip install -e .
+# git clone https://github.com/traveller59/spconv
+# cd ./spconv
+# pip install -e .
+# 以上面的方式安装仍会出现错误ImportError: arg(): could not convert default argument 'workspace: tv::Tensor' in method '<class 'spconv.core_cc.csrc.sparse.convops.gemmops.GemmTunerSimple'>.run_with_tuned_result' into a Python object (type not registered yet?)。参照 https://github.com/traveller59/spconv/issues/731，解决方案如下
+pip install spconv-cu124
 
 # 安装pytorch_scatter，需在本地重新编译，避免出现ModuleNotFoundError: No module named 'torch'
 git clone https://github.com/rusty1s/pytorch_scatter.git
@@ -387,5 +391,6 @@ pip install packaging
 pip install psutil
 pip install ninja
 pip install flash-attn --no-build-isolation
+
 ```
 
