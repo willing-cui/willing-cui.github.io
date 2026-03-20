@@ -123,6 +123,133 @@ function updateChartLanguage() {
 }
 
 // ===========================================
+// --- 本地缓存管理器 ---
+// ===========================================
+
+class GoldPriceCacheManager {
+    constructor() {
+        this.CACHE_KEY = 'gold_price_cache';
+        this.CACHE_EXPIRY_DAYS = 365; // 缓存过期天数
+        this.maxCacheSize = 365; // 最大缓存天数
+    }
+
+    // 获取完整的缓存数据
+    getCache() {
+        try {
+            const cacheStr = localStorage.getItem(this.CACHE_KEY);
+            if (!cacheStr) return { data: {}, lastCleanup: null };
+            
+            const cache = JSON.parse(cacheStr);
+            if (!cache.data || !cache.lastCleanup) {
+                return { data: {}, lastCleanup: null };
+            }
+            return cache;
+        } catch (error) {
+            console.error('读取金价数据缓存时发生错误:', error);
+            return { data: {}, lastCleanup: null };
+        }
+    }
+
+    // 保存缓存数据
+    saveCache(cache) {
+        try {
+            localStorage.setItem(this.CACHE_KEY, JSON.stringify(cache));
+        } catch (error) {
+            console.error('保存金价数据缓存时发生错误:', error);
+        }
+    }
+
+    // 清理过期缓存
+    cleanupCache() {
+        const cache = this.getCache();
+        const now = new Date();
+        
+        // 如果最近清理过（一天内），跳过
+        if (cache.lastCleanup) {
+            const lastCleanup = new Date(cache.lastCleanup);
+            if ((now - lastCleanup) < 24 * 60 * 60 * 1000) {
+                return;
+            }
+        }
+
+        const expiredDate = new Date();
+        expiredDate.setDate(expiredDate.getDate() - this.CACHE_EXPIRY_DAYS);
+        const expiredDateStr = formatDate(expiredDate);
+
+        // 清理过期数据和限制缓存大小
+        const newData = {};
+        const dates = Object.keys(cache.data).sort();
+        
+        // 保留未过期且最新的数据
+        dates.slice(-this.maxCacheSize).forEach(date => {
+            if (date >= expiredDateStr) {
+                newData[date] = cache.data[date];
+            }
+        });
+
+        cache.data = newData;
+        cache.lastCleanup = now.toISOString();
+        this.saveCache(cache);
+    }
+
+    // 获取缓存中的金价数据
+    getCachedPrice(dateStr) {
+        const cache = this.getCache();
+        return cache.data[dateStr];
+    }
+
+    // 批量获取缓存中的金价数据
+    getCachedPrices(dateStrings) {
+        const cache = this.getCache();
+        const result = [];
+        
+        dateStrings.forEach(dateStr => {
+            if (cache.data[dateStr]) {
+                result.push({
+                    date: dateStr,
+                    price: cache.data[dateStr]
+                });
+            }
+        });
+        
+        return result;
+    }
+
+    // 设置缓存数据
+    setCachedPrice(dateStr, price) {
+        const cache = this.getCache();
+        cache.data[dateStr] = price;
+        this.saveCache(cache);
+    }
+
+    // 批量设置缓存数据
+    setCachedPrices(priceData) {
+        const cache = this.getCache();
+        priceData.forEach(item => {
+            if (item.date && item.price) {
+                cache.data[item.date] = item.price;
+            }
+        });
+        this.saveCache(cache);
+    }
+
+    // 获取需要更新的日期列表
+    getDatesToUpdate(dateStrings) {
+        const cache = this.getCache();
+        return dateStrings.filter(dateStr => !cache.data[dateStr]);
+    }
+
+    // 获取已缓存的日期列表
+    getCachedDates(dateStrings) {
+        const cache = this.getCache();
+        return dateStrings.filter(dateStr => cache.data[dateStr]);
+    }
+}
+
+// 创建缓存管理器实例
+const cacheManager = new GoldPriceCacheManager();
+
+// ===========================================
 // --- 原始代码部分（修改后） ---
 // ===========================================
 
@@ -152,6 +279,20 @@ function getDateRangeFilePaths(days) {
         date.setDate(date.getDate() - 1);
     }
     return filePaths.reverse();
+}
+
+// 获取日期范围
+function getDateRange(days) {
+    const dates = [];
+    let date = new Date();
+    date.setDate(date.getDate());
+
+    for (let i = 0; i < days; i++) {
+        const dateString = formatDate(date);
+        dates.push(dateString);
+        date.setDate(date.getDate() - 1);
+    }
+    return dates.reverse();
 }
 
 // ===========================================
@@ -198,7 +339,7 @@ async function loadTrendingData() {
         container.innerHTML = html;
 
     } catch (error) {
-        console.error('Error loading trending data:', error);
+        console.error('加载热搜词条时发生错误:', error);
         container.innerHTML = `<p style="color: red;">${getTranslation('failed_load')}</p><p>${getTranslation('ensure_file')}</p>`;
     }
 }
@@ -315,48 +456,87 @@ function renderChart(data) {
     debugData.innerHTML = html;
 }
 
-async function fetchAndAggregateData(days) {
-    const filePaths = getDateRangeFilePaths(days);
-    const aggregatedData = [];
-    const promises = filePaths.map(async filePath => {
-        const date = filePath.split('_').pop().split('.')[0];
-        try {
-            const response = await fetch(filePath);
-            if (!response.ok) {
-                throw new Error(`Status: ${response.status}`);
-            }
+// 解析单个文件获取金价
+async function parseGoldPriceFile(filePath, dateStr) {
+    try {
+        const response = await fetch(filePath);
+        if (!response.ok) {
+            throw new Error(`Status: ${response.status}`);
+        }
 
-            const text = await response.text();
-            const records = text.trim().split('\n').filter(line => line.length > 0);
-            const latestRecord = JSON.parse(records[records.length - 1]);
+        const text = await response.text();
+        const records = text.trim().split('\n').filter(line => line.length > 0);
+        const latestRecord = JSON.parse(records[records.length - 1]);
 
-            const zhubaohuiResult = latestRecord.results.find(r => r.platform === '周大福');
+        const zhubaohuiResult = latestRecord.results.find(r => r.platform === '周大福');
 
-            if (zhubaohuiResult && zhubaohuiResult.success && zhubaohuiResult.data) {
-                const sellingPriceItem = zhubaohuiResult.data.find(item => item.type === '999.9饰金卖出价');
+        if (zhubaohuiResult && zhubaohuiResult.success && zhubaohuiResult.data) {
+            const sellingPriceItem = zhubaohuiResult.data.find(item => item.type === '999.9饰金卖出价');
 
-                if (sellingPriceItem) {
-                    const priceString = sellingPriceItem.price_per_gram;
-                    const price = parseFloat(priceString.split(' ')[0]);
+            if (sellingPriceItem) {
+                const priceString = sellingPriceItem.price_per_gram;
+                const price = parseFloat(priceString.split(' ')[0]);
 
-                    if (!isNaN(price)) {
-                        aggregatedData.push({ date, price });
-                    }
+                if (!isNaN(price)) {
+                    return { date: dateStr, price: price };
                 }
             }
-
-        } catch (error) {
-            // Silently skip missing/failing days
         }
-    });
+    } catch (error) {
+        // 文件不存在或解析失败
+        console.warn(`无法加载金价数据 ${dateStr}:`, error.message);
+    }
+    return null;
+}
 
-    await Promise.all(promises);
+// 优化后的聚合数据函数
+async function fetchAndAggregateData(days) {
+    const dates = getDateRange(days);
+    const aggregatedData = [];
+    
+    // 清理过期缓存
+    cacheManager.cleanupCache();
+    
+    // 1. 从缓存获取已有数据
+    const cachedData = cacheManager.getCachedPrices(dates);
+    aggregatedData.push(...cachedData);
+    
+    // 2. 检查哪些日期需要更新
+    const datesToUpdate = cacheManager.getDatesToUpdate(dates);
+    
+    if (datesToUpdate.length > 0) {
+        console.log(`获取 ${datesToUpdate.length} 个新的金价记录...`);
+        
+        // 并发获取新数据
+        const updatePromises = datesToUpdate.map(async (dateStr) => {
+            const filePath = `../scripts/gold_prices/gold_prices_${dateStr}.json`;
+            return await parseGoldPriceFile(filePath, dateStr);
+        });
+
+        const newData = await Promise.all(updatePromises);
+        
+        // 3. 缓存新获取的数据
+        const validNewData = newData.filter(item => item !== null);
+        if (validNewData.length > 0) {
+            cacheManager.setCachedPrices(validNewData);
+            aggregatedData.push(...validNewData);
+        }
+    } else {
+        console.log('所有金价数据已缓存');
+    }
+    
+    // 排序并渲染
     aggregatedData.sort((a, b) => new Date(a.date) - new Date(b.date));
     renderChart(aggregatedData);
 }
 
 function setupGoldPriceTracker() {
     const controls = document.getElementById('chart-controls');
+    
+    // 初始化时清理缓存
+    cacheManager.cleanupCache();
+    
+    // 首次加载数据
     fetchAndAggregateData(7);
 
     controls.addEventListener('click', function (event) {
@@ -446,6 +626,24 @@ window.addEventListener('storage', function (e) {
         }
     }
 });
+
+// 添加缓存清理功能到全局
+window.clearGoldPriceCache = function() {
+    localStorage.removeItem('gold_price_cache');
+    console.log('金价数据缓存已清除');
+    return 'Cache cleared successfully.';
+};
+
+// 显示缓存状态
+window.showCacheStatus = function() {
+    const cache = cacheManager.getCache();
+    const cacheDates = Object.keys(cache.data);
+    return {
+        cacheSize: cacheDates.length,
+        cachedDates: cacheDates.sort(),
+        lastCleanup: cache.lastCleanup
+    };
+};
 
 // 将函数暴露到全局作用域
 window.getTranslation = getTranslation;
