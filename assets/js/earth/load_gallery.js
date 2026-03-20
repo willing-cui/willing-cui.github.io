@@ -166,16 +166,22 @@ function updateColumnCount() {
 
     // console.log('设备像素比:', window.devicePixelRatio);
     const containerWidth = grid.clientWidth * window.devicePixelRatio;
-    console.log(`显示窗口宽度为 ${containerWidth} px`)
+    console.log(`读取显示宽度为 ${grid.clientWidth}, 像素数为 ${containerWidth} px`)
 
     let newColumnCount = 3; // 默认
 
-    if (containerWidth <= 1080 * 0.4) { // 小桌面
+    if (grid.clientWidth < 400) {
+        // 窄竖屏界面（手机界面）
         newColumnCount = 1;
-    } else if (containerWidth <= 2560 * 0.4) { // 中等大小桌面
-        newColumnCount = 2;
-    } else { // 大桌面
-        newColumnCount = 3;
+    } else {
+        // 平板或电脑界面
+        if (containerWidth <= 400) { // 小桌面
+            newColumnCount = 1;
+        } else if (containerWidth <= 1000) { // 中等大小桌面
+            newColumnCount = 2;
+        } else { // 大桌面
+            newColumnCount = 3;
+        }
     }
 
     if (newColumnCount !== columnCount) {
