@@ -93,6 +93,32 @@
     overflow: hidden;
 }
 
+.image-container {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+}
+
+.modal-image-display {
+    cursor: zoom-in;
+    transition: transform 0.1s ease;
+    user-select: none;
+    /* 保持圆角 */
+    border-radius: 0.5rem;
+    overflow: hidden;
+    /* 确保图片内容也有圆角 */
+    transform-origin: center center;
+}
+
+/* 确保放大的图片仍然显示圆角 */
+.modal-image-display {
+    will-change: transform;
+}
+
 /* Close Button */
 .modal-close-btn {
     position: absolute;
@@ -214,7 +240,8 @@
     margin-right: auto;
     padding: 0 1rem;
     width: 100%;
-    min-height: 200px; /* 确保容器有最小高度 */
+    min-height: 200px;
+    /* 确保容器有最小高度 */
 }
 
 /* 图片卡片样式 - 瀑布流优化 */
@@ -224,8 +251,10 @@
     border-radius: 0.75rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     transition: all 0.3s ease;
-    margin-bottom: 0; /* 瀑布流中由JS控制间距 */
-    width: 100%; /* 宽度由JS控制 */
+    margin-bottom: 0;
+    /* 瀑布流中由JS控制间距 */
+    width: 100%;
+    /* 宽度由JS控制 */
     will-change: transform, opacity;
     break-inside: avoid;
     -webkit-column-break-inside: avoid;
@@ -242,7 +271,8 @@
     overflow: hidden;
     border-radius: 0.5rem;
     background-color: rgba(0, 0, 0, 0.2);
-    min-height: 100px; /* 防止图片加载时高度塌陷 */
+    min-height: 100px;
+    /* 防止图片加载时高度塌陷 */
 }
 
 .image-display {
@@ -292,7 +322,7 @@
     .waterfall-grid-container {
         padding: 0 0.5rem;
     }
-    
+
     .image-card {
         padding: 0.5rem;
     }
@@ -329,15 +359,15 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: 
-    radial-gradient(circle at 30% 30%, 
-        rgba(0, 100, 255, 0.9) 0%,
-        rgba(0, 80, 200, 0.8) 20%,
-        rgba(0, 60, 150, 0.7) 100%);
-    box-shadow: 
-    inset 0 0 100px rgba(255, 255, 255, 0.1),
-    inset 0 0 60px rgba(0, 150, 255, 0.3),
-    0 0 80px rgba(0, 100, 255, 0.5);
+    background:
+        radial-gradient(circle at 30% 30%,
+            rgba(0, 100, 255, 0.9) 0%,
+            rgba(0, 80, 200, 0.8) 20%,
+            rgba(0, 60, 150, 0.7) 100%);
+    box-shadow:
+        inset 0 0 100px rgba(255, 255, 255, 0.1),
+        inset 0 0 60px rgba(0, 150, 255, 0.3),
+        0 0 80px rgba(0, 100, 255, 0.5);
 }
 
 /* 地球大陆纹理 - 改进版 */
@@ -348,37 +378,37 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background-image: 
-    /* 亚洲 */
-    radial-gradient(circle at 70% 40%, 
-        rgba(34, 139, 34, 0.8) 0px,
-        rgba(34, 139, 34, 0.6) 40px,
-        transparent 80px),
-    /* 非洲 */
-    radial-gradient(circle at 45% 50%, 
-        rgba(85, 107, 47, 0.8) 0px,
-        rgba(85, 107, 47, 0.6) 35px,
-        transparent 70px),
-    /* 欧洲 */
-    radial-gradient(circle at 55% 30%, 
-        rgba(107, 142, 35, 0.7) 0px,
-        rgba(107, 142, 35, 0.5) 20px,
-        transparent 40px),
-    /* 北美洲 */
-    radial-gradient(circle at 20% 40%, 
-        rgba(60, 179, 113, 0.8) 0px,
-        rgba(60, 179, 113, 0.6) 30px,
-        transparent 60px),
-    /* 南美洲 */
-    radial-gradient(circle at 30% 60%, 
-        rgba(46, 139, 87, 0.8) 0px,
-        rgba(46, 139, 87, 0.6) 25px,
-        transparent 50px),
-    /* 澳大利亚 */
-    radial-gradient(circle at 80% 70%, 
-        rgba(154, 205, 50, 0.7) 0px,
-        rgba(154, 205, 50, 0.5) 20px,
-        transparent 40px);
+    background-image:
+        /* 亚洲 */
+        radial-gradient(circle at 70% 40%,
+            rgba(34, 139, 34, 0.8) 0px,
+            rgba(34, 139, 34, 0.6) 40px,
+            transparent 80px),
+        /* 非洲 */
+        radial-gradient(circle at 45% 50%,
+            rgba(85, 107, 47, 0.8) 0px,
+            rgba(85, 107, 47, 0.6) 35px,
+            transparent 70px),
+        /* 欧洲 */
+        radial-gradient(circle at 55% 30%,
+            rgba(107, 142, 35, 0.7) 0px,
+            rgba(107, 142, 35, 0.5) 20px,
+            transparent 40px),
+        /* 北美洲 */
+        radial-gradient(circle at 20% 40%,
+            rgba(60, 179, 113, 0.8) 0px,
+            rgba(60, 179, 113, 0.6) 30px,
+            transparent 60px),
+        /* 南美洲 */
+        radial-gradient(circle at 30% 60%,
+            rgba(46, 139, 87, 0.8) 0px,
+            rgba(46, 139, 87, 0.6) 25px,
+            transparent 50px),
+        /* 澳大利亚 */
+        radial-gradient(circle at 80% 70%,
+            rgba(154, 205, 50, 0.7) 0px,
+            rgba(154, 205, 50, 0.5) 20px,
+            transparent 40px);
     opacity: 0.9;
     animation: rotateEarth 20s linear infinite;
     mix-blend-mode: overlay;
@@ -392,15 +422,15 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background-image: 
-    radial-gradient(circle at 40% 40%, 
-        rgba(255, 255, 255, 0.4) 0px,
-        rgba(255, 255, 255, 0.2) 30px,
-        transparent 60px),
-    radial-gradient(circle at 60% 60%, 
-        rgba(255, 255, 255, 0.3) 0px,
-        rgba(255, 255, 255, 0.1) 25px,
-        transparent 50px);
+    background-image:
+        radial-gradient(circle at 40% 40%,
+            rgba(255, 255, 255, 0.4) 0px,
+            rgba(255, 255, 255, 0.2) 30px,
+            transparent 60px),
+        radial-gradient(circle at 60% 60%,
+            rgba(255, 255, 255, 0.3) 0px,
+            rgba(255, 255, 255, 0.1) 25px,
+            transparent 50px);
     animation: rotateEarth 15s linear infinite reverse;
     opacity: 0.6;
     mix-blend-mode: screen;
@@ -414,10 +444,10 @@
     width: 30%;
     height: 30%;
     border-radius: 50%;
-    background: radial-gradient(circle, 
-    rgba(255, 255, 255, 0.9) 0%, 
-    rgba(255, 255, 255, 0.2) 30%, 
-    transparent 70%);
+    background: radial-gradient(circle,
+            rgba(255, 255, 255, 0.9) 0%,
+            rgba(255, 255, 255, 0.2) 30%,
+            transparent 70%);
     filter: blur(8px);
     animation: pulseHighlight 6s ease-in-out infinite alternate;
 }
@@ -431,9 +461,9 @@
     height: calc(100% + 20px);
     border-radius: 50%;
     border: 2px solid rgba(0, 150, 255, 0.3);
-    box-shadow: 
-    0 0 100px rgba(0, 150, 255, 0.5),
-    inset 0 0 100px rgba(0, 150, 255, 0.3);
+    box-shadow:
+        0 0 100px rgba(0, 150, 255, 0.5),
+        inset 0 0 100px rgba(0, 150, 255, 0.3);
     animation: pulseAtmosphere 4s ease-in-out infinite;
 }
 
@@ -455,10 +485,10 @@
     left: -10px;
     width: 20px;
     height: 20px;
-    background: radial-gradient(circle, 
-    rgba(255, 255, 200, 0.8) 0%, 
-    rgba(255, 255, 200, 0.2) 50%, 
-    transparent 100%);
+    background: radial-gradient(circle,
+            rgba(255, 255, 200, 0.8) 0%,
+            rgba(255, 255, 200, 0.2) 50%,
+            transparent 100%);
     border-radius: 50%;
     transform: translateY(-50%);
     animation: orbitRotation 3s linear infinite;
@@ -483,9 +513,9 @@
     font-size: 2.5em;
     font-weight: 300;
     color: #00e0ff;
-    text-shadow: 
-    0 0 20px rgba(0, 224, 255, 0.8),
-    0 0 40px rgba(0, 224, 255, 0.4);
+    text-shadow:
+        0 0 20px rgba(0, 224, 255, 0.8),
+        0 0 40px rgba(0, 224, 255, 0.4);
     font-family: 'Arial', sans-serif;
 }
 
@@ -503,10 +533,10 @@
 .progress-bar {
     width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, 
-    rgba(0, 200, 255, 0.2) 0%,
-    rgba(0, 224, 255, 0.8) 50%,
-    rgba(0, 150, 255, 1) 100%);
+    background: linear-gradient(90deg,
+            rgba(0, 200, 255, 0.2) 0%,
+            rgba(0, 224, 255, 0.8) 50%,
+            rgba(0, 150, 255, 1) 100%);
     border-radius: 3px;
     transition: width 0.3s ease;
     position: relative;
@@ -520,10 +550,10 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-    transparent 0%,
-    rgba(255, 255, 255, 0.4) 50%,
-    transparent 100%);
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.4) 50%,
+            transparent 100%);
     animation: progressShine 1.5s infinite;
 }
 
@@ -550,65 +580,77 @@
 /* 动画定义 */
 @keyframes rotateEarth {
     0% {
-    transform: rotate(0deg);
+        transform: rotate(0deg);
     }
+
     100% {
-    transform: rotate(360deg);
+        transform: rotate(360deg);
     }
 }
 
 @keyframes pulseHighlight {
-    0%, 100% {
-    transform: translate(-10%, -10%) scale(1);
-    opacity: 0.8;
+
+    0%,
+    100% {
+        transform: translate(-10%, -10%) scale(1);
+        opacity: 0.8;
     }
+
     50% {
-    transform: translate(10%, 10%) scale(1.2);
-    opacity: 0.4;
+        transform: translate(10%, 10%) scale(1.2);
+        opacity: 0.4;
     }
 }
 
 @keyframes pulseAtmosphere {
-    0%, 100% {
-    box-shadow: 
-        0 0 100px rgba(0, 150, 255, 0.5),
-        inset 0 0 100px rgba(0, 150, 255, 0.3);
-    transform: scale(1);
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 100px rgba(0, 150, 255, 0.5),
+            inset 0 0 100px rgba(0, 150, 255, 0.3);
+        transform: scale(1);
     }
+
     50% {
-    box-shadow: 
-        0 0 150px rgba(0, 200, 255, 0.7),
-        inset 0 0 150px rgba(0, 200, 255, 0.5);
-    transform: scale(1.02);
+        box-shadow:
+            0 0 150px rgba(0, 200, 255, 0.7),
+            inset 0 0 150px rgba(0, 200, 255, 0.5);
+        transform: scale(1.02);
     }
 }
 
 @keyframes orbitRotation {
     0% {
-    transform: translateY(-50%) rotate(0deg) translateX(calc(150px + 20px)) rotate(0deg);
+        transform: translateY(-50%) rotate(0deg) translateX(calc(150px + 20px)) rotate(0deg);
     }
+
     100% {
-    transform: translateY(-50%) rotate(360deg) translateX(calc(150px + 20px)) rotate(-360deg);
+        transform: translateY(-50%) rotate(360deg) translateX(calc(150px + 20px)) rotate(-360deg);
     }
 }
 
 @keyframes progressShine {
     0% {
-    transform: translateX(-100%);
+        transform: translateX(-100%);
     }
+
     100% {
-    transform: translateX(100%);
+        transform: translateX(100%);
     }
 }
 
 @keyframes dotPulse {
-    0%, 100% {
-    opacity: 0.2;
-    transform: translateY(0px);
+
+    0%,
+    100% {
+        opacity: 0.2;
+        transform: translateY(0px);
     }
+
     50% {
-    opacity: 1;
-    transform: translateY(-2px);
+        opacity: 1;
+        transform: translateY(-2px);
     }
 }
 
@@ -630,6 +672,13 @@
 }
 
 @keyframes twinkle {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 1;
+    }
 }
