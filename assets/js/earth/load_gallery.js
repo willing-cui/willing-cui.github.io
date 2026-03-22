@@ -256,6 +256,18 @@ function applyWaterfallLayout() {
     console.log(`瀑布流布局应用完成，${columnCount}列，总高度: ${maxHeight}px`);
 }
 
+/* 模态框相关代码 */
+// 缩放控制
+let currentScale = 1;
+const scaleStep = 0.1;
+const minScale = 1;
+const maxScale = 5;
+
+// 拖拽控制
+let isDragging = false;
+let startX, startY;
+let translateX = 0, translateY = 0;
+
 // 显示模态框
 window.showModal = (src) => {
     modalImage.src = src;
@@ -269,8 +281,157 @@ window.hideModal = (event) => {
         modal.classList.remove('is-visible');
         modalImage.src = '';
         document.body.style.overflow = '';
+        resetImage(); // 重置变换
     }
 };
+
+// 滚轮缩放
+function zoomImage(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const modalImage = document.getElementById('modal-image');
+    const rect = modalImage.getBoundingClientRect();
+
+    // 计算鼠标相对位置
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+
+    // 保存之前的缩放比例
+    const oldScale = currentScale;
+
+    // 判断滚轮方向
+    if (event.deltaY < 0) {
+        // 放大
+        currentScale = Math.min(currentScale + scaleStep, maxScale);
+    } else {
+        // 缩小
+        currentScale = Math.max(currentScale - scaleStep, minScale);
+    }
+
+    // 计算新的位移，保持缩放中心
+    if (currentScale !== oldScale) {
+        const scaleChange = currentScale / oldScale;
+        const relativeX = mouseX - rect.width / 2;
+        const relativeY = mouseY - rect.height / 2;
+
+        translateX = translateX + (1 - scaleChange) * relativeX;
+        translateY = translateY + (1 - scaleChange) * relativeY;
+
+        // 如果缩小到原始大小，自动归中
+        if (currentScale === 1) {
+            translateX = 0;
+            translateY = 0;
+        }
+    }
+
+    // 应用变换
+    applyTransform();
+}
+
+// 拖拽功能
+function startDrag(event) {
+    if (currentScale <= 1) return;
+
+    isDragging = true;
+    startX = event.clientX - translateX;
+    startY = event.clientY - translateY;
+
+    document.addEventListener('mousemove', dragImage);
+    document.addEventListener('mouseup', stopDrag);
+
+    event.preventDefault();
+}
+
+function dragImage(event) {
+    if (!isDragging) return;
+
+    translateX = event.clientX - startX;
+    translateY = event.clientY - startY;
+
+    applyTransform();
+}
+
+function stopDrag() {
+    isDragging = false;
+    document.removeEventListener('mousemove', dragImage);
+    document.removeEventListener('mouseup', stopDrag);
+}
+
+// 双击重置
+function resetImage() {
+    currentScale = 1;
+    translateX = 0;
+    translateY = 0;
+    applyTransform();
+}
+
+// 应用变换
+function applyTransform() {
+    const modalImage = document.getElementById('modal-image');
+
+    // 构建变换字符串
+    let transform = `scale(${currentScale})`;
+    if (translateX !== 0 || translateY !== 0) {
+        transform = `translate(${translateX}px, ${translateY}px) ${transform}`;
+    }
+
+    modalImage.style.transform = transform;
+    modalImage.style.transformOrigin = 'center center';
+    modalImage.style.transition = currentScale === 1 ? 'transform 0.3s ease' : 'transform 0.1s ease';
+
+    // 更新光标样式
+    modalImage.style.cursor = currentScale > 1 ? 'grab' : 'zoom-in';
+    if (isDragging && currentScale > 1) {
+        modalImage.style.cursor = 'grabbing';
+    }
+}
+
+// 绑定滚轮事件
+const imageContainer = document.getElementById('image-container');
+imageContainer.addEventListener('wheel', zoomImage, { passive: false });
+
+// 键盘快捷键
+document.addEventListener('keydown', function (event) {
+    const modal = document.getElementById('image-modal');
+    if (!modal.classList.contains('is-visible')) return;
+
+    switch (event.key) {
+        case '0':
+        case 'Escape':
+            resetImage();
+            break;
+        case '+':
+        case '=':
+            if (event.shiftKey) {
+                const oldScale = currentScale;
+                currentScale = Math.min(currentScale + scaleStep, maxScale);
+
+                // 如果缩小到原始大小，自动归中
+                if (currentScale === 1) {
+                    translateX = 0;
+                    translateY = 0;
+                }
+
+                applyTransform();
+                event.preventDefault();
+            }
+            break;
+        case '-':
+            const oldScale = currentScale;
+            currentScale = Math.max(currentScale - scaleStep, minScale);
+
+            // 如果缩小到原始大小，自动归中
+            if (currentScale === 1) {
+                translateX = 0;
+                translateY = 0;
+            }
+
+            applyTransform();
+            event.preventDefault();
+            break;
+    }
+});
 
 // 创建单个图片卡片（支持懒加载）
 function createImageCard(dataUrl, name, time, isLazy = true) {
@@ -520,7 +681,10 @@ function setWaterfallColumns(columns) {
 window.loadPhotos = loadPhotos; // 暴露到window对象
 window.refreshWaterfallLayout = refreshWaterfallLayout;
 window.setWaterfallColumns = setWaterfallColumns;
-export { loadPhotos, initializeGallery, cleanupGallery, refreshWaterfallLayout, setWaterfallColumns };
+// HTML的 ondblclick和 onmousedown属性是直接在全局作用域中查找函数的
+window.resetImage = resetImage;
+window.startDrag = startDrag;
+export { loadPhotos, initializeGallery, cleanupGallery, refreshWaterfallLayout, setWaterfallColumns};
 
 // 如果需要在页面加载时自动初始化
 if (document.readyState === 'loading') {

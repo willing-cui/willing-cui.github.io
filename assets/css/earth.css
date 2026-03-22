@@ -21,6 +21,7 @@
     background-size: 20px 20px;
     background-repeat: no-repeat;
     background-position: center;
+    z-index: 10000;
 }
 
 .gallery_icon:before {

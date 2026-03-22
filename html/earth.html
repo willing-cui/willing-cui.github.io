@@ -100,20 +100,52 @@
         </div>
     </div>
 
-    <!-- 放大图片展示 -->
+    <!-- 放大图片展示 (模态框) -->
     <div id="image-modal" class="image-modal-lightbox" onclick="hideModal(event)">
         <div class="modal-content-wrapper" onclick="event.stopPropagation()">
             <div class="gallery_icon"
                 style="background-image: url('../images/close-w.png'); margin-top: 0.5rem; margin-right: 0.5rem;"
                 onclick="hideModal()"></div>
-            <img id="modal-image" src="" alt="Enlarged Image" class="modal-image-display" onclick="hideModal()">
+            <div class="image-container" id="image-container">
+                <img id="modal-image" src="" alt="Enlarged Image" class="modal-image-display" ondblclick="resetImage()"
+                    onmousedown="startDrag(event)">
+            </div>
         </div>
     </div>
+
+    <style>
+        .image-container {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+        }
+
+        .modal-image-display {
+            cursor: zoom-in;
+            transition: transform 0.1s ease;
+            user-select: none;
+            /* 保持圆角 */
+            border-radius: 0.5rem;
+            overflow: hidden;
+            /* 确保图片内容也有圆角 */
+            transform-origin: center center;
+        }
+
+        /* 确保放大的图片仍然显示圆角 */
+        .modal-image-display {
+            will-change: transform;
+        }
+    </style>
 
     <script type="module" rel="preload" src="../assets/js/earth/earth_progress_bar.js"></script>
     <script type="module" rel="preload" src="../assets/js/earth/earth.js"></script>
     <script type="module" rel="preload" src="../assets/js/earth/earth_ui.js"></script>
     <script type="module" rel="preload" src="../assets/js/earth/landmark.js"></script>
+    <script type="module" rel="preload" src="../assets/js/earth/load_gallery.js"></script>
 
     <script src="../assets/js/jquery.min.js"></script>
     <!-- 语言切换功能脚本 -->
