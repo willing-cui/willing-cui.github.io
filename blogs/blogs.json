@@ -494,6 +494,15 @@
       "date": "2026/1/8",
       "category": "Other Notes",
       "image": null
+    },
+	{
+      "id": 56,
+      "path": "56_Install_Isaac_on_Windows",
+      "title_en": "Install IsaacSim on Windows",
+      "title_zh": "在Windows系统上安装IsaacSim",
+      "date": "2026/3/29",
+      "category": "Other Notes",
+      "image": "./blogs/56_Install_Isaac_on_Windows/IsaacSim.webp"
     }
   ]
 }
