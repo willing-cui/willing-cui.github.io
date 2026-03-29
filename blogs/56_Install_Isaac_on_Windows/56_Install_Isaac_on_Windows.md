@@ -3,6 +3,8 @@
 1. <a href="https://github.com/isaac-sim/IsaacSim" target="_blank" rel="noopener noreferrer">NVIDIA Isaac Sim Github</a>
 
 > NVIDIA Isaac Sim™ 是一个基于 NVIDIA Omniverse 的仿真平台，旨在用于在逼真的虚拟环境中开发、测试、训练和部署 AI 驱动的机器人。它支持从 URDF、MJCF 和 CAD 等常用格式导入机器人系统。该仿真器利用高保真、GPU 加速的物理引擎来模拟精确的动力学，并支持大规模的多传感器 RTX 渲染。它配备了端到端的工作流程，包括合成数据生成、强化学习、ROS 集成和数字孪生仿真。Isaac Sim 为机器人开发的各个阶段提供支持所需的基础设施。
+>
+> （摘自Isaac Sim Github页面）
 
 2. <a href="https://github.com/isaac-sim/IsaacLab" target="_blank" rel="noopener noreferrer">NVIDIA Isaac Lab Github</a>
 
@@ -10,7 +12,9 @@
 >
 > Isaac Lab 为开发者提供了一系列用于精确传感器仿真的关键功能，例如基于 RTX 的摄像头、激光雷达或接触式传感器。该框架的 GPU 加速功能使用户能够更快地运行复杂的仿真和计算，这对于强化学习和数据密集型任务等迭代过程至关重要。此外，Isaac Lab 既可在本地运行，也可在云端部署，为大规模部署提供了灵活性。
 >
-> 有关 Isaac Lab 的详细描述，请参阅我们的[arXiv 论文](https://arxiv.org/abs/2511.04831)。
+> 有关 Isaac Lab 的详细描述，请参阅[arXiv 论文](https://arxiv.org/abs/2511.04831)。
+>
+> （摘自Isaac Lab Github页面）
 
 ## 安装过程
 
