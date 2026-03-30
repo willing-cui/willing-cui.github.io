@@ -1,52 +1,68 @@
-var visitorMsgTimer = undefined;
+// 监听页面加载和语言切换
+window.addEventListener('load', delayedBlogInitVisitorInfoSubmit);
+window.addEventListener('languageChange', delayedBlogInitVisitorInfoSubmit);
 
-function initVisitorInfoSubmit() {
-    clearTimeout(visitorMsgTimer);
+// TODO: Can not read the JSON returned by the Google Apps Script.
 
-    // Wait for the page to fully load
-    const form = document.getElementById('blogVisitorMsg'); // Get the form element
-    form.addEventListener("submit", function (e) { // Listen for form submission
-        e.preventDefault(); // Prevent the default form submission behavior
-        const data = new FormData(form); // Create a FormData object from the form
-        const action = e.target.action; // Get the form's action URL
+var blogVisitorMsgTimer = undefined;
 
-        fetch(action, { // Send a POST request to the server
+function initBlogVisitorInfoSubmit() {
+    clearTimeout(blogVisitorMsgTimer);
+    const lang = getCurrentLanguage();
+    
+    const form = document.getElementById('blogVisitorMsg');
+    if (!form) {
+        console.log("未找到用户反馈表单");
+        return;
+    }
+    
+    // 每次都需要重新绑定事件，因为表单是全新的DOM元素
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const data = new FormData(form);
+        const action = e.target.action;
+        
+        fetch(action, {
             method: 'POST',
             body: data,
             mode: 'no-cors',
         })
-            .then(response => {
-                // console.log(response);
-                // alert("Success!");
-
-                Swal.fire({
-                    title: "SUCCESS",
-                    text: "Your information has been submitted!",
-                    icon: "success",
-                    theme: "dark"
-                });
-                form.reset();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // alert("An error occurred. Please try again.");
-                Swal.fire({
-                    title: "ERROR",
-                    text: "An error occurred. Please try again.",
-                    icon: "error",
-                    theme: "dark"
-                });
-
+        .then(() => {
+            Swal.fire({
+                title: lang === 'en' ? "SUCCESS" : "提交成功",
+                text: lang === 'en' ? "Your information has been submitted!" : "表单已提交, 感谢来信!",
+                icon: "success",
+                theme: "dark"
             });
+            form.reset();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                title: lang === 'en' ? "ERROR" : "提交失败",
+                text: lang === 'en' ? "An error occurred. Please try again." : "请稍后重试。",
+                icon: "error",
+                theme: "dark"
+            });
+        });
     });
-};
+    
+    console.log("用户反馈提交表单（博客页面）初始化成功，当前语言：" + lang);
+}
 
-window.addEventListener("load", function () {
-    if (document.getElementById('blogVisitorMsg')) {
-        initVisitorInfoSubmit();
+function getCurrentLanguage() {
+    const savedLang = localStorage.getItem('preferred-language');
+    const browserLang = navigator.language.startsWith('zh') ? 'zh' : 'en';
+    return savedLang || browserLang || 'en';
+}
+
+function delayedBlogInitVisitorInfoSubmit() {
+    clearTimeout(blogVisitorMsgTimer);
+    
+    if (document.getElementById('visitorMsg')) {
+        initBlogVisitorInfoSubmit();
     } else {
-        visitorMsgTimer = setTimeout(() => {
-            initVisitorInfoSubmit();
-        }, 100);
+        // 如果新HTML还没完全加载，等待一下
+        blogVisitorMsgTimer = setTimeout(delayedBlogInitVisitorInfoSubmit, 200);
     }
-});
+}

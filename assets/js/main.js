@@ -319,6 +319,7 @@
                 const url = window.location;
                 const newUrl = url.origin + url.pathname + '#';
                 history.pushState('', '', newUrl);
+                raiseMenu();
             }
         }
 

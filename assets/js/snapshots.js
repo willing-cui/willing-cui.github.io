@@ -190,9 +190,6 @@ function initCarousel() {
         } else if (e.key === 'ArrowRight') {
             nextSlide();
             resetAutoPlay();
-        } else if (e.key === ' ' || e.key === 'Spacebar') {
-            e.preventDefault();
-            toggleAutoPlay();
         }
     });
 
