@@ -268,22 +268,6 @@ let isDragging = false;
 let startX, startY;
 let translateX = 0, translateY = 0;
 
-// 显示模态框
-window.showModal = (src) => {
-    modalImage.src = src;
-    modal.classList.add('is-visible');
-    document.body.style.overflow = 'hidden';
-};
-
-// 隐藏模态框
-window.hideModal = (event) => {
-    if (event === undefined || event.target.id === 'image-modal' || event.target.id === 'modal-image') {
-        modal.classList.remove('is-visible');
-        modalImage.src = '';
-        document.body.style.overflow = '';
-        resetImage(); // 重置变换
-    }
-};
 
 // 滚轮缩放
 function zoomImage(event) {

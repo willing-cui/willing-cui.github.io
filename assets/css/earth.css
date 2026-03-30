@@ -682,3 +682,161 @@
         opacity: 1;
     }
 }
+
+/* 图片容器 */
+.modal-image-wrapper {
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+    transition: opacity 0.3s ease;
+}
+
+.modal-image-display {
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.modal-image-display.is-loaded {
+    opacity: 1;
+}
+
+/* 图片占位符样式 */
+.image-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.placeholder-icon {
+    width: 60px;
+    height: 60px;
+    opacity: 0.3;
+    filter: grayscale(1);
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+        filter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.placeholder-icon svg {
+    width: 100%;
+    height: 100%;
+    fill: white;
+}
+
+.placeholder-text {
+    color: white;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+    opacity: 0.6;
+}
+
+/* 优雅进度条样式 */
+.modal-loading-progress-container {
+    position: absolute;
+    top: calc(50% + 80px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1002;
+    width: 200px;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.modal-progress-background {
+    width: 100%;
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 12px;
+}
+
+.modal-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg,
+            #667eea 0%,
+            #764ba2 50%,
+            #667eea 100%);
+    background-size: 200% 100%;
+    border-radius: 3px;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: modal-progress-shimmer 2s infinite linear;
+    position: relative;
+}
+
+.modal-progress-text {
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.5px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* 动画效果 */
+@keyframes modal-progress-shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: 0 0;
+    }
+}
+
+@keyframes placeholder-pulse {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.05);
+        opacity: 0.9;
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .modal-loading-progress-container {
+        width: 90%;
+    }
+
+    .modal-progress-text {
+        font-size: 13px;
+    }
+
+    .gallery {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .image-placeholder {
+        width: 100px;
+        height: 100px;
+    }
+
+    .placeholder-icon {
+        width: 50px;
+        height: 50px;
+    }
+}

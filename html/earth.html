@@ -107,6 +107,26 @@
                 style="background-image: url('../images/close-w.png'); margin-top: 0.5rem; margin-right: 0.5rem;"
                 onclick="hideModal()"></div>
             <div class="image-container" id="image-container">
+                <!-- 图片占位符 -->
+                <div id="image-placeholder" class="image-placeholder">
+                    <div class="placeholder-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+                        </svg>
+                    </div>
+                    <div class="placeholder-text">图片加载中...</div>
+                </div>
+
+                <!-- 加载进度条 -->
+                <div id="modal-loading-progress" class="modal-loading-progress-container">
+                    <div class="modal-progress-background">
+                        <div id="modal-progress-bar" class="modal-progress-bar"></div>
+                    </div>
+                    <div id="modal-progress-text" class="modal-progress-text">0%</div>
+                </div>
+
+                <!-- 图片容器 -->
                 <img id="modal-image" src="" alt="Enlarged Image" class="modal-image-display" ondblclick="resetImage()"
                     onmousedown="startDrag(event)">
             </div>
@@ -118,6 +138,7 @@
     <script type="module" rel="preload" src="../assets/js/earth/earth_ui.js"></script>
     <script type="module" rel="preload" src="../assets/js/earth/landmark.js"></script>
     <script type="module" rel="preload" src="../assets/js/earth/load_gallery.js"></script>
+    <script type="module" rel="preload" src="../assets/js/earth/modal_progress_bar.js"></script>
 
     <script src="../assets/js/jquery.min.js"></script>
     <!-- 语言切换功能脚本 -->
