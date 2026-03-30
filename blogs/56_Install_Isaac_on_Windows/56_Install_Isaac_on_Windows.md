@@ -22,7 +22,7 @@
 
 - [**Git**](https://git-scm.com/downloads)：用于版本控制和代码仓库管理
 - [**Git LFS**](https://git-lfs.com/)：用于管理仓库中的大型文件
-- **（仅限 Windows - C++）Microsoft Visual Studio（2019 或 2022） ：您可以从**[Visual Studio 下载中心](https://visualstudio.microsoft.com/downloads/)安装最新版本。请确保已选择“ **使用 C++ 的桌面开发”工作负载。** 
+- **（仅限 Windows - C++）Microsoft Visual Studio（2019 或 2022） ：您可以从**[Visual Studio 下载中心](https://visualstudio.microsoft.com/downloads/)安装最新版本。请确保已选择“ **使用 C++ 的桌面开发”工作负载。**本博客展示的安装过程中使用的版本是VS2026。
 - **（仅限 Windows - C++）Windows SDK**：请将其与 MSVC 一起安装。您可以在 Visual Studio 安装程序中找到它。
 
 <span class="image main">
@@ -67,11 +67,11 @@ vs_path = "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\"
 # Windows SDK path; This will prevent needing to dynamically locate an installation by guesswork.
 winsdk_path = "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.26100.0"
 
-## 4） 将"platform:windows-x86_64".enabled 标签设置为true，注意保持其他标签的值不变
+## 4） 将"platform:windows-x86_64".enabled 标签设置为true，其他选项设置为false
 [repo_docs]
 "platform:linux-aarch64".enabled = false # Disable docs generation for aarch64 platforms, as it is not supported.
 "platform:windows-x86_64".enabled = true # Disable docs generation for windows64 platforms, as it is not supported.
-"platform:linux-x86_64".enabled = true
+"platform:linux-x86_64".enabled = false
 
 ## 5） 由于vs2026改变了文件工程的后缀，需要将isaac-sim.sln改为isaac-sim.slnx
 [repo_build.msbuild]
