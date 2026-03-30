@@ -21,8 +21,13 @@
 ### 0. 安装依赖项
 
 - [**Git**](https://git-scm.com/downloads)：用于版本控制和代码仓库管理
+
 - [**Git LFS**](https://git-lfs.com/)：用于管理仓库中的大型文件
-- **（仅限 Windows - C++）Microsoft Visual Studio（2019 或 2022） ：您可以从**[Visual Studio 下载中心](https://visualstudio.microsoft.com/downloads/)安装最新版本。请确保已选择“ **使用 C++ 的桌面开发”工作负载。**本博客展示的安装过程中使用的版本是VS2026。
+
+- **（仅限 Windows - C++）Microsoft Visual Studio（2019 或 2022） ：您可以从**[Visual Studio 下载中心](https://visualstudio.microsoft.com/downloads/)安装最新版本。请确保已选择“ **使用 C++ 的桌面开发”工作负载。**
+
+  本博客展示的安装过程中使用的版本是VS2026。
+
 - **（仅限 Windows - C++）Windows SDK**：请将其与 MSVC 一起安装。您可以在 Visual Studio 安装程序中找到它。
 
 <span class="image main">
