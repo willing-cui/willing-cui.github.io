@@ -97,7 +97,7 @@ function loadImageWithProgress(imageSrc) {
             placeholderIcon.style.filter = `grayscale(${1 - clarity})`;
 
             // 更新占位符文本
-            placeholderText.textContent = `加载中... ${modalImageLoadProgress}%`;
+            placeholderText.textContent = `加载中...`;
         } else {
             // 如果无法计算进度，使用保守的模拟进度
             if (modalImageLoadProgress < 50) {
