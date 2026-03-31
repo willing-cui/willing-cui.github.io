@@ -97,7 +97,7 @@ function loadImageWithProgress(imageSrc) {
             placeholderIcon.style.filter = `grayscale(${1 - clarity})`;
 
             // 更新占位符文本
-            placeholderText.textContent = `加载中...`;
+            placeholderText.textContent = `Loading ...`;
         } else {
             // 如果无法计算进度，使用保守的模拟进度
             if (modalImageLoadProgress < 50) {
@@ -123,7 +123,7 @@ function loadImageWithProgress(imageSrc) {
             // 最终更新占位符
             placeholderIcon.style.opacity = '1';
             placeholderIcon.style.filter = 'grayscale(0)';
-            placeholderText.textContent = '加载完成';
+            placeholderText.textContent = 'Completed!';
 
             // 设置实际图片
             modalImage.onload = function() {
@@ -180,7 +180,7 @@ function handleImageLoadError() {
 
     // 错误状态
     modalProgressBar.style.background = '#ff6b6b';
-    modalProgressText.textContent = '加载失败';
+    modalProgressText.textContent = '...';
     modalProgressText.style.color = '#ff6b6b';
 
     // 更新占位符
@@ -192,7 +192,7 @@ function handleImageLoadError() {
     placeholderIcon.style.fill = '#ff6b6b';
     placeholderIcon.style.opacity = '1';
     placeholderIcon.style.filter = 'none';
-    placeholderText.textContent = '图片加载失败';
+    placeholderText.textContent = 'Loading Failed';
     placeholderText.style.color = '#ff6b6b';
 
     // 延迟隐藏
@@ -224,7 +224,7 @@ function resetModalState() {
     placeholderIcon.style.opacity = '0.3';
     placeholderIcon.style.filter = 'grayscale(1)';
     placeholderIcon.style.fill = 'white';
-    placeholderText.textContent = '图片加载中...';
+    placeholderText.textContent = 'Loading ...';
     placeholderText.style.color = 'white';
 
     // 重置进度条
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 placeholderIcon.style.filter = 'grayscale(0)';
             }
             if (placeholderText) {
-                placeholderText.textContent = '加载完成';
+                placeholderText.textContent = 'Completed!';
             }
         }
     });
