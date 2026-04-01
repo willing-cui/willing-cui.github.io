@@ -18,44 +18,58 @@ const placeholderImg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAGJCA
 const projects = [
     {
         src: "images/mrc_board.webp",
-        alt: "A PCB for signal sampling and weighted signal combination.",
-        description_en: "A PCB for signal sampling and weighted signal combination.",
-        description_zh: "用于8路模拟信号采样和加权相加的PCB模块。",
-        color: "#fff"
-    },
-    {
-        src: "images/transceiver_box.webp",
-        alt: "An optical transceiver with housing and mounting bracket.",
-        description_en: "An optical transceiver with housing and mounting bracket.",
-        description_zh: "带外壳和安装支架的无线光通信收发器。",
+        alt: "A PCB for signal sampling and weighted signal combination",
+        description_en: "A PCB for signal sampling and weighted signal combination",
+        description_zh: "用于8路模拟信号采样和加权相加的PCB模块",
         color: "#fff"
     },
     {
         src: "images/omnidirectional_transceiver.webp",
-        alt: "An omnidirectional optical transceiver.",
-        description_en: "An omnidirectional optical transceiver.",
-        description_zh: "一个全向8发8收无线光通信收发器。",
+        alt: "An omnidirectional optical transceiver",
+        description_en: "An omnidirectional optical transceiver",
+        description_zh: "一个全向8发8收无线光通信收发器",
         color: "#fff"
     },
     {
         src: "images/omnidirectional_transceiver_boards.webp",
-        alt: "PCBs of the omnidirectional optical transceiver.",
-        description_en: "PCBs of the omnidirectional optical transceiver.",
-        description_zh: "全向8发8收无线光通信收发器的各个PCB组件。",
+        alt: "PCBs of the omnidirectional optical transceiver",
+        description_en: "PCBs of the omnidirectional optical transceiver",
+        description_zh: "全向8发8收无线光通信收发器的各个PCB组件",
+        color: "#fff"
+    },
+    {
+        src: "images/transceiver_box.webp",
+        alt: "An optical transceiver with housing and mounting bracket",
+        description_en: "An optical transceiver with housing and mounting bracket",
+        description_zh: "带外壳和安装支架的无线光通信收发器",
         color: "#fff"
     },
     {
         src: "images/transceiver_kit.webp",
-        alt: "An directional optical transceiver (front view).",
-        description_en: "An directional optical transceiver (front view).",
-        description_zh: "一个定向光通信收发器 (前视图)",
+        alt: "An directional optical transceiver (front view)",
+        description_en: "An directional optical transceiver (front view)",
+        description_zh: "一个定向光通信收发器（前视图）",
         color: "#fff"
     },
     {
         src: "images/transceiver_kit_b.webp",
-        alt: "An directional optical transceiver (back view).",
-        description_en: "An directional optical transceiver (back view).",
-        description_zh: "一个定向光通信收发器 (后视图)",
+        alt: "An directional optical transceiver (back view)",
+        description_en: "An directional optical transceiver (back view)",
+        description_zh: "一个定向光通信收发器（后视图）",
+        color: "#fff"
+    },
+    {
+        src: "images/env_moni.webp",
+        alt: "A multi-indicator environmental monitoring system (front view)",
+        description_en: "A multi-indicator environmental monitoring system (front view)",
+        description_zh: "一台多指标环境监测系统（前视图）",
+        color: "#fff"
+    },
+    {
+        src: "images/env_moni_b.webp",
+        alt: "A multi-indicator environmental monitoring system (back view)",
+        description_en: "A multi-indicator environmental monitoring system (back view)",
+        description_zh: "一台多指标环境监测系统 (后视图)",
         color: "#fff"
     }
 ];
