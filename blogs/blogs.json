@@ -370,6 +370,141 @@
       "image": "./blogs/29_Robotics_Research_Production_Line/Robotics_Research_Production_Line.webp"
     },
     {
+      "id": 58,
+      "path": "58_SVD",
+      "title_en": "SVD and its Applications in Robotics",
+      "title_zh": "奇异值分解及其在机器人领域的应用",
+      "date": "2026/4/4",
+      "category": "Embodied Intelligence",
+      "image": null
+    },
+    {
+      "id": 60,
+      "path": "60_Least_Squares",
+      "title_en": "Applications of the Least Squares Method in Robotics",
+      "title_zh": "最小二乘法在机器人领域的应用",
+      "date": "2026/4/5",
+      "category": "Embodied Intelligence",
+      "image": null
+    },
+    {
+      "id": 59,
+      "path": "59_Ill-Conditioned",
+      "title_en": "Ill-Conditioned Matrices in Numerical Computation",
+      "title_zh": "数值计算中的“病态”矩阵",
+      "date": "2026/4/4",
+      "category": "Embodied Intelligence",
+      "image": null
+    },
+    {
+      "id": 61,
+      "path": "61_Singularity_and_Matrix_Ill-Conditioning",
+      "title_en": "An Discussion of Least Squares Method and Matrix Ill-Conditioning",
+      "title_zh": "关于最小二乘法与矩阵病态性的深入探讨",
+      "date": "2026/4/5",
+      "category": "Embodied Intelligence",
+      "image": null
+    },
+    {
+      "id": 62,
+      "path": "62_Bayesian_and_Kalman_Filter",
+      "title_en": "Bayesian and Kalman Filter",
+      "title_zh": "贝叶斯滤波与卡尔曼滤波",
+      "date": "2026/4/5",
+      "category": "Embodied Intelligence",
+      "image": null
+    },
+    {
+      "id": 64,
+      "path": "64_MDP_PPO_DDPG_SAC",
+      "title_en": "Deep Reinforcement Learning Core Algorithms: MDP, PPO, DDPG, SAC",
+      "title_zh": "深度强化学习核心算法: MDP, PPO, DDPG, SAC",
+      "date": "2026/4/5",
+      "category": "Embodied Intelligence",
+      "image": null
+    },
+    {
+      "id": 65,
+      "path": "65_TD-Error",
+      "title_en": "Temporal Difference Error (TD-Error)",
+      "title_zh": "时序差分误差（TD-Error）",
+      "date": "2026/4/5",
+      "category": "Embodied Intelligence",
+      "image": null
+    },
+    {
+      "id": 66,
+      "path": "66_Reparameterization_Trick",
+      "title_en": "Reparameterization Trick",
+      "title_zh": "重参数化（Reparameterization Trick）",
+      "date": "2026/4/5",
+      "category": "Embodied Intelligence",
+      "image": null
+    },
+    {
+      "id": 67,
+      "path": "67_Sim2Real",
+      "title_en": "Simulation to Reality",
+      "title_zh": "仿真到现实迁移",
+      "date": "2026/4/5",
+      "category": "Embodied Intelligence",
+      "image": null
+    },
+    {
+      "id": 68,
+      "path": "68_LLM_VLM-Based_Robotic_Task_Planning",
+      "title_en": "LLM/VLM-Based Robotic Task Planning",
+      "title_zh": "基于LLM/VLM的机器人任务规划",
+      "date": "2026/4/6",
+      "category": "Embodied Intelligence",
+      "image": null
+    },
+    {
+      "id": 69,
+      "path": "69_Diffusion_Policy",
+      "title_en": "Robot Action Generation Based on Diffusion Policy",
+      "title_zh": "基于扩散模型的机器人动作生成原理",
+      "date": "2026/4/6",
+      "category": "Embodied Intelligence",
+      "image": null
+    },
+    {
+      "id": 1,
+      "path": "1_一阶倒立摆的系统模型",
+      "title_en": "System Model of A First-order Inverted Pendulum",
+      "title_zh": "一阶倒立摆的系统模型",
+      "date": "2020/11/21",
+      "category": "Control Theory",
+      "image": "./blogs/1_一阶倒立摆的系统模型/cart_pole.gif"
+    },
+    {
+      "id": 2,
+      "path": "2_对一阶倒立摆的LQR控制",
+      "title_en": "LQR Control of A First-order Inverted Pendulum",
+      "title_zh": "对一阶倒立摆的LQR控制",
+      "date": "2020/11/25",
+      "category": "Control Theory",
+      "image": "./blogs/2_对一阶倒立摆的LQR控制/LQR_control.webp"
+    },
+    {
+      "id": 63,
+      "path": "63_Classical_to_Modern_Control_Methods",
+      "title_en": "Explanation of Classical to Modern Control Methods: PID, LQR, Impedance Control, and MPC",
+      "title_zh": "经典至现代控制方法详解: PID, LQR, 阻抗控制与MPC",
+      "date": "2026/4/5",
+      "category": "Control Theory",
+      "image": null
+    },
+    {
+      "id": 57,
+      "path": "57_Knapsack_Problem",
+      "title_en": "Knapsack Problem",
+      "title_zh": "背包问题",
+      "date": "2026/4/3",
+      "category": "Classical Algorithm",
+      "image": null
+    },
+    {
       "id": 4,
       "path": "4_WiFi_CSI",
       "title_en": "Introduction to WiFi CSI",
@@ -395,24 +530,6 @@
       "date": "2026/1/12",
       "category": "Wireless Communication",
       "image": null
-    },
-    {
-      "id": 1,
-      "path": "1_一阶倒立摆的系统模型",
-      "title_en": "System Model of A First-order Inverted Pendulum",
-      "title_zh": "一阶倒立摆的系统模型",
-      "date": "2020/11/21",
-      "category": "Control Theory",
-      "image": "./blogs/1_一阶倒立摆的系统模型/cart_pole.gif"
-    },
-    {
-      "id": 2,
-      "path": "2_对一阶倒立摆的LQR控制",
-      "title_en": "LQR Control of A First-order Inverted Pendulum",
-      "title_zh": "对一阶倒立摆的LQR控制",
-      "date": "2020/11/25",
-      "category": "Control Theory",
-      "image": "./blogs/2_对一阶倒立摆的LQR控制/LQR_control.webp"
     },
     {
       "id": 12,
@@ -495,7 +612,7 @@
       "category": "Other Notes",
       "image": null
     },
-	{
+	  {
       "id": 56,
       "path": "56_Install_Isaac_on_Windows",
       "title_en": "Install IsaacSim on Windows",

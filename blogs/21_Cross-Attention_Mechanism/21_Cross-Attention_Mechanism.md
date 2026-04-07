@@ -7,7 +7,7 @@
 交叉注意力的核心计算公式如下：
 
 $$
-\text{CrossAttention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+\text{Cross-Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
 $$
 
 其中：
@@ -99,7 +99,7 @@ Image = CrossAttention(Q=Image, K=Text, V=Text)
 ```
 
 ### 3. 多轮交替堆叠
-像Transformer堆多层一样交替进行，适合对齐过程复杂的任务。
+像Transformer堆多层一样交替进行，适合**对齐**过程复杂的任务。
 
 ### 4. Self + Cross混合
 每一层既做模态内部的self-attention，也做跨模态的cross-attention。
@@ -136,7 +136,7 @@ proj_img = nn.Linear(1024, 512)
 ```python
 # 布尔掩码：True表示需要被mask的位置
 attn_mask = torch.tensor(
-    [[False, False, True],
+	[[False, False, True],
 	[False, False, True],
 	[True, True, True]])
 ```

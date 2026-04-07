@@ -189,8 +189,9 @@ class BlogIndexGenerator {
         const categoryMap = {
             'AI & RL': '人工智能与强化学习',
             'Embodied Intelligence': '具身智能',
-            'Wireless Communication': '无线通信',
             'Control Theory': '控制理论',
+            'Classical Algorithm': '传统算法',
+            'Wireless Communication': '无线通信',
             'Other Notes': '其他笔记'
         };
 
@@ -233,13 +234,17 @@ class BlogIndexGenerator {
                 en: 'Embodied Intelligence',
                 zh: '具身智能'
             },
-            'Wireless Communication': {
-                en: 'Wireless Communication',
-                zh: '无线通信'
-            },
             'Control Theory': {
                 en: 'Control Theory',
                 zh: '控制理论'
+            },
+            'Classical Algorithm': {
+                en: 'Classical Algorithm',
+                zh: '传统算法'
+            },
+            'Wireless Communication': {
+                en: 'Wireless Communication',
+                zh: '无线通信'
             },
             'Other Notes': {
                 en: 'Other Notes',
@@ -313,15 +318,17 @@ class BlogIndexGenerator {
             // 英文分类
             'AI & RL': 'fa-solid fa-microchip',
             'Embodied Intelligence': 'fa-solid fa-robot',
-            'Wireless Communication': 'fa-solid fa-wifi',
             'Control Theory': 'fa-solid fa-gear',
+            'Classical Algorithm': 'fa-solid fa-chart-diagram',
+            'Wireless Communication': 'fa-solid fa-wifi',
             'Other Notes': 'fa-solid fa-sheet-plastic',
 
             // 中文分类
             '人工智能与强化学习': 'fa-solid fa-microchip',
             '具身智能': 'fa-solid fa-robot',
-            '无线通信': 'fa-solid fa-wifi',
             '控制理论': 'fa-solid fa-gear',
+            '传统算法': 'fa-solid fa-chart-diagram',
+            '无线通信': 'fa-solid fa-wifi',
             '其他笔记': 'fa-solid fa-sheet-plastic'
         };
 

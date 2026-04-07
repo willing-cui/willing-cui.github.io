@@ -65,7 +65,7 @@ Transformer 模型的核心是 **自注意力机制**。自注意力机制有一
 
 这是因为三角函数有和差化积公式：
 
-$sin(pos+k)=sin(pos)cos(k)+cos(pos)sin(k) \\ cos(pos+k)=cos(pos)cos(k)−sin(pos)sin(k)$
+$sin(pos+k)=sin(pos)cos(k)+cos(pos)sin(k) \\\\ cos(pos+k)=cos(pos)cos(k)−sin(pos)sin(k)$
 
 这意味着，一旦模型学会了几个固定的变换矩阵，它就能很容易地推断出“距离我 `k`个位置的单词在哪里”，即使它从未在训练中见过这么长的序列。这赋予了 Transformer 强大的**外推能力**。
 

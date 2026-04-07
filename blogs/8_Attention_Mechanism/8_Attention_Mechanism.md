@@ -13,7 +13,7 @@
 
 **Scaled Dot-Product Attention (SDPA)** 注意力机制的核心计算过程可以用以下公式表示：
 
-$$\text{Attention}(Q,K,V)=\text{softmax}(\frac{QK^T}{\sqrt{d_k}})V$$
+$$\text{Attention}(Q,K,V)=\text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
 
 其中：
 
@@ -103,7 +103,7 @@ $$\text{Output}=A×V$$
 
 尽管注意力机制具有显著优势，但也存在一些局限性：
 
-**计算复杂度高**：注意力机制的时间复杂度为O(n2)，在处理超长序列时计算成本较高。
+**计算复杂度高**：注意力机制的时间复杂度为$O(n^2)$，在处理超长序列时计算成本较高。
 
 **内存消耗大**：需要存储完整的注意力矩阵，对显存要求较高。
 
