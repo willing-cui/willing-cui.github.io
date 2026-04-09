@@ -360,6 +360,15 @@
       "category": "AI & RL",
       "image": null
     },
+	{
+      "id": 70,
+      "path": "70_LLM_Reasoning",
+      "title_en": "LLM Reasoning",
+      "title_zh": "大语言模型推理（Reasoning）",
+      "date": "2026/4/9",
+      "category": "AI & RL",
+      "image": "./blogs/70_LLM_Reasoning/Chain.webp"
+    },
     {
       "id": 29,
       "path": "29_Robotics_Research_Production_Line",
@@ -495,14 +504,32 @@
       "category": "Control Theory",
       "image": null
     },
+	{
+      "id": 71,
+      "path": "71_Commonly_Used_Code",
+      "title_en": "Commonly Used Code",
+      "title_zh": "常用代码段汇总",
+      "date": "2026/4/9",
+      "category": "Classical Algorithm",
+      "image": "./blogs/71_Commonly_Used_Code/Coding.webp"
+    },
     {
       "id": 57,
       "path": "57_Knapsack_Problem",
-      "title_en": "Knapsack Problem",
-      "title_zh": "背包问题",
+      "title_en": "Knapsack Problem (DP)",
+      "title_zh": "背包问题（动态规划）",
       "date": "2026/4/3",
       "category": "Classical Algorithm",
-      "image": null
+      "image": "./blogs/57_Knapsack_Problem/Shoulder_Bag.webp"
+    },
+	{
+      "id": 72,
+      "path": "72_Edit_Distance_Problem",
+      "title_en": "Edit Distance Problem (DP)",
+      "title_zh": "编辑距离问题（动态规划）",
+      "date": "2026/4/9",
+      "category": "Classical Algorithm",
+      "image": "./blogs/72_Edit_Distance_Problem/Text.webp"
     },
     {
       "id": 4,
