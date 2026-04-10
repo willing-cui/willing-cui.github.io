@@ -531,6 +531,15 @@
       "category": "Classical Algorithm",
       "image": "./blogs/72_Edit_Distance_Problem/Text.webp"
     },
+	{
+      "id": 73,
+      "path": "73_BFS_and_DFS",
+      "title_en": "BFS and DFS",
+      "title_zh": "广度优先搜索（BFS）和深度优先搜索（DFS）",
+      "date": "2026/4/10",
+      "category": "Classical Algorithm",
+      "image": null
+    },
     {
       "id": 4,
       "path": "4_WiFi_CSI",
