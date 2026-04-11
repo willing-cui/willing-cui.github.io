@@ -369,6 +369,15 @@
       "category": "AI & RL",
       "image": "./blogs/70_LLM_Reasoning/Chain.webp"
     },
+	{
+      "id": 74,
+      "path": "74_AI_Agent_Survey",
+      "title_en": "A survey of LLM-Based AI Agent",
+      "title_zh": "大语言模型驱动的自主智能体",
+      "date": "2026/4/11",
+      "category": "AI & RL",
+      "image": "./blogs/74_AI_Agent_Survey/Lobster.webp"
+    },
     {
       "id": 29,
       "path": "29_Robotics_Research_Production_Line",
