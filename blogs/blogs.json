@@ -657,6 +657,15 @@
       "category": "Other Notes",
       "image": "./blogs/53_Point_Transformer_V3_Paper_Reading_Report/PT_V3.webp"
     },
+	{
+      "id": 76,
+      "path": "76_LPM_1_0_Paper_Reading_Report",
+      "title_en": "LPM 1.0 Paper Reading Report",
+      "title_zh": "LPM 1.0 论文阅读报告",
+      "date": "2026/4/12",
+      "category": "Other Notes",
+      "image": "./blogs/76_LPM_1_0_Paper_Reading_Report/Base_LPM_Arch.webp"
+    },
     {
       "id": 15,
       "path": "15_Access_Repo_via_GitHub_SSH",
