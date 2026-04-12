@@ -378,6 +378,15 @@
       "category": "AI & RL",
       "image": "./blogs/74_AI_Agent_Survey/Lobster.webp"
     },
+	{
+      "id": 75,
+      "path": "75_World_Models",
+      "title_en": "World Models",
+      "title_zh": "世界模型",
+      "date": "2026/4/12",
+      "category": "AI & RL",
+      "image": "./blogs/75_World_Models/World.webp"
+    },
     {
       "id": 29,
       "path": "29_Robotics_Research_Production_Line",
