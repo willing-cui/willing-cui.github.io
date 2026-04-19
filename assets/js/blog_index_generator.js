@@ -5,6 +5,8 @@ class BlogIndexGenerator {
         this.isInitialized = false;
         this.currentSortMode = 'default'; // 'default', 'date-asc', 'date-desc'
         this.currentLanguage = 'en'; // 默认语言
+        this.expandedCategories = new Set(); // 存储已展开的分类
+        this.MAX_INITIAL_BLOGS = 10; // 默认显示的最大博文数量
     }
 
     /**
@@ -77,6 +79,9 @@ class BlogIndexGenerator {
         // 生成博客列表HTML
         const html = this.generateBlogsHTML(blogData);
         container.innerHTML = html;
+        
+        // 绑定展开/收起按钮事件
+        this.bindExpandButtons();
     }
 
     /**
@@ -148,6 +153,7 @@ class BlogIndexGenerator {
         if (this.currentSortMode === sortMode) return;
 
         this.currentSortMode = sortMode;
+        this.expandedCategories.clear(); // 清空展开状态
 
         try {
             const blogData = await this.loadBlogData();
@@ -267,28 +273,82 @@ class BlogIndexGenerator {
     generateCategoryHTML(categoryName, blogs) {
         const iconClass = this.getCategoryIcon(categoryName);
         const blogCount = blogs.length;
+        const isExpanded = this.expandedCategories.has(categoryName);
+        
+        // 获取显示文本
+        const expandText = this.currentLanguage === 'zh' ? 
+            (isExpanded ? '收起' : `展开全部 (${blogCount}篇)`) : 
+            (isExpanded ? 'Collapse' : `Expand All (${blogCount} posts)`);
+        const expandIcon = isExpanded ? 'fa-chevron-up' : 'fa-chevron-down';
+
+        // 根据排序模式对博客排序
+        const sortedBlogs = this.sortBlogs(blogs, this.currentSortMode);
+        
+        // 确定要显示的博客列表
+        const blogsToShow = isExpanded ? 
+            sortedBlogs : 
+            sortedBlogs.slice(0, this.MAX_INITIAL_BLOGS);
+        
+        // 是否需要展开按钮
+        const hasMore = sortedBlogs.length > this.MAX_INITIAL_BLOGS;
+        const displayCount = isExpanded ? blogCount : Math.min(this.MAX_INITIAL_BLOGS, blogCount);
 
         let html = `
             <div class="category-header">
                 <h3>
                     <i class="${iconClass}"></i>
                     ${categoryName}
+                    ${hasMore ? `<span class="blog-count-badge">${displayCount}/${blogCount}</span>` : ''}
                 </h3>
-                <span class="blog-count-badge">${blogCount}</span>
+                ${hasMore ? `
+                    <button class="expand-all-btn" data-category="${categoryName}">
+                        <span>${expandText}</span>
+                        <i class="fas ${expandIcon}"></i>
+                    </button>
+                ` : ''}
             </div>
             <ol class="blog-ol" start="1">
         `;
 
-        // 根据当前排序模式对博客进行排序
-        const sortedBlogs = this.sortBlogs(blogs, this.currentSortMode);
-
         // 添加博客项
-        sortedBlogs.forEach(blog => {
+        blogsToShow.forEach(blog => {
             html += this.generateBlogItemHTML(blog);
         });
 
         html += '</ol>\n';
         return html;
+    }
+
+    /**
+     * 绑定展开/收起按钮事件
+     */
+    bindExpandButtons() {
+        const buttons = document.querySelectorAll('.expand-all-btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const categoryName = button.dataset.category;
+                
+                if (this.expandedCategories.has(categoryName)) {
+                    this.expandedCategories.delete(categoryName);
+                } else {
+                    this.expandedCategories.add(categoryName);
+                }
+                
+                // 重新加载并渲染数据
+                try {
+                    const blogData = await this.loadBlogData();
+                    const container = document.getElementById('blogsIndex');
+                    if (container) {
+                        const html = this.generateBlogsHTML(blogData);
+                        container.innerHTML = html;
+                        this.bindExpandButtons(); // 重新绑定事件
+                        this.addSortControls(); // 重新添加排序控件
+                    }
+                } catch (error) {
+                    console.error('Failed to reload blog data after expand/collapse:', error);
+                }
+            });
+        });
     }
 
     /**
@@ -389,6 +449,7 @@ class BlogIndexGenerator {
      */
     async reloadForLanguage(lang) {
         this.currentLanguage = lang;
+        this.expandedCategories.clear(); // 清空展开状态
         this.isInitialized = false;
         await this.init();
     }

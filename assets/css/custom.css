@@ -413,9 +413,9 @@ html::-webkit-scrollbar-thumb {
 .blog-count-badge {
     background: #fff;
     color: #aaa;
-    border-radius: 0.5rem;
-    font-size: 0.8rem;
-    padding: 0 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    padding: 0rem 0.5rem;
     font-weight: bold;
     text-align: center;
 }
@@ -571,6 +571,30 @@ html::-webkit-scrollbar-thumb {
     font-size: 0.8rem;
     font-style: italic;
     padding-bottom: 1rem;
+}
+
+/* 展开全部按钮样式 */
+.expand-all-btn {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-family: 'Source Sans Pro', sans-serif;
+    box-shadow: none;
+    padding: 0 1rem 0 1rem;
+    height: 1.5rem;
+	letter-spacing: 0rem;
+	line-height: 2rem;
+}
+
+.expand-all-btn i {
+    padding-left: 0.5rem;
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+/* 展开状态的箭头旋转 */
+.expand-all-btn.expanded i {
+    transform: rotate(180deg);
 }
 
 .img-in-blog {
