@@ -83,6 +83,35 @@ $$
 - $dp[0][j]=1$对所有 $j$，表示数字 $0$ 有一种划分（空划分）
 - $dp[i][0]=0$对所有 $i>0$，因为没有正整数可用
 
+#### 示例代码
+
+```python
+def solve():
+    # 读取正整数n
+    n = int(input().strip())
+
+    # 定义动态规划列表
+    dp = [[0] * (n + 1) for _ in range(n + 1)]
+
+    # 定义边界条件
+    dp[0][0] = 1
+
+    # 状态转移
+    # 对整数i进行拆分
+    for i in range(0, n + 1):
+        # 将i拆分成不大于j的整数序列，序列元素不递增
+        for j in range(1, n + 1):
+            if j <= i:
+                dp[i][j] = dp[i - j][j] + dp[i][j - 1]
+            else:
+                # j > i
+                dp[i][j] = dp[i][j - 1]
+    return max(dp[n])
+
+if __name__ == '__main__':
+    print(solve())
+```
+
 ### 2. 0-1背包问题
 
 **题目描述：**
@@ -141,3 +170,32 @@ $$
 
 - $dp[0][j]=1$对所有 $j$，表示数字 $0$ 有一种划分（空划分）
 - $dp[i][0]=0$对所有 $i>0$，因为没有正整数可用
+
+#### 示例代码
+
+```python
+def solve():
+    # 读取正整数n
+    n = int(input().strip())
+
+    # 定义动态规划列表
+    dp = [[0] * (n + 1) for _ in range(n + 1)]
+
+    # 定义边界条件
+    dp[0][0] = 1
+
+    # 状态转移
+    # 对整数i进行拆分
+    for i in range(0, n + 1):
+        # 将i拆分成不大于j的整数序列，序列元素递减
+        for j in range(1, n + 1):
+            if j <= i:
+                dp[i][j] = dp[i - j][j - 1] + dp[i][j - 1]
+            else:
+                # j > i
+                dp[i][j] = dp[i][j - 1]
+    return max(dp[n])
+
+if __name__ == '__main__':
+    print(solve())
+```
