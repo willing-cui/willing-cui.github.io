@@ -558,6 +558,15 @@
       "category": "Classical Algorithm",
       "image": null
     },
+	{
+      "id": 77,
+      "path": "77_Union-Find_Problem",
+      "title_en": "Union-Find Problem",
+      "title_zh": "并查集问题",
+      "date": "2026/4/21",
+      "category": "Classical Algorithm",
+      "image": "./blogs/77_Union-Find_Problem/Connections.webp"
+    },
     {
       "id": 4,
       "path": "4_WiFi_CSI",
